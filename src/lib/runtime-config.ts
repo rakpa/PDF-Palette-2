@@ -17,3 +17,8 @@ export function conversionServiceUrl(devPath: string, prodPath: string): string 
   return `${getConversionServicePrefix()}${cleanProd}`;
 }
 
+/** Vercel cannot run LibreOffice/Python — use in-browser converters instead. */
+export function useBrowserOfficeConversion(): boolean {
+  return import.meta.env.PROD;
+}
+

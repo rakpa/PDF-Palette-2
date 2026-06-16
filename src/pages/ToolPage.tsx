@@ -48,6 +48,7 @@ import {
   type ConversionHealth,
   type ConversionFeature,
 } from "@/lib/conversion-service-client";
+import { useBrowserOfficeConversion } from "@/lib/runtime-config";
 
 /** Per-feature upload constraints. */
 const featureConfig: Record<
@@ -193,6 +194,11 @@ const ToolPage = () => {
   }, [tool?.feature]);
 
   useEffect(() => {
+    const browserOffice =
+      useBrowserOfficeConversion() &&
+      (tool?.feature === "word-to-pdf" || tool?.feature === "pdf-to-word");
+    if (browserOffice) return;
+
     if (
       tool?.feature !== "word-to-pdf" &&
       tool?.feature !== "pdf-to-word" &&
@@ -357,6 +363,13 @@ const ToolPage = () => {
     }
   };
 
+  const showConversionServiceStatus =
+    needsConversionService &&
+    !(
+      useBrowserOfficeConversion() &&
+      (tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word")
+    );
+
   return (
     <ToolPageLayout tool={tool}>
       <div className="mx-auto max-w-2xl">
@@ -364,7 +377,7 @@ const ToolPage = () => {
           <ComingSoon />
         ) : (
           <div className="space-y-4">
-            {needsConversionService && (
+            {showConversionServiceStatus && (
               <ConversionServiceStatus
                 health={serviceHealth}
                 feature={tool.feature as ConversionFeature}
@@ -695,18 +708,26 @@ const ConversionServiceStatus = ({
   );
 };
 
-const PrivacyNote = ({ feature }: { feature?: ToolFeature }) => (
-  <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
-    <ShieldCheck className="h-4 w-4 text-tool-green" />
-    {feature === "word-to-pdf" ||
-    feature === "pdf-to-word" ||
-    feature === "unlock-pdf" ||
-    feature === "protect-pdf" ||
-    feature === "html-to-pdf"
-      ? "Your file is converted on your machine and deleted immediately after download."
-      : "Your files are processed locally and never uploaded to a server."}
-  </div>
-);
+const PrivacyNote = ({ feature }: { feature?: ToolFeature }) => {
+  const browserOffice =
+    useBrowserOfficeConversion() &&
+    (feature === "word-to-pdf" || feature === "pdf-to-word");
+
+  return (
+    <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
+      <ShieldCheck className="h-4 w-4 text-tool-green" />
+      {browserOffice
+        ? "Converted in your browser — your file never leaves this device."
+        : feature === "word-to-pdf" ||
+            feature === "pdf-to-word" ||
+            feature === "unlock-pdf" ||
+            feature === "protect-pdf" ||
+            feature === "html-to-pdf"
+          ? "Your file is converted on your machine and deleted immediately after download."
+          : "Your files are processed locally and never uploaded to a server."}
+    </div>
+  );
+};
 
 const ComingSoon = () => (
   <motion.div

@@ -1,4 +1,4 @@
-import { conversionServiceUrl } from "./runtime-config";
+import { conversionServiceUrl, useBrowserOfficeConversion } from "./runtime-config";
 
 export type ConversionHealth = {
   status: "ok" | "degraded" | "unavailable";
@@ -71,6 +71,11 @@ export function isConversionReady(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): boolean {
+  // Word/PDF office conversions run in the browser on Vercel (no LibreOffice/Python).
+  if (useBrowserOfficeConversion() && (feature === "word-to-pdf" || feature === "pdf-to-word")) {
+    return true;
+  }
+
   if (!health) return false;
   if (health.status === "unavailable") return false;
 
@@ -86,6 +91,10 @@ export function conversionBlockedMessage(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): string | undefined {
+  if (useBrowserOfficeConversion() && (feature === "word-to-pdf" || feature === "pdf-to-word")) {
+    return undefined;
+  }
+
   if (!health || health.status === "unavailable") {
     return health?.message || SERVICE_DOWN_MESSAGE;
   }

@@ -6,7 +6,7 @@ const GS_ASSETS_BASE = "/gs-wasm/";
 
 const PDF_SETTINGS = {
   low: "/printer",
-  recommended: "/ebook",
+  recommended: "/screen",
   extreme: "/screen",
 } as const satisfies Record<CompressionLevel, string>;
 

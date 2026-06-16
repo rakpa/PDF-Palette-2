@@ -5,6 +5,9 @@ import {
 } from "./ghostscript-compress";
 import { convertWordToPdfLocal } from "./word-to-pdf-client";
 import { convertPdfToWordLocal } from "./pdf-to-word-client";
+import { convertWordToPdfBrowser } from "./word-to-pdf-browser";
+import { convertPdfToWordBrowser } from "./pdf-to-word-browser";
+import { useBrowserOfficeConversion } from "./runtime-config";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
@@ -390,16 +393,20 @@ function formatFileSize(bytes: number): string {
   return (bytes / 1024 / 1024).toFixed(1) + " MB";
 }
 
-// Convert Word documents to PDF via local LibreOffice headless service.
+// Convert Word documents to PDF (LibreOffice locally, browser fallback on Vercel).
 export async function wordToPDF(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = await convertWordToPdfLocal(file, onProgress);
+    const { blob, filename } = useBrowserOfficeConversion()
+      ? await convertWordToPdfBrowser(file, onProgress)
+      : await convertWordToPdfLocal(file, onProgress);
     return {
       success: true,
-      message: "Word document converted to PDF successfully!",
+      message: useBrowserOfficeConversion()
+        ? "Word document converted to PDF in your browser!"
+        : "Word document converted to PDF successfully!",
       blob,
       filename,
     };
@@ -417,16 +424,20 @@ export async function wordToPDF(
   }
 }
 
-// Convert PDF to Word via local LibreOffice headless service.
+// Convert PDF to Word (Python/pdf2docx locally, browser fallback on Vercel).
 export async function pdfToWord(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = await convertPdfToWordLocal(file, onProgress);
+    const { blob, filename } = useBrowserOfficeConversion()
+      ? await convertPdfToWordBrowser(file, onProgress)
+      : await convertPdfToWordLocal(file, onProgress);
     return {
       success: true,
-      message: "PDF converted to Word successfully!",
+      message: useBrowserOfficeConversion()
+        ? "PDF converted to Word in your browser!"
+        : "PDF converted to Word successfully!",
       blob,
       filename,
     };
