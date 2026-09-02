@@ -71,8 +71,11 @@ export function isConversionReady(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): boolean {
+  // PDF → Word always has an in-browser layout-preserving converter.
+  if (feature === "pdf-to-word") return true;
+
   // Word/PDF office conversions run in the browser on Vercel (no LibreOffice/Python).
-  if (useBrowserOfficeConversion() && (feature === "word-to-pdf" || feature === "pdf-to-word")) {
+  if (useBrowserOfficeConversion() && feature === "word-to-pdf") {
     return true;
   }
 
@@ -81,7 +84,6 @@ export function isConversionReady(
 
   // Tools that need a specific runtime dependency.
   if (feature === "word-to-pdf") return health.checks?.libreOffice !== false;
-  if (feature === "pdf-to-word") return health.checks?.python !== false;
 
   // For unlock/protect/html-to-pdf we only need the service reachable.
   return true;
@@ -91,7 +93,11 @@ export function conversionBlockedMessage(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): string | undefined {
-  if (useBrowserOfficeConversion() && (feature === "word-to-pdf" || feature === "pdf-to-word")) {
+  if (feature === "pdf-to-word") {
+    return undefined;
+  }
+
+  if (useBrowserOfficeConversion() && feature === "word-to-pdf") {
     return undefined;
   }
 
@@ -100,9 +106,6 @@ export function conversionBlockedMessage(
   }
   if (feature === "word-to-pdf" && health.checks?.libreOffice === false) {
     return "LibreOffice is not installed. Install LibreOffice for Word → PDF conversion.";
-  }
-  if (feature === "pdf-to-word" && health.checks?.python === false) {
-    return "Python dependencies missing. Run: npm run setup:python";
   }
   return undefined;
 }

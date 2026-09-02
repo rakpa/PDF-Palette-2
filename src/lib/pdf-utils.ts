@@ -435,9 +435,7 @@ export async function pdfToWord(
       : await convertPdfToWordLocal(file, onProgress);
     return {
       success: true,
-      message: useBrowserOfficeConversion()
-        ? "PDF converted to Word in your browser!"
-        : "PDF converted to Word successfully!",
+      message: "PDF converted to Word successfully!",
       blob,
       filename,
     };

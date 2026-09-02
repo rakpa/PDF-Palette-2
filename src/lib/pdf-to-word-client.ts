@@ -1,5 +1,5 @@
-import { parseConversionFetchError } from "./conversion-service-client";
 import { conversionServiceUrl } from "./runtime-config";
+import { convertPdfToWordBrowser } from "./pdf-to-word-browser";
 
 function filenameFromDisposition(header: string | null): string | null {
   if (!header) return null;
@@ -27,19 +27,14 @@ export async function convertPdfToWordLocal(
       body: form,
       }
     );
-  } catch (error) {
-    throw new Error(parseConversionFetchError(error));
+  } catch {
+    onProgress?.(20, "Converting in browser…");
+    return convertPdfToWordBrowser(file, onProgress);
   }
 
   if (!res.ok) {
-    let message = "PDF to Word conversion failed";
-    try {
-      const data = (await res.json()) as { error?: string };
-      if (data.error) message = data.error;
-    } catch {
-      message = `${message} (HTTP ${res.status})`;
-    }
-    throw new Error(message);
+    onProgress?.(20, "Converting in browser…");
+    return convertPdfToWordBrowser(file, onProgress);
   }
 
   onProgress?.(90, "Preparing download…");

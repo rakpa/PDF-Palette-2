@@ -118,7 +118,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Word",
-    hint: "Upload a PDF. Layout, images, tables, and code blocks are reconstructed locally (pdf2docx).",
+    hint: "Upload a PDF. Text, fonts, alignment, tables, and images are reconstructed into an editable Word file.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -195,13 +195,11 @@ const ToolPage = () => {
 
   useEffect(() => {
     const browserOffice =
-      useBrowserOfficeConversion() &&
-      (tool?.feature === "word-to-pdf" || tool?.feature === "pdf-to-word");
+      useBrowserOfficeConversion() && tool?.feature === "word-to-pdf";
     if (browserOffice) return;
 
     if (
       tool?.feature !== "word-to-pdf" &&
-      tool?.feature !== "pdf-to-word" &&
       tool?.feature !== "unlock-pdf" &&
       tool?.feature !== "protect-pdf" &&
       tool?.feature !== "html-to-pdf"
@@ -220,8 +218,7 @@ const ToolPage = () => {
   if (!tool) return <NotFound />;
 
   const needsConversionService =
-    tool?.feature === "word-to-pdf" ||
-    tool?.feature === "pdf-to-word" ||
+    (tool?.feature === "word-to-pdf" && !useBrowserOfficeConversion()) ||
     tool?.feature === "unlock-pdf" ||
     tool?.feature === "protect-pdf" ||
     tool?.feature === "html-to-pdf";
@@ -365,10 +362,7 @@ const ToolPage = () => {
 
   const showConversionServiceStatus =
     needsConversionService &&
-    !(
-      useBrowserOfficeConversion() &&
-      (tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word")
-    );
+    !(useBrowserOfficeConversion() && tool.feature === "word-to-pdf");
 
   return (
     <ToolPageLayout tool={tool}>
@@ -400,7 +394,7 @@ const ToolPage = () => {
               }
             />
 
-            {config.hint && tool.feature !== "word-to-pdf" && tool.feature !== "pdf-to-word" ? (
+            {config.hint && tool.feature !== "word-to-pdf" ? (
               <p className="text-center text-sm text-muted-foreground">{config.hint}</p>
             ) : null}
 

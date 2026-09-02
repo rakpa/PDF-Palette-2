@@ -21,7 +21,7 @@ from pdf_analysis import DocumentProfile, PageProfile
 
 LogFn = Callable[[str], None]
 
-DEFAULT_RENDER_DPI = 300
+DEFAULT_RENDER_DPI = 150
 
 
 def convert_page_vector(pdf_path: Path, page_index: int, output_path: Path) -> None:
