@@ -39,17 +39,25 @@ export function createApp(config: AppConfig, log: Logger) {
     pinoHttp({
       logger: log,
       autoLogging: {
-        ignore: (req: { url?: string }) => req.url === "/health",
+        ignore: (req: { url?: string }) => {
+          const url = req.url ?? "";
+          return url === "/health" || url === "/_/word-to-pdf/health";
+        },
       },
     })
   );
 
-  app.use(createHealthRouter(config));
-  app.use("/v1/word-to-pdf", createWordToPdfRouter(config, log));
-  app.use("/v1/pdf-to-word", createPdfToWordRouter(config, log));
-  app.use("/v1/unlock-pdf", createUnlockPdfRouter(config, log));
-  app.use("/v1/protect-pdf", createProtectPdfRouter(config, log));
-  app.use("/v1/html-to-pdf", createHtmlToPdfRouter(config, log));
+  const api = express.Router();
+  api.use(createHealthRouter(config));
+  api.use("/v1/word-to-pdf", createWordToPdfRouter(config, log));
+  api.use("/v1/pdf-to-word", createPdfToWordRouter(config, log));
+  api.use("/v1/unlock-pdf", createUnlockPdfRouter(config, log));
+  api.use("/v1/protect-pdf", createProtectPdfRouter(config, log));
+  api.use("/v1/html-to-pdf", createHtmlToPdfRouter(config, log));
+
+  // Local: /v1/...  Vercel services: original public path /_/word-to-pdf/v1/...
+  app.use(api);
+  app.use("/_/word-to-pdf", api);
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });

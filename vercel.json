@@ -22,20 +22,28 @@
       ]
     }
   ],
-  "rewrites": [
-    { "source": "/((?!_/word-to-pdf).*)", "destination": "/index.html" }
-  ],
-  "experimentalServices": {
+  "services": {
     "frontend": {
-      "entrypoint": ".",
-      "routePrefix": "/",
-      "framework": "vite"
+      "root": ".",
+      "framework": "vite",
+      "rewrites": [
+        { "source": "/(.*)", "destination": "/index.html" }
+      ]
     },
     "word-to-pdf": {
-      "entrypoint": "services/word-to-pdf/src/index.ts",
+      "root": "services/word-to-pdf",
       "framework": "express",
-      "routePrefix": "/_/word-to-pdf",
-      "maxDuration": 300
+      "entrypoint": "src/index.ts",
+      "functions": {
+        "src/index.ts": {
+          "maxDuration": 300
+        }
+      }
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/_/word-to-pdf", "destination": { "service": "word-to-pdf" } },
+    { "source": "/_/word-to-pdf/(.*)", "destination": { "service": "word-to-pdf" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
+  ]
 }

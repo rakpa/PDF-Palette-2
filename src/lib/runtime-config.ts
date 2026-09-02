@@ -3,7 +3,7 @@ function trimSlash(value: string): string {
 }
 
 export function getConversionServicePrefix(): string {
-  // Vercel experimental service route prefix (prod). In dev, Vite proxy handles /api/*.
+  // Vercel services rewrite prefix (prod). In dev, Vite proxy handles /api/*.
   const prefix =
     (import.meta as any).env?.VITE_CONVERSION_PREFIX ??
     "/_/word-to-pdf";

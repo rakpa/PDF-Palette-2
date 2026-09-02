@@ -52,6 +52,12 @@ Uses **pdf2docx** locally to reconstruct:
 
 ---
 
+## Vercel
+
+In the project **Build and Deployment** settings, set Framework to **Services**. New Vercel projects reject `experimentalServices`; this repo uses the `services` key in `vercel.json` instead.
+
+---
+
 ## Quick reference
 
 | Step | Command |
