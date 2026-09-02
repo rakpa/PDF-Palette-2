@@ -4,9 +4,8 @@ import {
   compressWithGhostscript,
 } from "./ghostscript-compress";
 import { convertWordToPdfLocal } from "./word-to-pdf-client";
-import { convertPdfToWordLocal } from "./pdf-to-word-client";
 import { convertWordToPdfBrowser } from "./word-to-pdf-browser";
-import { convertPdfToWordBrowser } from "./pdf-to-word-browser";
+import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { useBrowserOfficeConversion } from "./runtime-config";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
@@ -424,15 +423,14 @@ export async function wordToPDF(
   }
 }
 
-// Convert PDF to Word (Python/pdf2docx locally, browser fallback on Vercel).
+// Convert PDF to Word. This runs entirely in the browser, in development and
+// in production alike, so what you test locally is what ships.
 export async function pdfToWord(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = useBrowserOfficeConversion()
-      ? await convertPdfToWordBrowser(file, onProgress)
-      : await convertPdfToWordLocal(file, onProgress);
+    const { blob, filename } = await convertPdfToWordBrowser(file, onProgress);
     return {
       success: true,
       message: "PDF converted to Word successfully!",
@@ -440,6 +438,11 @@ export async function pdfToWord(
       filename,
     };
   } catch (error) {
+    // The converter reports what actually went wrong (a password, a damaged
+    // file); anything else is unexpected and worth showing verbatim.
+    if (error instanceof PdfToWordError) {
+      return { success: false, message: error.message };
+    }
     const detail =
       error instanceof Error
         ? error.message

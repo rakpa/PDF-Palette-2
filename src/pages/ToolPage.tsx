@@ -118,7 +118,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Word",
-    hint: "Upload a PDF. Text, fonts, alignment, tables, and images are reconstructed into an editable Word file.",
+    hint: "Upload a PDF. Fonts, colours, alignment, tables, images and page layout are rebuilt into an editable Word file — entirely in your browser.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -542,6 +542,23 @@ const ToolPage = () => {
               </motion.div>
             )}
 
+            {/* Failures stay on screen; a toast alone is gone before the
+                user has read why the file could not be converted. */}
+            {result && !result.success && !isProcessing && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                role="alert"
+                className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4"
+              >
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                <div className="flex-1">
+                  <p className="font-medium text-foreground">Couldn’t convert this file</p>
+                  <p className="text-sm text-muted-foreground">{result.message}</p>
+                </div>
+              </motion.div>
+            )}
+
             {/* Action */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               <Button
@@ -703,9 +720,11 @@ const ConversionServiceStatus = ({
 };
 
 const PrivacyNote = ({ feature }: { feature?: ToolFeature }) => {
+  // PDF → Word always runs in the browser; Word → PDF only does on Vercel,
+  // where LibreOffice is not available.
   const browserOffice =
-    useBrowserOfficeConversion() &&
-    (feature === "word-to-pdf" || feature === "pdf-to-word");
+    feature === "pdf-to-word" ||
+    (useBrowserOfficeConversion() && feature === "word-to-pdf");
 
   return (
     <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
@@ -713,7 +732,6 @@ const PrivacyNote = ({ feature }: { feature?: ToolFeature }) => {
       {browserOffice
         ? "Converted in your browser — your file never leaves this device."
         : feature === "word-to-pdf" ||
-            feature === "pdf-to-word" ||
             feature === "unlock-pdf" ||
             feature === "protect-pdf" ||
             feature === "html-to-pdf"

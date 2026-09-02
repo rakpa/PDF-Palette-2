@@ -29,13 +29,6 @@ export default defineConfig(({ mode }) => ({
         timeout: 600_000,
         proxyTimeout: 600_000,
       },
-      "/api/pdf-to-word": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/pdf-to-word/, "/v1/pdf-to-word"),
-        timeout: 600_000,
-        proxyTimeout: 600_000,
-      },
       "/api/unlock-pdf": {
         target: "http://localhost:3001",
         changeOrigin: true,

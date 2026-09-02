@@ -13,6 +13,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **Compress PDF** – strip metadata and re-pack object streams
 - **Add Watermark** – stamp custom diagonal text on every page
 - **JPG to PDF** – turn JPG/PNG images into a PDF
+- **PDF to Word** – rebuild a PDF as an editable `.docx`, layout and all
+  (`pdfjs-dist` + [`docx`](https://docx.js.org/), see `src/lib/pdf-to-word/`)
 
 Conversion, OCR, e-signature and password tools are showcased and flagged
 **“Soon”** — they require secure server-side processing that isn't wired up yet.
@@ -39,6 +41,9 @@ npm run lint     # lint the project
 - `src/lib/tools.ts` – the tool catalog. Each tool declares a `feature`
   (a working pdf-lib engine) or `comingSoon: true`.
 - `src/lib/pdf-utils.ts` – the actual PDF operations.
+- `src/lib/pdf-to-word/` – the PDF → Word engine: `pdf-extract.ts` reads a page
+  into a geometric model, `layout.ts` segments it into columns, paragraphs and
+  blocks, `tables.ts` recovers tables, and `docx-emit.ts` writes the document.
 - `src/pages/ToolPage.tsx` – one data-driven page that renders the right
   controls and dispatches to the matching engine, keyed on the route.
 - `src/pages/Index.tsx` – the landing page (hero, tool grid, features).
