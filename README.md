@@ -18,10 +18,18 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **Edit PDF** – add text, images, shapes, freehand ink, highlights and
   whiteout; rotate, duplicate, reorder and delete pages
 - **Sign PDF** – draw, type or upload a signature and place it on the page
+- **Protect PDF** – real AES-256 encryption (revision 6), written by our own
+  implementation of the PDF standard security handler (`src/lib/pdf-crypto/`)
+- **Unlock PDF** – open and strip RC4-40/128, AES-128 and AES-256 encryption
+  given the password
+- **HTML to PDF** – lay an uploaded HTML file out with the browser's own engine
+  and capture it, with a real, searchable text layer (`src/lib/html-to-pdf/`)
 
-Conversion, OCR, e-signature and password tools are showcased and flagged
-**“Soon”** — they require secure server-side processing that isn't wired up yet.
-(We deliberately never hand back an unencrypted file dressed up as “protected”.)
+**Word → PDF** uses a small local service that drives LibreOffice, and the
+HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.
+Everything else runs in the tab.
+
+The remaining tools are showcased and flagged **“Soon”**.
 
 ## Tech stack
 
@@ -47,6 +55,14 @@ npm run lint     # lint the project
 - `src/lib/pdf-to-word/` – the PDF → Word engine: `pdf-extract.ts` reads a page
   into a geometric model, `layout.ts` segments it into columns, paragraphs and
   blocks, `tables.ts` recovers tables, and `docx-emit.ts` writes the document.
+- `src/lib/pdf-crypto/` – the PDF standard security handler: `primitives.ts`
+  has RC4, MD5, AES and SHA-2 built on Web Crypto, `standard-handler.ts` derives
+  file and object keys for revisions 2–6, and `document.ts` walks the file to
+  encrypt or decrypt every string and stream.
+- `src/lib/html-to-pdf/` – the HTML → PDF engine: `frame.ts` lays the file out
+  in a script-free sandbox, `text-layer.ts` reads back where every word landed,
+  `paginate.ts` chooses page breaks that never cut a line in half, and
+  `render.ts` captures each page and writes the invisible text over it.
 - `src/lib/pdf-editor/` – the editor engine behind Edit PDF and Sign PDF:
   `document.ts` opens and renders pages, `geometry.ts` maps between screen and
   PDF space, `state.ts` holds the document with undo/redo, and `export.ts`

@@ -29,6 +29,10 @@ npm run dev
 - **PDF → Word:** http://localhost:8080/pdf-to-word (in-browser, no setup)
 - **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
+- **Protect / Unlock PDF:** http://localhost:8080/protect-pdf, `/unlock-pdf`
+  (in-browser, no setup)
+- **HTML → PDF:** http://localhost:8080/html-to-pdf — uploading a file needs no
+  setup; the URL field asks the local service to fetch the page
 
 ---
 
@@ -85,6 +89,36 @@ mapped back through the page's own transform on save.
 
 ---
 
+## Password protection
+
+Protect PDF and Unlock PDF do the cryptography themselves, in the tab, on
+`src/lib/pdf-crypto/`. There is no qpdf, no service and no upload: the file is
+parsed with `pdf-lib`, and every string and stream is encrypted or decrypted
+with the PDF standard security handler built on Web Crypto.
+
+Protecting a file writes revision 6 — AES-256 with the SHA-2 hardened key
+derivation — which is what current readers expect. Unlocking accepts anything
+back to revision 2, so RC4-40, RC4-128, AES-128 and AES-256 all open given the
+password. A wrong password is reported as one rather than producing a damaged
+file.
+
+---
+
+## HTML → PDF
+
+An uploaded HTML file never leaves the tab. It is laid out in a sandboxed frame
+that cannot run scripts, captured page by page through the browser's own
+renderer, and paired with an invisible text layer read back from the live DOM —
+so the PDF looks exactly like the page *and* its text can still be selected,
+searched and copied, in any script the page uses. Page breaks respect
+`break-before: page` and never slice a line of text in half.
+
+The **URL** field is the one thing that still needs the local service: the
+same-origin policy stops a tab from reading another site's HTML, so the page
+has to be fetched and rendered outside the browser.
+
+---
+
 ## Vercel
 
 In the project **Build and Deployment** settings, set Framework to **Services**. New Vercel projects reject `experimentalServices`; this repo uses the `services` key in `vercel.json` instead.
@@ -99,3 +133,4 @@ In the project **Build and Deployment** settings, set Framework to **Services**.
 | Start app | `npm run dev` |
 | Word → PDF | http://localhost:8080/word-to-pdf |
 | PDF → Word | http://localhost:8080/pdf-to-word |
+| HTML → PDF | http://localhost:8080/html-to-pdf |

@@ -1,12 +1,12 @@
-import { parseConversionFetchError } from "./conversion-service-client";
-import { conversionServiceUrl } from "./runtime-config";
+import { PdfPasswordError, removePassword } from "./pdf-crypto/document";
 
-function filenameFromDisposition(header: string | null): string | null {
-  if (!header) return null;
-  const match = /filename\*?=(?:UTF-8''|")?([^";]+)/i.exec(header);
-  return match?.[1]?.replace(/"/g, "") ?? null;
-}
-
+/**
+ * Remove a PDF's password, in the browser.
+ *
+ * Accepts either the user or the owner password, and handles every revision of
+ * the standard security handler that readers still encounter: RC4 40- and
+ * 128-bit, AES-128 and AES-256.
+ */
 export async function unlockPdfLocal(
   file: File,
   password: string,
@@ -15,46 +15,23 @@ export async function unlockPdfLocal(
   const pw = password.trim();
   if (!pw) throw new Error("Password is required.");
 
-  onProgress?.(10, "Uploading PDF…");
+  onProgress?.(15, "Reading PDF…");
+  const bytes = new Uint8Array(await file.arrayBuffer());
 
-  const form = new FormData();
-  form.append("file", file, file.name);
-  form.append("password", pw);
-
-  onProgress?.(35, "Unlocking…");
-
-  let res: Response;
+  onProgress?.(45, "Removing protection…");
+  let output: Uint8Array;
   try {
-    res = await fetch(
-      conversionServiceUrl("/api/unlock-pdf/convert", "/v1/unlock-pdf/convert"),
-      {
-      method: "POST",
-      body: form,
-      }
-    );
+    output = await removePassword(bytes, pw);
   } catch (error) {
-    throw new Error(parseConversionFetchError(error));
+    if (error instanceof PdfPasswordError) throw new Error(error.message);
+    throw new Error(error instanceof Error ? error.message : "This PDF could not be unlocked.");
   }
 
-  if (!res.ok) {
-    let message = "Unlock PDF failed";
-    try {
-      const data = (await res.json()) as { error?: string };
-      if (data.error) message = data.error;
-    } catch {
-      message = `${message} (HTTP ${res.status})`;
-    }
-    throw new Error(message);
-  }
-
-  onProgress?.(90, "Preparing download…");
-  const blob = await res.blob();
+  onProgress?.(95, "Preparing download…");
   const baseName = file.name.replace(/\.pdf$/i, "") || "document";
-  const filename =
-    filenameFromDisposition(res.headers.get("Content-Disposition")) ??
-    `${baseName}_unlocked.pdf`;
-
   onProgress?.(100, "Done");
-  return { blob, filename };
+  return {
+    blob: new Blob([output], { type: "application/pdf" }),
+    filename: `${baseName}_unlocked.pdf`,
+  };
 }
-

@@ -234,7 +234,7 @@ export async function unlockPDF(
           : "Unknown error";
     return {
       success: false,
-      message: `Error unlocking PDF: ${detail}`,
+      message: detail,
     };
   }
 }
@@ -261,7 +261,7 @@ export async function protectPDFWithPassword(
           : "Unknown error";
     return {
       success: false,
-      message: `Error protecting PDF: ${detail}`,
+      message: detail,
     };
   }
 }

@@ -200,13 +200,7 @@ const ToolPage = () => {
   }, [tool?.feature]);
 
   useEffect(() => {
-    if (
-      tool?.feature !== "unlock-pdf" &&
-      tool?.feature !== "protect-pdf" &&
-      tool?.feature !== "html-to-pdf"
-    ) {
-      return;
-    }
+    if (tool?.feature !== "html-to-pdf") return;
     let cancelled = false;
     checkConversionHealth().then((health) => {
       if (!cancelled) setServiceHealth(health);
@@ -228,10 +222,12 @@ const ToolPage = () => {
     );
   }
 
-  const needsConversionService =
-    tool?.feature === "unlock-pdf" ||
-    tool?.feature === "protect-pdf" ||
-    tool?.feature === "html-to-pdf";
+  // An uploaded HTML file is laid out and captured by this tab. A URL cannot
+  // be: the same-origin policy stops a page reading another site's HTML, so
+  // fetching one still goes through the local conversion service.
+  const fetchesUrl =
+    tool.feature === "html-to-pdf" && files.length === 0 && htmlUrl.trim().length > 0;
+  const needsConversionService = fetchesUrl;
 
   const canProcess =
     !!config &&
@@ -478,7 +474,9 @@ const ToolPage = () => {
                       onChange={(e) => setHtmlUrl(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Provide a URL, an HTML file, or both (file wins for local content).
+                      Upload an HTML file to convert it here in your browser, or give a
+                      URL to have the local conversion service fetch and render the page.
+                      If you provide both, the file wins.
                     </p>
                   </div>
                 ) : (
@@ -594,7 +592,7 @@ const ToolPage = () => {
               )}
             </div>
 
-            <PrivacyNote feature={tool.feature} />
+            <PrivacyNote feature={tool.feature} remote={fetchesUrl} />
           </div>
         )}
       </div>
@@ -727,19 +725,16 @@ const ConversionServiceStatus = ({
   );
 };
 
-const PrivacyNote = ({ feature }: { feature?: ToolFeature }) => {
-  const browserOffice = feature === "pdf-to-word" || feature === "word-to-pdf";
+const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: boolean }) => {
+  // Every tool now runs inside the tab, except fetching a URL for HTML → PDF.
+  const inBrowser = Boolean(feature) && !remote;
 
   return (
     <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
       <ShieldCheck className="h-4 w-4 text-tool-green" />
-      {browserOffice
-        ? "Converted in your browser — your file never leaves this device."
-        : feature === "unlock-pdf" ||
-            feature === "protect-pdf" ||
-            feature === "html-to-pdf"
-          ? "Your file is converted on your machine and deleted immediately after download."
-          : "Your files are processed locally and never uploaded to a server."}
+      {inBrowser
+        ? "Processed in your browser — your file never leaves this device."
+        : "The page is fetched and rendered on your machine, then deleted immediately after download."}
     </div>
   );
 };

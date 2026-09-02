@@ -1,5 +1,6 @@
 import { parseConversionFetchError } from "./conversion-service-client";
 import { conversionServiceUrl } from "./runtime-config";
+import { renderHtmlFileToPdf } from "./html-to-pdf-browser";
 
 function filenameFromDisposition(header: string | null): string | null {
   if (!header) return null;
@@ -7,6 +8,14 @@ function filenameFromDisposition(header: string | null): string | null {
   return match?.[1]?.replace(/"/g, "") ?? null;
 }
 
+/**
+ * HTML → PDF.
+ *
+ * An uploaded file is laid out and captured by the browser itself, so it needs
+ * nothing from the server. A URL cannot be: the page has to be fetched, and
+ * the same-origin policy stops a tab reading another site's HTML — so that
+ * path still goes through the conversion service.
+ */
 export async function htmlToPdfLocal(
   input: { file?: File; url?: string },
   onProgress?: (progress: number, message?: string) => void
@@ -18,11 +27,14 @@ export async function htmlToPdfLocal(
     throw new Error("Provide either an HTML file or a URL.");
   }
 
-  onProgress?.(10, "Uploading…");
+  if (file) {
+    return renderHtmlFileToPdf(file, onProgress);
+  }
+
+  onProgress?.(10, "Fetching page…");
 
   const form = new FormData();
-  if (file) form.append("file", file, file.name);
-  if (url) form.append("url", url);
+  form.append("url", url as string);
 
   onProgress?.(35, "Rendering page…");
 
@@ -30,10 +42,7 @@ export async function htmlToPdfLocal(
   try {
     res = await fetch(
       conversionServiceUrl("/api/html-to-pdf/convert", "/v1/html-to-pdf/convert"),
-      {
-      method: "POST",
-      body: form,
-      }
+      { method: "POST", body: form }
     );
   } catch (error) {
     throw new Error(parseConversionFetchError(error));
@@ -52,13 +61,8 @@ export async function htmlToPdfLocal(
 
   onProgress?.(90, "Preparing download…");
   const blob = await res.blob();
-  const baseName = file?.name
-    ? file.name.replace(/\.(html?|HTML?)$/i, "") || "page"
-    : "page";
-  const filename =
-    filenameFromDisposition(res.headers.get("Content-Disposition")) ?? `${baseName}.pdf`;
+  const filename = filenameFromDisposition(res.headers.get("Content-Disposition")) ?? "page.pdf";
 
   onProgress?.(100, "Done");
   return { blob, filename };
 }
-

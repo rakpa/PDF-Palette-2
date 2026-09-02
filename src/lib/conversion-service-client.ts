@@ -70,23 +70,19 @@ export function isConversionReady(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): boolean {
-  // PDF → Word and Word → PDF are rebuilt in the browser and never touch this service.
-  if (feature === "pdf-to-word" || feature === "word-to-pdf") return true;
+  // Everything except HTML → PDF now runs in the browser and never touches
+  // this service. HTML → PDF still needs a real browser engine server-side.
+  if (feature !== "html-to-pdf") return true;
 
   if (!health) return false;
-  if (health.status === "unavailable") return false;
-
-  // For unlock/protect/html-to-pdf we only need the service reachable.
-  return true;
+  return health.status !== "unavailable";
 }
 
 export function conversionBlockedMessage(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): string | undefined {
-  if (feature === "pdf-to-word" || feature === "word-to-pdf") {
-    return undefined;
-  }
+  if (feature !== "html-to-pdf") return undefined;
 
   if (!health || health.status === "unavailable") {
     return health?.message || SERVICE_DOWN_MESSAGE;

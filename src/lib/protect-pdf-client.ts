@@ -1,12 +1,11 @@
-import { parseConversionFetchError } from "./conversion-service-client";
-import { conversionServiceUrl } from "./runtime-config";
+import { addPassword, PdfPasswordError } from "./pdf-crypto/document";
 
-function filenameFromDisposition(header: string | null): string | null {
-  if (!header) return null;
-  const match = /filename\*?=(?:UTF-8''|")?([^";]+)/i.exec(header);
-  return match?.[1]?.replace(/"/g, "") ?? null;
-}
-
+/**
+ * Add a password to a PDF, in the browser.
+ *
+ * Uses AES-256 (the standard security handler at revision 6), which is what
+ * current readers expect and what qpdf and Acrobat write by default.
+ */
 export async function protectPdfLocal(
   file: File,
   password: string,
@@ -15,46 +14,25 @@ export async function protectPdfLocal(
   const pw = password.trim();
   if (pw.length < 4) throw new Error("Password must be at least 4 characters.");
 
-  onProgress?.(10, "Uploading PDF…");
+  onProgress?.(15, "Reading PDF…");
+  const bytes = new Uint8Array(await file.arrayBuffer());
 
-  const form = new FormData();
-  form.append("file", file, file.name);
-  form.append("password", pw);
-
-  onProgress?.(35, "Adding protection…");
-
-  let res: Response;
+  onProgress?.(45, "Encrypting…");
+  let output: Uint8Array;
   try {
-    res = await fetch(
-      conversionServiceUrl("/api/protect-pdf/convert", "/v1/protect-pdf/convert"),
-      {
-      method: "POST",
-      body: form,
-      }
-    );
+    output = await addPassword(bytes, { userPassword: pw });
   } catch (error) {
-    throw new Error(parseConversionFetchError(error));
+    if (error instanceof PdfPasswordError) throw new Error(error.message);
+    throw new Error(
+      error instanceof Error ? error.message : "This PDF could not be protected."
+    );
   }
 
-  if (!res.ok) {
-    let message = "Protect PDF failed";
-    try {
-      const data = (await res.json()) as { error?: string };
-      if (data.error) message = data.error;
-    } catch {
-      message = `${message} (HTTP ${res.status})`;
-    }
-    throw new Error(message);
-  }
-
-  onProgress?.(90, "Preparing download…");
-  const blob = await res.blob();
+  onProgress?.(95, "Preparing download…");
   const baseName = file.name.replace(/\.pdf$/i, "") || "document";
-  const filename =
-    filenameFromDisposition(res.headers.get("Content-Disposition")) ??
-    `${baseName}_protected.pdf`;
-
   onProgress?.(100, "Done");
-  return { blob, filename };
+  return {
+    blob: new Blob([output], { type: "application/pdf" }),
+    filename: `${baseName}_protected.pdf`,
+  };
 }
-
