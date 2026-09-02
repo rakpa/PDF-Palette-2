@@ -13,16 +13,13 @@ import {
   VerticalAlign,
   WidthType,
 } from "docx";
-import {
-  getDocument,
-  GlobalWorkerOptions,
-  OPS,
-  type PDFDocumentProxy,
-  type PDFPageProxy,
-} from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import "./promise-with-resolvers-polyfill";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 
-GlobalWorkerOptions.workerSrc = pdfjsWorker;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.min.mjs`;
+
+const OPS = pdfjsLib.OPS;
 
 const PT_TO_TWIP = 20;
 const MIN_IMAGE_PT = 12;
@@ -454,6 +451,7 @@ async function imageObjToPng(img: unknown): Promise<{ data: Uint8Array; type: "p
 
 async function extractImages(page: PDFPageProxy, pageHeight: number): Promise<PdfImage[]> {
   const images: PdfImage[] = [];
+  if (!OPS?.save || !OPS?.paintImageXObject) return images;
   try {
     const opList = await page.getOperatorList();
     const stack: number[][] = [];
@@ -543,11 +541,12 @@ async function extractPageLayout(page: PDFPageProxy): Promise<PageLayout> {
   const viewport = page.getViewport({ scale: 1 });
   const width = viewport.width;
   const height = viewport.height;
-  const content = await page.getTextContent({ includeMarkedContent: false });
+  const content = await page.getTextContent();
   const styles = content.styles ?? {};
   const spans: PdfSpan[] = [];
+  const items = Array.isArray(content.items) ? content.items : [];
 
-  for (const raw of content.items) {
+  for (const raw of items) {
     if (!isTextItem(raw) || !raw.str) continue;
     const [, , , scaleY, x, y] = raw.transform;
     const fontSize = Math.abs(scaleY) || raw.height || 11;
@@ -619,20 +618,14 @@ function pageChildren(layout: PageLayout) {
 }
 
 async function loadPdf(data: ArrayBuffer): Promise<PDFDocumentProxy> {
-  try {
-    return await getDocument({
-      data: new Uint8Array(data),
-      verbosity: 0,
-      useSystemFonts: true,
-    }).promise;
-  } catch {
-    GlobalWorkerOptions.workerSrc = "";
-    return getDocument({
-      data: new Uint8Array(data),
-      verbosity: 0,
-      useWasm: false,
-    }).promise;
-  }
+  const bytes = new Uint8Array(data.slice(0));
+  const loadingTask = pdfjsLib.getDocument({
+    data: bytes,
+    verbosity: 0,
+    useSystemFonts: true,
+    useWorkerFetch: false,
+  });
+  return loadingTask.promise;
 }
 
 export async function convertPdfToWordBrowser(
@@ -714,7 +707,15 @@ export async function convertPdfToWordBrowser(
   const doc = new Document({
     sections,
   });
-  const blob = await Packer.toBlob(doc);
+  let blob: Blob;
+  try {
+    blob = await Packer.toBlob(doc);
+  } catch {
+    const buffer = await Packer.toArrayBuffer(doc);
+    blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+  }
   const baseName = file.name.replace(/\.pdf$/i, "") || "document";
   onProgress?.(100, "Done");
   return { blob, filename: `${baseName}.docx` };

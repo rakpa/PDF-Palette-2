@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { ghostscriptAssetsPlugin } from "./vite.ghostscript";
+import { pdfjsWorkerPlugin } from "./vite.pdfjs";
 import { crossOriginIsolationPlugin } from "./vite.crossOriginIsolation";
 
 // https://vitejs.dev/config/
@@ -61,6 +62,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     crossOriginIsolationPlugin(),
     ghostscriptAssetsPlugin(),
+    pdfjsWorkerPlugin(),
     react(),
     mode === "development" && componentTagger(),
   ].filter(Boolean),
@@ -70,7 +72,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ["pdfjs-dist"],
+    exclude: ["pdfjs-dist"],
   },
   preview: {
     headers: {
