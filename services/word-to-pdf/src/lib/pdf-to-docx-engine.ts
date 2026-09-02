@@ -35,6 +35,29 @@ const SERVICE_ROOT = path.resolve(
 );
 const PYTHON_SCRIPT = path.join(SERVICE_ROOT, "python", "pdf_to_docx.py");
 
+function parseConverterJson(stdout: string): Record<string, unknown> {
+  const trimmed = stdout.trim();
+  if (!trimmed) throw new Error("empty converter output");
+
+  try {
+    return JSON.parse(trimmed) as Record<string, unknown>;
+  } catch {
+    const lines = trimmed.split(/\r?\n/);
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].trim();
+      if (line.startsWith("{") && line.endsWith("}")) {
+        return JSON.parse(line) as Record<string, unknown>;
+      }
+    }
+    const start = trimmed.indexOf("{");
+    const end = trimmed.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(trimmed.slice(start, end + 1)) as Record<string, unknown>;
+    }
+    throw new Error("converter output was not JSON");
+  }
+}
+
 function resolvePythonCommand(config: AppConfig): string {
   return config.PYTHON_PATH?.trim() || (process.platform === "win32" ? "python" : "python3");
 }
@@ -122,7 +145,7 @@ export async function convertPdfToDocxLayoutPreserving(
       if (code !== 0) {
         let message = stderr.trim() || `pdf2docx exited with code ${code}`;
         try {
-          const parsed = JSON.parse(stdout.trim() || "{}") as { error?: string };
+          const parsed = parseConverterJson(stdout) as { error?: string };
           if (parsed.error) message = parsed.error;
         } catch {
           // use stderr
@@ -141,7 +164,7 @@ export async function convertPdfToDocxLayoutPreserving(
       }
 
       try {
-        const payload = JSON.parse(stdout.trim()) as {
+        const payload = parseConverterJson(stdout) as {
           ok?: boolean;
           error?: string;
           output?: string;

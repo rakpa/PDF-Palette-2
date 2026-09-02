@@ -15,7 +15,10 @@ from __future__ import annotations
 import json
 import sys
 import time
+import warnings
 from pathlib import Path
+
+warnings.filterwarnings("ignore", message="The `fitz` API is deprecated")
 
 from docx_page_builder import build_fidelity_docx
 from docx_validator import validate_document

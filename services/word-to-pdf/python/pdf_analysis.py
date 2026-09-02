@@ -237,7 +237,7 @@ def analyze_page(page, index: int) -> PageProfile:
 
 
 def analyze_pdf(pdf_path: Path) -> DocumentProfile:
-    import fitz
+    import pymupdf as fitz
 
     doc = fitz.open(pdf_path)
     pages: list[PageProfile] = []

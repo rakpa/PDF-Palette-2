@@ -66,7 +66,7 @@ export function createPdfToWordRouter(config: AppConfig, log: Logger): Router {
           ? error.statusCode
           : /password|encrypt/i.test(message)
             ? 422
-            : /corrupt|valid/i.test(message)
+            : /corrupt|not a valid pdf|password-protected/i.test(message)
               ? 422
               : /timeout/i.test(message)
                 ? 504

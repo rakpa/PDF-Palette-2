@@ -25,7 +25,7 @@ DEFAULT_RENDER_DPI = 150
 
 
 def convert_page_vector(pdf_path: Path, page_index: int, output_path: Path) -> None:
-    import fitz
+    import pymupdf as fitz
     from pdf2docx import Converter
 
     src = fitz.open(pdf_path)
@@ -53,7 +53,7 @@ def build_page_image_docx(
     *,
     dpi: int = DEFAULT_RENDER_DPI,
 ) -> None:
-    import fitz
+    import pymupdf as fitz
 
     doc = fitz.open(pdf_path)
     page = doc[page_index]
