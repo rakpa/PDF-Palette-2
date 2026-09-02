@@ -1,4 +1,4 @@
-import { conversionServiceUrl, useBrowserOfficeConversion } from "./runtime-config";
+import { conversionServiceUrl } from "./runtime-config";
 
 export type ConversionHealth = {
   status: "ok" | "degraded" | "unavailable";
@@ -70,19 +70,11 @@ export function isConversionReady(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): boolean {
-  // PDF → Word is rebuilt in the browser and never touches this service.
-  if (feature === "pdf-to-word") return true;
-
-  // Word → PDF runs in the browser on Vercel, where LibreOffice is unavailable.
-  if (useBrowserOfficeConversion() && feature === "word-to-pdf") {
-    return true;
-  }
+  // PDF → Word and Word → PDF are rebuilt in the browser and never touch this service.
+  if (feature === "pdf-to-word" || feature === "word-to-pdf") return true;
 
   if (!health) return false;
   if (health.status === "unavailable") return false;
-
-  // Tools that need a specific runtime dependency.
-  if (feature === "word-to-pdf") return health.checks?.libreOffice !== false;
 
   // For unlock/protect/html-to-pdf we only need the service reachable.
   return true;
@@ -92,19 +84,12 @@ export function conversionBlockedMessage(
   health: ConversionHealth | null,
   feature: ConversionFeature
 ): string | undefined {
-  if (feature === "pdf-to-word") {
-    return undefined;
-  }
-
-  if (useBrowserOfficeConversion() && feature === "word-to-pdf") {
+  if (feature === "pdf-to-word" || feature === "word-to-pdf") {
     return undefined;
   }
 
   if (!health || health.status === "unavailable") {
     return health?.message || SERVICE_DOWN_MESSAGE;
-  }
-  if (feature === "word-to-pdf" && health.checks?.libreOffice === false) {
-    return "LibreOffice is not installed. Install LibreOffice for Word → PDF conversion.";
   }
   return undefined;
 }
@@ -113,7 +98,7 @@ function buildHealthMessage(checks?: ConversionHealth["checks"]): string | undef
   if (!checks) return undefined;
   const issues: string[] = [];
   if (checks.libreOffice === false) {
-    issues.push("LibreOffice is not installed (required for Word → PDF)");
+    issues.push("LibreOffice is not installed");
   }
   return issues.length > 0 ? issues.join(". ") : undefined;
 }

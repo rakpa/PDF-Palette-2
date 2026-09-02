@@ -3,10 +3,8 @@ import { saveAs } from "file-saver";
 import {
   compressWithGhostscript,
 } from "./ghostscript-compress";
-import { convertWordToPdfLocal } from "./word-to-pdf-client";
-import { convertWordToPdfBrowser } from "./word-to-pdf-browser";
+import { convertWordToPdfBrowser, WordToPdfError } from "./word-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
-import { useBrowserOfficeConversion } from "./runtime-config";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
@@ -392,24 +390,24 @@ function formatFileSize(bytes: number): string {
   return (bytes / 1024 / 1024).toFixed(1) + " MB";
 }
 
-// Convert Word documents to PDF (LibreOffice locally, browser fallback on Vercel).
+// Convert Word to PDF. This runs entirely in the browser, in development and
+// in production alike, so what you test locally is what ships.
 export async function wordToPDF(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = useBrowserOfficeConversion()
-      ? await convertWordToPdfBrowser(file, onProgress)
-      : await convertWordToPdfLocal(file, onProgress);
+    const { blob, filename } = await convertWordToPdfBrowser(file, onProgress);
     return {
       success: true,
-      message: useBrowserOfficeConversion()
-        ? "Word document converted to PDF in your browser!"
-        : "Word document converted to PDF successfully!",
+      message: "Word document converted to PDF successfully!",
       blob,
       filename,
     };
   } catch (error) {
+    if (error instanceof WordToPdfError) {
+      return { success: false, message: error.message };
+    }
     const detail =
       error instanceof Error
         ? error.message

@@ -133,7 +133,7 @@ export const pdfTools: PDFTool[] = [
   {
     id: "word-to-pdf",
     name: "Word to PDF",
-    description: "Convert Word documents to PDF format",
+    description: "Convert Word documents to PDF in your browser",
     icon: FileText,
     color: "blue",
     category: ["convert-to"],

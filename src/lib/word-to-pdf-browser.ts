@@ -1,64 +1,88 @@
-import mammoth from "mammoth";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import { PDFDocument } from "pdf-lib";
+import { embedStandardFonts } from "./word-to-pdf/fonts";
+import { layoutDocument } from "./word-to-pdf/layout";
+import { emitPdf } from "./word-to-pdf/pdf-emit";
+import { extractWordDocument } from "./word-to-pdf/word-extract";
 
+export class WordToPdfError extends Error {
+  constructor(
+    message: string,
+    readonly code: "unsupported" | "corrupt" | "empty" | "failed"
+  ) {
+    super(message);
+    this.name = "WordToPdfError";
+  }
+}
+
+export type ConversionProgress = (progress: number, message?: string) => void;
+
+function isLegacyDoc(name: string): boolean {
+  return /\.doc$/i.test(name) && !/\.docx$/i.test(name);
+}
+
+/**
+ * Rebuild a Word document as a PDF in the browser.
+ *
+ * Same shape as PDF → Word: extract the document into a layout model, paginate
+ * it, then emit. Development and production share this engine, so the file
+ * never leaves the machine.
+ */
 export async function convertWordToPdfBrowser(
   file: File,
-  onProgress?: (progress: number, message?: string) => void
+  onProgress?: ConversionProgress
 ): Promise<{ blob: Blob; filename: string }> {
+  if (isLegacyDoc(file.name)) {
+    throw new WordToPdfError(
+      "Legacy .doc files aren't supported. Save the document as .docx, then convert.",
+      "unsupported"
+    );
+  }
   if (!/\.docx$/i.test(file.name)) {
-    throw new Error("Browser conversion supports .docx files only. Please upload a .docx document.");
+    throw new WordToPdfError("Please upload a .docx Word document.", "unsupported");
   }
 
-  onProgress?.(15, "Reading document…");
+  onProgress?.(8, "Reading document…");
+  const buffer = await file.arrayBuffer();
 
-  const arrayBuffer = await file.arrayBuffer();
-  const { value: html } = await mammoth.convertToHtml({ arrayBuffer });
-
-  onProgress?.(40, "Rendering pages…");
-
-  const container = document.createElement("div");
-  container.style.cssText =
-    "position:fixed;left:-10000px;top:0;width:794px;padding:48px;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif;font-size:12pt;line-height:1.6;";
-  container.innerHTML = html;
-  document.body.appendChild(container);
-
+  let documentModel;
   try {
-    const canvas = await html2canvas(container, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-      logging: false,
-    });
-
-    onProgress?.(75, "Creating PDF…");
-
-    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = 0;
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
-
-    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
-    const blob = pdf.output("blob");
-    const baseName = file.name.replace(/\.docx$/i, "") || "document";
-
-    onProgress?.(100, "Done");
-    return { blob, filename: `${baseName}.pdf` };
-  } finally {
-    document.body.removeChild(container);
+    documentModel = await extractWordDocument(buffer);
+  } catch (error) {
+    if (error instanceof WordToPdfError) throw error;
+    throw new WordToPdfError(
+      error instanceof Error ? error.message : "This file is not a readable Word document.",
+      "corrupt"
+    );
   }
+
+  if (documentModel.sections.length === 0) {
+    throw new WordToPdfError("This document has no pages.", "empty");
+  }
+
+  onProgress?.(40, "Rebuilding layout…");
+  const pdf = await PDFDocument.create();
+  pdf.setTitle(file.name.replace(/\.docx$/i, "") || "document");
+  pdf.setProducer("PDF Palette");
+  const fonts = await embedStandardFonts(pdf);
+  const pages = layoutDocument(documentModel, fonts);
+  if (pages.length === 0) {
+    throw new WordToPdfError("This document has no pages.", "empty");
+  }
+
+  onProgress?.(75, "Building PDF…");
+  try {
+    await emitPdf(pdf, fonts, pages);
+  } catch (error) {
+    throw new WordToPdfError(
+      error instanceof Error ? error.message : "The PDF could not be built.",
+      "failed"
+    );
+  }
+
+  onProgress?.(95, "Packing PDF…");
+  const bytes = await pdf.save();
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  const baseName = file.name.replace(/\.docx$/i, "").trim() || "document";
+  onProgress?.(100, "Done");
+  return { blob, filename: `${baseName}.pdf` };
 }

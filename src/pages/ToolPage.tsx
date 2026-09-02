@@ -48,7 +48,6 @@ import {
   type ConversionHealth,
   type ConversionFeature,
 } from "@/lib/conversion-service-client";
-import { useBrowserOfficeConversion } from "@/lib/runtime-config";
 
 /** Per-feature upload constraints. */
 const featureConfig: Record<
@@ -111,7 +110,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to PDF",
-    hint: "Upload a .doc or .docx file. Converted locally with LibreOffice — fonts, tables, and layout preserved.",
+    hint: "Upload a .docx file. Fonts, colours, alignment, tables, images and page layout are rebuilt into a PDF — entirely in your browser.",
   },
   "pdf-to-word": {
     accept: { "application/pdf": [".pdf"] },
@@ -194,12 +193,7 @@ const ToolPage = () => {
   }, [tool?.feature]);
 
   useEffect(() => {
-    const browserOffice =
-      useBrowserOfficeConversion() && tool?.feature === "word-to-pdf";
-    if (browserOffice) return;
-
     if (
-      tool?.feature !== "word-to-pdf" &&
       tool?.feature !== "unlock-pdf" &&
       tool?.feature !== "protect-pdf" &&
       tool?.feature !== "html-to-pdf"
@@ -218,7 +212,6 @@ const ToolPage = () => {
   if (!tool) return <NotFound />;
 
   const needsConversionService =
-    (tool?.feature === "word-to-pdf" && !useBrowserOfficeConversion()) ||
     tool?.feature === "unlock-pdf" ||
     tool?.feature === "protect-pdf" ||
     tool?.feature === "html-to-pdf";
@@ -360,9 +353,7 @@ const ToolPage = () => {
     }
   };
 
-  const showConversionServiceStatus =
-    needsConversionService &&
-    !(useBrowserOfficeConversion() && tool.feature === "word-to-pdf");
+  const showConversionServiceStatus = needsConversionService;
 
   return (
     <ToolPageLayout tool={tool}>
@@ -394,7 +385,7 @@ const ToolPage = () => {
               }
             />
 
-            {config.hint && tool.feature !== "word-to-pdf" ? (
+            {config.hint ? (
               <p className="text-center text-sm text-muted-foreground">{config.hint}</p>
             ) : null}
 
@@ -720,19 +711,14 @@ const ConversionServiceStatus = ({
 };
 
 const PrivacyNote = ({ feature }: { feature?: ToolFeature }) => {
-  // PDF → Word always runs in the browser; Word → PDF only does on Vercel,
-  // where LibreOffice is not available.
-  const browserOffice =
-    feature === "pdf-to-word" ||
-    (useBrowserOfficeConversion() && feature === "word-to-pdf");
+  const browserOffice = feature === "pdf-to-word" || feature === "word-to-pdf";
 
   return (
     <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
       <ShieldCheck className="h-4 w-4 text-tool-green" />
       {browserOffice
         ? "Converted in your browser — your file never leaves this device."
-        : feature === "word-to-pdf" ||
-            feature === "unlock-pdf" ||
+        : feature === "unlock-pdf" ||
             feature === "protect-pdf" ||
             feature === "html-to-pdf"
           ? "Your file is converted on your machine and deleted immediately after download."
