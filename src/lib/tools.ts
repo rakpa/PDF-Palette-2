@@ -40,7 +40,9 @@ export type ToolFeature =
   | "pdf-to-word"
   | "unlock-pdf"
   | "protect-pdf"
-  | "html-to-pdf";
+  | "html-to-pdf"
+  | "edit-pdf"
+  | "sign-pdf";
 
 export interface PDFTool {
   id: string;
@@ -197,23 +199,24 @@ export const pdfTools: PDFTool[] = [
   {
     id: "edit",
     name: "Edit PDF",
-    description: "Add text, images, and annotations to PDF",
+    description: "Add text, images, shapes and annotations to PDF",
     icon: Edit3,
     color: "coral",
     category: ["edit"],
+    popular: true,
     route: "/edit-pdf",
-    comingSoon: true,
+    feature: "edit-pdf",
   },
   {
     id: "sign",
     name: "Sign PDF",
-    description: "Add your signature to PDF documents",
+    description: "Draw, type or upload a signature and place it",
     icon: PenTool,
     color: "purple",
-    category: ["security"],
+    category: ["security", "edit"],
     isNew: true,
     route: "/sign-pdf",
-    comingSoon: true,
+    feature: "sign-pdf",
   },
   {
     id: "watermark",

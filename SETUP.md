@@ -27,6 +27,8 @@ npm run dev
 
 - **Word → PDF:** http://localhost:8080/word-to-pdf (LibreOffice)
 - **PDF → Word:** http://localhost:8080/pdf-to-word (in-browser, no setup)
+- **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
+- **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
 
 ---
 
@@ -55,6 +57,31 @@ It reconstructs:
 Pages whose text runs sideways are turned upright so the text stays editable,
 and a page the layout engine cannot handle falls back to a picture of itself
 rather than being dropped.
+
+---
+
+## Edit PDF and Sign PDF
+
+Both run entirely in the browser on `src/lib/pdf-editor/`. Pages are rendered
+with `pdfjs-dist`; whatever you place is flattened back onto the *original*
+pages with `pdf-lib`, so the existing content is copied through untouched
+rather than rebuilt.
+
+**Edit PDF** adds text (in real, selectable PDF fonts), images, rectangles,
+ellipses, lines, arrows, freehand ink, highlights that let the text below show
+through, and an eraser block for covering something up before typing over it.
+Pages can be rotated, duplicated, reordered and deleted, and everything is
+undoable.
+
+**Sign PDF** is the same surface with a signature-first toolset: draw a
+signature with a mouse or finger, type one in a choice of faces, or upload a
+photo of one — the paper behind an uploaded photo is removed automatically.
+Signatures are held in memory for the tab only and are never written to disk,
+so nothing is left behind on a shared computer.
+
+Anything placed lands where you put it on any page, including pages the file
+stores rotated: positions are recorded in the space you are looking at and
+mapped back through the page's own transform on save.
 
 ---
 

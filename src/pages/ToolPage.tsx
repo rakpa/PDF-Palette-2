@@ -33,6 +33,7 @@ import {
   wordToPDF,
 } from "@/lib/pdf-utils";
 import ToolPageLayout from "@/components/ToolPageLayout";
+import PdfEditor from "@/components/pdf-editor/PdfEditor";
 import FileUploader, { UploadedFile } from "@/components/FileUploader";
 import ProgressBar from "@/components/ProgressBar";
 import NotFound from "./NotFound";
@@ -49,9 +50,12 @@ import {
   type ConversionFeature,
 } from "@/lib/conversion-service-client";
 
-/** Per-feature upload constraints. */
+/**
+ * Per-feature upload constraints for the one-shot tools. The editor features
+ * run their own interactive flow and never reach this table.
+ */
 const featureConfig: Record<
-  ToolFeature,
+  Exclude<ToolFeature, "edit-pdf" | "sign-pdf">,
   {
     accept: Record<string, string[]>;
     maxFiles: number;
@@ -180,7 +184,10 @@ const ToolPage = () => {
   const [htmlUrl, setHtmlUrl] = useState("");
 
   const config = useMemo(
-    () => (tool?.feature ? featureConfig[tool.feature] : undefined),
+    () =>
+      tool?.feature && tool.feature !== "edit-pdf" && tool.feature !== "sign-pdf"
+        ? featureConfig[tool.feature]
+        : undefined,
     [tool]
   );
 
@@ -210,6 +217,16 @@ const ToolPage = () => {
   }, [tool?.feature]);
 
   if (!tool) return <NotFound />;
+
+  // Editing and signing are interactive: the editor owns its own upload step,
+  // canvas and download, so it replaces the standard process-and-download flow.
+  if (tool.feature === "edit-pdf" || tool.feature === "sign-pdf") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfEditor mode={tool.feature === "sign-pdf" ? "sign" : "edit"} />
+      </ToolPageLayout>
+    );
+  }
 
   const needsConversionService =
     tool?.feature === "unlock-pdf" ||
