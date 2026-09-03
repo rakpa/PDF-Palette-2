@@ -74,9 +74,7 @@ a tab. Do not reintroduce a service dependency.
 
 ## Known gap
 
-PDF → Word on a designed CV: with the sidebar no longer flattened to a picture
-(commit 7d33ed4), its text shares lines with the main column and reads
-interleaved. The column gutter is rejected by a body-copy heuristic that ragged
-sidebar labels cannot pass. Fixing it needs the layout pass to know where the
-page's shaded bands are — `page.fills` was empty for the file tested, so find out
-where those fills go before building on them.
+None open on PDF → Word's column handling. A designed CV's sidebar now splits
+from the main column on the evidence of its shaded band (`page.fills`), which
+`splitAtGutters` accepts in place of the body-copy test that ragged sidebar
+labels cannot pass.

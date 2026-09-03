@@ -244,9 +244,18 @@ function decodePath(
         i += 2;
         push(data[i++], data[i++]);
         break;
-      case DRAW_CLOSE_PATH:
-        if (current.length > 1) current.push(current[0]);
+      case DRAW_CLOSE_PATH: {
+        // pdf.js can emit two closePath opcodes for one `re` + `f` pair.
+        // Closing an already-closed subpath again would leave a duplicate
+        // point, and a rectangle with five corners is no longer a rectangle.
+        const last = current[current.length - 1];
+        const closed =
+          current.length > 1 &&
+          Math.abs(last[0] - current[0][0]) < 0.01 &&
+          Math.abs(last[1] - current[0][1]) < 0.01;
+        if (current.length > 1 && !closed) current.push(current[0]);
         break;
+      }
       default:
         // Unknown opcode: the rest of the stream can no longer be trusted.
         i = data.length;
@@ -1357,7 +1366,7 @@ function applyRules(lines: PdfLine[], rules: PdfRule[]): void {
 }
 
 /** Attach a background fill to lines that sit inside one. */
-function applyFills(lines: PdfLine[], fills: PdfFill[]): void {
+export function applyFills(lines: PdfLine[], fills: PdfFill[]): void {
   if (fills.length === 0) return;
   const area = (f: PdfFill) => (f.rect.x1 - f.rect.x0) * (f.rect.y1 - f.rect.y0);
   const sorted = [...fills].sort((a, b) => area(a) - area(b));

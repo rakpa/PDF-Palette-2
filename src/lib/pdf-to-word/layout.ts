@@ -1,4 +1,5 @@
-import type { PageContent, PdfImage, PdfLine, PdfRule, PdfSpan, Rect } from "./types";
+import { applyFills } from "./pdf-extract";
+import type { PageContent, PdfFill, PdfImage, PdfLine, PdfRule, PdfSpan, Rect } from "./types";
 
 /**
  * Turns the geometric page model into a document tree Word can express:
@@ -212,10 +213,11 @@ export function mergeSpans(spans: PdfSpan[]): PdfSpan[] {
  * segmentation step downstream sees full-width lines.
  *
  * A gutter only counts when the text on both sides fills its column the way
- * body copy does. Table columns leave similar-looking gaps but their cells are
- * short, which is what keeps tables out of this path.
+ * body copy does, or when a shaded band edge runs down it. Table columns leave
+ * similar-looking gaps but their cells are short and unshaded, which is what
+ * keeps tables out of this path.
  */
-function splitAtGutters(lines: PdfLine[], pageWidth: number): PdfLine[] {
+function splitAtGutters(lines: PdfLine[], pageWidth: number, bands: PdfFill[]): PdfLine[] {
   if (lines.length < 6) return lines;
 
   const segmented = lines.map((line) => ({ line, segments: splitSegments(line) }));
@@ -248,6 +250,14 @@ function splitAtGutters(lines: PdfLine[], pageWidth: number): PdfLine[] {
     const rightLines = segmented.filter((s) => s.segments.some((seg) => seg.x >= centre));
     if (leftLines.length < 3 || rightLines.length < 3) return false;
 
+    // A sidebar's own shading is better evidence of a column than its text is:
+    // its labels are ragged and short, so the body-copy test below rejects
+    // them and the two columns come out interleaved.
+    const onBandEdge = bands.some((band) =>
+      [band.rect.x0, band.rect.x1].some((edge) => edge >= gutter.x0 - 2 && edge <= gutter.x1 + 2)
+    );
+    if (onBandEdge) return true;
+
     // Body copy reaches most of the way across its column; table cells do not.
     const fill = (rows: typeof segmented, from: number, to: number) => {
       const widths = rows.flatMap((s) =>
@@ -277,16 +287,36 @@ function splitAtGutters(lines: PdfLine[], pageWidth: number): PdfLine[] {
       out.push(line);
       continue;
     }
+    const split: PdfLine[] = [];
     for (const spans of parts) {
-      out.push({
+      split.push({
         ...line,
         spans,
         x: Math.min(...spans.map((s) => s.x)),
         xEnd: Math.max(...spans.map((s) => s.xEnd)),
       });
     }
+    // A line that straddled the gutter was too wide to sit inside a band, so
+    // its halves only pick up the sidebar's shading now they stand alone.
+    applyFills(split, bands);
+    out.push(...split);
   }
   return out.sort((a, b) => a.yTop - b.yTop || a.x - b.x);
+}
+
+
+/**
+ * Vertical edges of the page's shaded bands — the sidebar panel a designed CV
+ * is built around. Only a tall, narrow band counts: a full-width heading strip
+ * or a cell shading says nothing about where the columns are.
+ */
+function shadedBands(page: PageContent): PdfFill[] {
+  return page.fills.filter((fill) => {
+    const w = fill.rect.x1 - fill.rect.x0;
+    const h = fill.rect.y1 - fill.rect.y0;
+    if (h < page.height * 0.5 || w < 40 || w > page.width * 0.5) return false;
+    return fill.rect.x0 > 2 || fill.rect.x1 < page.width - 2;
+  });
 }
 
 type Node =
@@ -298,7 +328,7 @@ type Node =
  * Recursive XY-cut. Horizontal cuts come first so a full-width heading above a
  * multi-column body does not block the column split underneath it.
  */
-function segment(lines: PdfLine[], depth: number): Node {
+function segment(lines: PdfLine[], depth: number, bands: PdfFill[] = []): Node {
   const rect = unionRects(lines.map(lineRect));
   if (lines.length <= 1 || depth > 5) return { type: "leaf", lines, rect };
 
@@ -325,7 +355,7 @@ function segment(lines: PdfLine[], depth: number): Node {
     const below = sorted.slice(cutIndex);
     return {
       type: "horizontal",
-      children: [segment(above, depth + 1), segment(below, depth + 1)],
+      children: [segment(above, depth + 1, bands), segment(below, depth + 1, bands)],
       rect,
     };
   }
@@ -333,13 +363,13 @@ function segment(lines: PdfLine[], depth: number): Node {
   // Only now, with the band isolated by the horizontal cuts above, is it safe
   // to look for column gutters: a full-width heading or a centred line
   // elsewhere on the page would otherwise cover the gutter and hide it.
-  const unstitched = splitAtGutters(sorted, rect.x1 - rect.x0 + rect.x0 * 2);
+  const unstitched = splitAtGutters(sorted, rect.x1 - rect.x0 + rect.x0 * 2, bands);
   if (unstitched.length !== sorted.length) {
     const columns = findColumns(unstitched, rect);
     if (columns) {
       return {
         type: "vertical",
-        children: columns.map((group) => segment(group, depth + 1)),
+        children: columns.map((group) => segment(group, depth + 1, bands)),
         rect,
       };
     }
@@ -349,7 +379,7 @@ function segment(lines: PdfLine[], depth: number): Node {
   if (columns) {
     return {
       type: "vertical",
-      children: columns.map((group) => segment(group, depth + 1)),
+      children: columns.map((group) => segment(group, depth + 1, bands)),
       rect,
     };
   }
@@ -781,7 +811,8 @@ export function buildPageLayout(
     },
   };
 
-  const body = bodyLines.length > 0 ? nodeToBoxes(segment(bodyLines, 0), ctx) : [];
+  const body =
+    bodyLines.length > 0 ? nodeToBoxes(segment(bodyLines, 0, shadedBands(page)), ctx) : [];
 
   // Reserve vertical space for every picture so the floating anchor lands on
   // the right page and the text below it keeps its original position.
