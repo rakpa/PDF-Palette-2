@@ -20,6 +20,7 @@ import {
   FileOutput,
   FormInput,
   EyeOff,
+  Scale,
   LucideIcon,
 } from "lucide-react";
 
@@ -61,7 +62,8 @@ export type ToolFeature =
   | "pdf-to-excel"
   | "pdf-to-ppt"
   | "fill-forms"
-  | "redact";
+  | "redact"
+  | "compare";
 
 export interface PDFTool {
   id: string;
@@ -289,6 +291,17 @@ export const pdfTools: PDFTool[] = [
     isNew: true,
     route: "/redact-pdf",
     feature: "redact",
+  },
+  {
+    id: "compare",
+    name: "Compare PDF",
+    description: "See what changed between two versions of a PDF",
+    icon: Scale,
+    color: "purple",
+    category: ["security"],
+    isNew: true,
+    route: "/compare-pdf",
+    feature: "compare",
   },
 
   // Row 3

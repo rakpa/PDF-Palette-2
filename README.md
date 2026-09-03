@@ -45,6 +45,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
   flattened so the answers can no longer be changed (`src/lib/pdf-forms/`)
 - **Redact PDF** – drag over anything, or search for a phrase; the marked
   content is removed from the file rather than covered (`src/lib/pdf-redact/`)
+- **Compare PDF** – a word-level diff of two versions plus a per-page visual
+  comparison (`src/lib/pdf-compare/`)
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.

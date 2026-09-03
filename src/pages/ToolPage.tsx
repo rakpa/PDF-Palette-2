@@ -44,6 +44,7 @@ import PageOrganizer from "@/components/pdf-pages/PageOrganizer";
 import PdfCropper from "@/components/pdf-pages/PdfCropper";
 import PdfFormFiller from "@/components/pdf-pages/PdfFormFiller";
 import PdfRedactor from "@/components/pdf-pages/PdfRedactor";
+import PdfComparer from "@/components/pdf-pages/PdfComparer";
 import { DEFAULT_PAGE_NUMBERS } from "@/lib/pdf-pages/page-numbers";
 import type { NumberPosition, PageNumberOptions } from "@/lib/pdf-pages/page-numbers";
 import type { PdfToImageOptions } from "@/lib/pdf-to-image";
@@ -76,7 +77,8 @@ type InteractiveFeature =
   | "extract-pages"
   | "crop-pdf"
   | "fill-forms"
-  | "redact";
+  | "redact"
+  | "compare";
 
 const featureConfig: Record<
   Exclude<ToolFeature, InteractiveFeature>,
@@ -342,6 +344,14 @@ const ToolPage = () => {
     return (
       <ToolPageLayout tool={tool}>
         <PdfRedactor />
+      </ToolPageLayout>
+    );
+  }
+
+  if (tool.feature === "compare") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfComparer />
       </ToolPageLayout>
     );
   }
