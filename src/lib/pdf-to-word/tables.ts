@@ -63,8 +63,14 @@ function overlap(a0: number, a1: number, b0: number, b1: number): number {
  * instead of stretching the table over half the page.
  */
 function findGrids(rules: PdfRule[]): Grid[] {
-  const vertical = rules.filter((r) => !r.horizontal && r.end - r.start >= MIN_CELL);
-  const horizontal = rules.filter((r) => r.horizontal && r.end - r.start >= MIN_CELL);
+  let vertical = rules.filter((r) => !r.horizontal && r.end - r.start >= MIN_CELL);
+  let horizontal = rules.filter((r) => r.horizontal && r.end - r.start >= MIN_CELL);
+  if (vertical.length > 60) {
+    vertical = [...vertical].sort((a, b) => b.end - b.start - (a.end - a.start)).slice(0, 60);
+  }
+  if (horizontal.length > 80) {
+    horizontal = [...horizontal].sort((a, b) => b.end - b.start - (a.end - a.start)).slice(0, 80);
+  }
   if (vertical.length < 2 || horizontal.length < 2) return [];
 
   type Cluster = { rules: PdfRule[]; y0: number; y1: number };

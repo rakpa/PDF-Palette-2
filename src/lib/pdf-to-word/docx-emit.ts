@@ -335,7 +335,7 @@ function tableXml(
     let cellsXml = "";
     while (col < colCount) {
       if (remaining[col] > 0) {
-        const span = continueSpan[col];
+        const span = Math.max(1, continueSpan[col] || 1);
         const size = widths.slice(col, col + span).reduce((a, b) => a + b, 0);
         cellsXml +=
           `<w:tc><w:tcPr><w:tcW w:w="${Math.max(200, size)}" w:type="dxa"/>` +
@@ -348,7 +348,7 @@ function tableXml(
       }
       const cell = cells[index++];
       if (!cell) break;
-      const span = cell.columnSpan;
+      const span = Math.max(1, cell.columnSpan || 1);
       const start = col;
       const size = widths
         .slice(start, start + span)

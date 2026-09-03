@@ -116,13 +116,20 @@ export async function convertPdfToWordBrowser(
   const rasterCache = createImageRasterCache();
   try {
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-      onProgress?.(
-        6 + (pageNumber / pdf.numPages) * 80,
-        `Rebuilding page ${pageNumber} of ${pdf.numPages}…`
-      );
+      // A one-page file used to jump straight to 86% (last page of an 80%
+      // window) and sit there for the whole extract. Designed CVs spend their
+      // time in that extract, so the bar looked stuck just before the end.
+      const started = 6 + ((pageNumber - 1) / pdf.numPages) * 80;
+      const finished = 6 + (pageNumber / pdf.numPages) * 80;
+      onProgress?.(started, `Reading page ${pageNumber} of ${pdf.numPages}…`);
       await yieldUi();
       const page = await pdf.getPage(pageNumber);
       try {
+        onProgress?.(
+          started + (finished - started) * 0.2,
+          `Rebuilding page ${pageNumber} of ${pdf.numPages}…`
+        );
+        await yieldUi();
         pages.push(await layoutPage(page, pageNumber, rasterCache));
       } catch (error) {
         console.warn(`pdf-to-word: page ${pageNumber} fell back to an image`, error);
@@ -134,6 +141,8 @@ export async function convertPdfToWordBrowser(
       } finally {
         page.cleanup();
       }
+      onProgress?.(finished, `Rebuilt page ${pageNumber} of ${pdf.numPages}…`);
+      await yieldUi();
     }
   } finally {
     await release();

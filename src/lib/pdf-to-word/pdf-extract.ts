@@ -33,6 +33,31 @@ const MIN_IMAGE_PT = 6;
 /** A correctly addressed image arrives in milliseconds; this is only a
  *  guard against one that never will, where a page crop takes over. */
 const IMAGE_OBJECT_TIMEOUT_MS = 2500;
+/** Designed CVs (Pages, Canva) can spend minutes in pdf.js on one page. */
+const OPERATOR_LIST_TIMEOUT_MS = 8000;
+const PAGE_RENDER_TIMEOUT_MS = 8000;
+/** Above this, clustering tiny marks is more expensive than the pictures are worth. */
+const MAX_ARTWORK_MARKS = 2500;
+
+function yieldUi(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(fallback), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        clearTimeout(timer);
+        resolve(fallback);
+      }
+    );
+  });
+}
 
 function mul(a: Matrix, b: Matrix): Matrix {
   return [
@@ -277,9 +302,6 @@ async function scanOperators(
   pdfjsLib: PdfJsModule,
   viewportTransform: Matrix
 ): Promise<PageScan> {
-  const OPS = pdfjsLib.OPS as unknown as Record<string, number>;
-  const opList = await page.getOperatorList();
-
   const scan: PageScan = {
     runMarks: [],
     rules: [],
@@ -287,6 +309,13 @@ async function scanOperators(
     images: [],
     vectors: [],
   };
+  const OPS = pdfjsLib.OPS as unknown as Record<string, number>;
+  const opList = await withTimeout(
+    page.getOperatorList(),
+    OPERATOR_LIST_TIMEOUT_MS,
+    null as Awaited<ReturnType<PDFPageProxy["getOperatorList"]>> | null
+  );
+  if (!opList) return scan;
 
   const identity: Matrix = [1, 0, 0, 1, 0, 0];
   let gs: GraphicsState = { ctm: identity, fill: "000000", stroke: "000000", lineWidth: 1 };
@@ -772,12 +801,25 @@ class PageRenderCache {
     if (!canvas || !ctx) return null;
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    await this.page.render({
+    const task = this.page.render({
       canvas,
       canvasContext: ctx as unknown as CanvasRenderingContext2D,
       viewport,
       background: "#ffffff",
-    } as Parameters<PDFPageProxy["render"]>[0]).promise;
+    } as Parameters<PDFPageProxy["render"]>[0]);
+    const finished = await withTimeout(
+      task.promise.then(() => true as const),
+      PAGE_RENDER_TIMEOUT_MS,
+      false as const
+    );
+    if (!finished) {
+      try {
+        task.cancel();
+      } catch {
+        // pdf.js may already have torn the task down.
+      }
+      return null;
+    }
     return { canvas, scale: this.scale };
   }
 }
@@ -845,33 +887,64 @@ function findArtworkRegions(
   );
   if (usable.length === 0) return [];
 
-  const clusters: Array<{ rect: Rect; members: VectorMark[] }> = [];
-  for (const mark of usable) {
-    const hit = clusters.find((c) => rectsOverlap(c.rect, mark.rect, 10));
+  // Designed résumés emit thousands of icon paths and skill-bar fills. The
+  // previous restart-on-merge loop was cubic in the cluster count and froze
+  // the tab on the last page — 86% for a one-page CV.
+  const marks =
+    usable.length > MAX_ARTWORK_MARKS
+      ? usable.filter((v) => {
+          const w = v.rect.x1 - v.rect.x0;
+          const h = v.rect.y1 - v.rect.y0;
+          return v.kind === "complex" || w * h >= 400;
+        })
+      : usable;
+  if (marks.length === 0) return [];
+
+  const n = marks.length;
+  const parent = new Int32Array(n);
+  for (let i = 0; i < n; i++) parent[i] = i;
+  const find = (index: number): number => {
+    let i = index;
+    while (parent[i] !== i) {
+      parent[i] = parent[parent[i]];
+      i = parent[i];
+    }
+    return i;
+  };
+  const union = (a: number, b: number) => {
+    const ra = find(a);
+    const rb = find(b);
+    if (ra !== rb) parent[rb] = ra;
+  };
+
+  const pad = 10;
+  const order = Array.from({ length: n }, (_, i) => i).sort(
+    (a, b) => marks[a].rect.x0 - marks[b].rect.x0
+  );
+  for (let a = 0; a < n; a++) {
+    const i = order[a];
+    const ri = marks[i].rect;
+    const xLimit = ri.x1 + pad;
+    for (let b = a + 1; b < n; b++) {
+      const j = order[b];
+      if (marks[j].rect.x0 > xLimit) break;
+      if (rectsOverlap(ri, marks[j].rect, pad)) union(i, j);
+    }
+  }
+
+  const clusters = new Map<number, { rect: Rect; members: VectorMark[] }>();
+  for (let i = 0; i < n; i++) {
+    const root = find(i);
+    const hit = clusters.get(root);
     if (hit) {
-      hit.rect = unionRect(hit.rect, mark.rect);
-      hit.members.push(mark);
+      hit.rect = unionRect(hit.rect, marks[i].rect);
+      hit.members.push(marks[i]);
     } else {
-      clusters.push({ rect: { ...mark.rect }, members: [mark] });
+      clusters.set(root, { rect: { ...marks[i].rect }, members: [marks[i]] });
     }
   }
 
-  let merged = true;
-  while (merged) {
-    merged = false;
-    for (let i = 0; i < clusters.length && !merged; i++) {
-      for (let j = i + 1; j < clusters.length; j++) {
-        if (!rectsOverlap(clusters[i].rect, clusters[j].rect, 10)) continue;
-        clusters[i].rect = unionRect(clusters[i].rect, clusters[j].rect);
-        clusters[i].members.push(...clusters[j].members);
-        clusters.splice(j, 1);
-        merged = true;
-        break;
-      }
-    }
-  }
-
-  return clusters
+  return [...clusters.values()]
     .filter((cluster) => {
       const w = cluster.rect.x1 - cluster.rect.x0;
       const h = cluster.rect.y1 - cluster.rect.y0;
@@ -974,6 +1047,7 @@ function looksLikeGrid(members: VectorMark[], rect: Rect): boolean {
     return false;
   };
   const rules = members.map((m) => m.rule).filter((r): r is PdfRule => Boolean(r));
+  if (rules.length > 80) return false;
   const long = (r: PdfRule) =>
     r.end - r.start >= (r.horizontal ? width : height) * 0.6;
   return (
@@ -1219,8 +1293,11 @@ function median(values: number[]): number | undefined {
 
 /** Flag runs that sit under a rule as underlined, or through one as struck. */
 function applyRules(lines: PdfLine[], rules: PdfRule[]): void {
-  const horizontal = rules.filter((r) => r.horizontal && r.thickness <= 2);
+  let horizontal = rules.filter((r) => r.horizontal && r.thickness <= 2);
   if (horizontal.length === 0) return;
+  if (horizontal.length > 400) {
+    horizontal = horizontal.filter((r) => r.end - r.start > 12).slice(0, 400);
+  }
 
   for (const line of lines) {
     for (const span of line.spans) {
@@ -1379,6 +1456,7 @@ export async function extractPage(
   // The operator scan has to run first: it is what makes the real font objects
   // and the image XObjects available on the page proxy.
   const scan = await scanOperators(page, pdfjsLib, viewportTransform);
+  await yieldUi();
   const content = await page.getTextContent();
   const styles = (content.styles ?? {}) as Record<
     string,
@@ -1481,8 +1559,10 @@ export async function extractPage(
       placed = await cropFromPage(renderCache, draw.rect, width, height);
     }
     if (placed) images.push(placed);
+    if (images.length % 3 === 0) await yieldUi();
   }
 
+  await yieldUi();
   const artwork: PdfImage[] = [];
   const imageRects = images.map((i) => i.rect);
   const consumed = new Set<VectorMark>();
