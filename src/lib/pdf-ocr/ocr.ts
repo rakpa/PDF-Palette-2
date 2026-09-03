@@ -91,7 +91,12 @@ async function createOcrWorker(): Promise<TesseractWorker> {
     });
     return worker;
   } catch (error) {
-    const detail = error instanceof Error ? error.message : "";
+    const detail =
+      error instanceof Error
+        ? error.message
+        : typeof error === "string"
+          ? error
+          : "";
     throw new OcrError(
       detail
         ? `The OCR engine could not be loaded (${detail}).`

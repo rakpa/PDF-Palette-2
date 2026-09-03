@@ -16,6 +16,10 @@ export function crossOriginIsolationPlugin(): Plugin {
 
 function corpHeaders(res: { setHeader: (k: string, v: string) => void }) {
   res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+  // Dedicated workers (`new Worker(url)`) need COEP on the script itself;
+  // CORP alone is enough for fetch/wasm, but Chrome blocks the worker entry.
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
 }
 
 /** Run before Vite's transform middleware so large WASM/LO scripts are served raw. */
