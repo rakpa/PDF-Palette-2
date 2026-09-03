@@ -13,14 +13,14 @@ interface ToolPageLayoutProps {
 }
 
 const colorClasses = {
-  coral: "bg-tool-coral/10 text-tool-coral",
-  green: "bg-tool-green/10 text-tool-green",
-  blue: "bg-tool-blue/10 text-tool-blue",
-  yellow: "bg-tool-yellow/10 text-tool-yellow",
-  purple: "bg-tool-purple/10 text-tool-purple",
-  orange: "bg-tool-orange/10 text-tool-orange",
-  teal: "bg-tool-teal/10 text-tool-teal",
-  pink: "bg-tool-pink/10 text-tool-pink",
+  coral: "bg-tool-coral text-white",
+  green: "bg-tool-green text-white",
+  blue: "bg-tool-blue text-white",
+  yellow: "bg-tool-yellow text-white",
+  purple: "bg-tool-purple text-white",
+  orange: "bg-tool-orange text-white",
+  teal: "bg-tool-teal text-white",
+  pink: "bg-tool-pink text-white",
 };
 
 const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
