@@ -139,7 +139,7 @@ export const pdfTools: PDFTool[] = [
   {
     id: "split",
     name: "Split PDF",
-    description: "Separate one PDF into multiple files",
+    description: "Split by page ranges or into one PDF per page",
     icon: Scissors,
     color: "purple",
     category: ["organize"],

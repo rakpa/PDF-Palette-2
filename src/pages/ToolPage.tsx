@@ -23,7 +23,6 @@ import {
   compressPDF,
   downloadResult,
   excelToPDF,
-  getPDFInfo,
   htmlToPDF,
   imagesToPDF,
   mergePDFs,
@@ -34,7 +33,6 @@ import {
   pptToPDF,
   protectPDFWithPassword,
   rotatePDF,
-  splitPDF,
   unlockPDF,
   wordToPDF,
   ocrPDF,
@@ -42,6 +40,7 @@ import {
 import ToolPageLayout from "@/components/ToolPageLayout";
 import PdfEditor from "@/components/pdf-editor/PdfEditor";
 import PageOrganizer from "@/components/pdf-pages/PageOrganizer";
+import PdfSplitter from "@/components/pdf-pages/PdfSplitter";
 import PdfCropper from "@/components/pdf-pages/PdfCropper";
 import PdfFormFiller from "@/components/pdf-pages/PdfFormFiller";
 import PdfRedactor from "@/components/pdf-pages/PdfRedactor";
@@ -79,7 +78,8 @@ type InteractiveFeature =
   | "crop-pdf"
   | "fill-forms"
   | "redact"
-  | "compare";
+  | "compare"
+  | "split";
 
 const featureConfig: Record<
   Exclude<ToolFeature, InteractiveFeature>,
@@ -97,13 +97,6 @@ const featureConfig: Record<
     minFiles: 2,
     cta: "Merge PDFs",
     hint: "Add two or more PDFs. They’ll be combined in the order shown.",
-  },
-  split: {
-    accept: { "application/pdf": [".pdf"] },
-    maxFiles: 1,
-    minFiles: 1,
-    cta: "Split PDF",
-    hint: "Choose page ranges to extract, e.g. 1-3, 5, 8-10.",
   },
   rotate: {
     accept: { "application/pdf": [".pdf"] },
@@ -227,22 +220,6 @@ const featureConfig: Record<
   },
 };
 
-/** Parse "1-3, 5, 8-10" into page ranges. */
-function parseRanges(input: string): { start: number; end: number }[] {
-  return input
-    .split(",")
-    .map((chunk) => chunk.trim())
-    .filter(Boolean)
-    .map((chunk) => {
-      const [a, b] = chunk.split("-").map((n) => parseInt(n.trim(), 10));
-      // A lone page has no second number at all, and `Number.isNaN` says
-      // nothing about `undefined` — so test for it before falling back.
-      const end = b === undefined || Number.isNaN(b) ? a : b;
-      return { start: a, end };
-    })
-    .filter((r) => !Number.isNaN(r.start) && r.start > 0 && r.end >= r.start);
-}
-
 const ToolPage = () => {
   const { toolRoute } = useParams();
   const tool = getToolByRoute(`/${toolRoute}`);
@@ -254,7 +231,6 @@ const ToolPage = () => {
 
   // Tool-specific options
   const [rotation, setRotation] = useState<90 | 180 | 270>(90);
-  const [ranges, setRanges] = useState("");
   const [watermarkText, setWatermarkText] = useState("CONFIDENTIAL");
   const [opacity, setOpacity] = useState(0.3);
   const [compressionLevel, setCompressionLevel] =
@@ -327,6 +303,14 @@ const ToolPage = () => {
 
   // Choosing pages, or a crop, is a thing you do by looking at the document —
   // so these tools show it rather than asking for typed page numbers.
+  if (tool.feature === "split") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfSplitter />
+      </ToolPageLayout>
+    );
+  }
+
   if (
     tool.feature === "organize-pages" ||
     tool.feature === "remove-pages" ||
@@ -520,32 +504,6 @@ const ToolPage = () => {
             if (message) setConvertStatus(message);
           });
           break;
-        case "split": {
-          const parsed = parseRanges(ranges);
-          if (ranges.trim() && parsed.length === 0) {
-            res = {
-              success: false,
-              message: "Couldn’t read those page ranges. Try something like 1-3, 5, 8-10.",
-            };
-            break;
-          }
-          // No ranges given → extract every page individually.
-          const results = parsed.length
-            ? await splitPDF(inputFiles[0], parsed, onProgress)
-            : await splitEveryPage(inputFiles[0], onProgress);
-
-          const ok = results.filter((r) => r.success);
-          ok.forEach((r) => downloadResult(r));
-          if (ok.length === 0) {
-            res = { success: false, message: results[0]?.message ?? "Nothing to extract." };
-          } else {
-            res = {
-              success: true,
-              message: `Extracted ${ok.length} file${ok.length === 1 ? "" : "s"} — downloads started.`,
-            };
-          }
-          break;
-        }
         default:
           res = { success: false, message: "This tool isn’t available yet." };
       }
@@ -607,23 +565,11 @@ const ToolPage = () => {
             {/* Tool-specific options */}
             {files.length > 0 &&
               (tool.feature === "rotate" ||
-                tool.feature === "split" ||
                 tool.feature === "watermark" ||
                 tool.feature === "compress") && (
               <div className="rounded-xl border border-border bg-card p-4">
                 {tool.feature === "rotate" && (
                   <RotateOptions value={rotation} onChange={setRotation} />
-                )}
-                {tool.feature === "split" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="ranges">Page ranges</Label>
-                    <Input
-                      id="ranges"
-                      placeholder="e.g. 1-3, 5, 8-10 (leave empty to split every page)"
-                      value={ranges}
-                      onChange={(e) => setRanges(e.target.value)}
-                    />
-                  </div>
                 )}
                 {tool.feature === "watermark" && (
                   <div className="space-y-5">
@@ -815,19 +761,6 @@ const ToolPage = () => {
     </ToolPageLayout>
   );
 };
-
-/** Build per-page ranges from a single document. */
-async function splitEveryPage(
-  file: File,
-  onProgress?: (p: number) => void
-): Promise<ProcessingResult[]> {
-  const { pageCount } = await getPDFInfo(file);
-  const ranges = Array.from({ length: pageCount }, (_, i) => ({
-    start: i + 1,
-    end: i + 1,
-  }));
-  return splitPDF(file, ranges, onProgress);
-}
 
 const RotateOptions = ({
   value,

@@ -17,6 +17,9 @@ import type { PageNumberOptions } from "./pdf-pages/page-numbers";
 import { pdfToImages } from "./pdf-to-image";
 import type { PdfToImageOptions } from "./pdf-to-image";
 import type { CompressionLevel } from "./compression-types";
+import { splitPdfBytes, type SplitRange, type SplitPdfOptions } from "./pdf-pages/split-core";
+
+export type { SplitRange, SplitPdfOptions } from "./pdf-pages/split-core";
 
 export type { CompressionLevel };
 
@@ -65,53 +68,22 @@ export async function mergePDFs(
 // Split PDF into individual pages or ranges
 export async function splitPDF(
   file: File,
-  ranges: { start: number; end: number }[],
-  onProgress?: (progress: number) => void
+  ranges: SplitRange[],
+  onProgress?: (progress: number) => void,
+  options?: SplitPdfOptions
 ): Promise<ProcessingResult[]> {
   try {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await PDFDocument.load(arrayBuffer);
-    const pageCount = pdf.getPageCount();
-    const results: ProcessingResult[] = [];
-
-    for (let i = 0; i < ranges.length; i++) {
-      const range = ranges[i];
-      const pageIndices = [];
-
-      for (let p = range.start - 1; p < range.end; p++) {
-        if (p >= 0 && p < pageCount) {
-          pageIndices.push(p);
-        }
-      }
-
-      // Skip ranges that don't map to any real page instead of emitting an empty PDF.
-      if (pageIndices.length === 0) {
-        results.push({
-          success: false,
-          message: `Pages ${range.start}-${range.end} are out of range (document has ${pageCount} page${pageCount === 1 ? "" : "s"}).`,
-        });
-        onProgress?.(((i + 1) / ranges.length) * 100);
-        continue;
-      }
-
-      const newPdf = await PDFDocument.create();
-      const pages = await newPdf.copyPages(pdf, pageIndices);
-      pages.forEach((page) => newPdf.addPage(page));
-      
-      const pdfBytes = await newPdf.save();
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
-      
-      results.push({
-        success: true,
-        message: `Pages ${range.start}-${range.end} extracted`,
-        blob,
-        filename: `split_${range.start}-${range.end}.pdf`,
-      });
-      
-      onProgress?.(((i + 1) / ranges.length) * 100);
-    }
-    
-    return results;
+    const data = new Uint8Array(await file.arrayBuffer());
+    const parts = await splitPdfBytes(data, ranges, options);
+    onProgress?.(100);
+    return parts.map((part) => ({
+      success: part.ok,
+      message: part.message,
+      blob: part.bytes
+        ? new Blob([part.bytes as BlobPart], { type: "application/pdf" })
+        : undefined,
+      filename: part.filename,
+    }));
   } catch (error) {
     return [{
       success: false,
