@@ -173,8 +173,7 @@ const PdfSplitter = () => {
     return customRanges;
   }, [tab, pageRanges, rangeKind, pageCount, every, customRanges]);
 
-  const willMerge =
-    (tab === "range" && mergeRanges) || (tab === "pages" && extractMode === "select");
+  const willMerge = tab === "range" && mergeRanges;
   const outputCount = willMerge ? (activeRanges.length > 0 ? 1 : 0) : activeRanges.length;
   const pickedCount = picked.filter(Boolean).length;
 
@@ -533,12 +532,14 @@ const PdfSplitter = () => {
                 {extractMode === "select" ? (
                   <p>
                     {pickedCount === 0
-                      ? "No pages selected. Type a range such as 1-10, or click pages in the grid."
+                      ? "No pages selected. Type a range such as 1-10, or click pages in the grid. Each selected page becomes its own PDF."
                       : (
                         <>
-                          Selected pages will be extracted into{" "}
-                          <strong>one PDF</strong>
-                          {` (${pickedCount} page${pickedCount === 1 ? "" : "s"})`}.
+                          Each selected page will be saved as its own PDF.{" "}
+                          <strong>
+                            {pickedCount} PDF{pickedCount === 1 ? "" : "s"}
+                          </strong>{" "}
+                          will be created.
                         </>
                       )}
                   </p>
