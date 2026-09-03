@@ -38,6 +38,12 @@ const OPERATOR_LIST_TIMEOUT_MS = 8000;
 const PAGE_RENDER_TIMEOUT_MS = 8000;
 /** Above this, clustering tiny marks is more expensive than the pictures are worth. */
 const MAX_ARTWORK_MARKS = 2500;
+/** A single constructPath from Illustrator/Canva can be hundreds of thousands of numbers. */
+const MAX_PATH_STREAM = 4000;
+/** After this many operators, skip remaining path decode — images and text still land. */
+const MAX_PATH_OPS = 8000;
+const SCAN_BUDGET_MS = 1500;
+const SCAN_YIELD_EVERY = 200;
 
 function yieldUi(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0));
@@ -207,6 +213,11 @@ function decodePath(
   let current: Array<[number, number]> = [];
   let curved = false;
   if (!data) return { subpaths, curved };
+  // Designed CVs ship icons as one enormous path. Walking every point freezes
+  // the tab on the last page (86% for a 3-page file). Treat it as artwork.
+  if (data.length > MAX_PATH_STREAM) {
+    return { subpaths, curved: true };
+  }
 
   const push = (x: number, y: number) => current.push(apply(toDevice, x, y));
   const flush = () => {
@@ -488,7 +499,15 @@ async function scanOperators(
     scan.images.push({ matrix, rect, name, inline, maskColor });
   };
 
+  const startedAt = performance.now();
+  let skipPaths = opList.fnArray.length > MAX_PATH_OPS * 2;
+  let pathOps = 0;
+
   for (let i = 0; i < opList.fnArray.length; i++) {
+    if (i > 0 && i % SCAN_YIELD_EVERY === 0) {
+      await yieldUi();
+      if (!skipPaths && performance.now() - startedAt > SCAN_BUDGET_MS) skipPaths = true;
+    }
     const fn = opList.fnArray[i];
     const args = opList.argsArray[i] as unknown[];
 
@@ -594,6 +613,11 @@ async function scanOperators(
         recordText(args[2]);
         break;
       case OPS.constructPath: {
+        if (skipPaths || pathOps >= MAX_PATH_OPS) {
+          skipPaths = true;
+          break;
+        }
+        pathOps += 1;
         // pdf.js passes the geometry boxed in a one-element array, which it
         // later swaps in place for a Path2D while rendering.
         const boxed = args[1];
@@ -692,6 +716,7 @@ function decodeBitmap(obj: unknown): DecodedBitmap | null {
   if (!rec.data || !rec.width || !rec.height) return null;
 
   const { width, height } = rec;
+  if (width * height > 4_000_000) return null;
   const src = rec.data;
   const rgba = new Uint8ClampedArray(width * height * 4);
   const pixels = width * height;
@@ -770,7 +795,9 @@ async function rasterizePlacedImage(
 
   let transparent = true;
   try {
-    transparent = hasTransparency(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
+    if (canvas.width * canvas.height <= 2_000_000) {
+      transparent = hasTransparency(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
+    }
   } catch {
     transparent = true;
   }
