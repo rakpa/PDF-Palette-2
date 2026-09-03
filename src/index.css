@@ -36,15 +36,15 @@
 
     --radius: 0.75rem;
 
-    /* Tool icon colors - pastel accents */
-    --tool-coral: 0 70% 60%;
-    --tool-green: 142 52% 55%;
-    --tool-blue: 210 80% 55%;
-    --tool-yellow: 45 90% 55%;
-    --tool-purple: 270 60% 60%;
-    --tool-orange: 25 85% 55%;
-    --tool-teal: 175 60% 45%;
-    --tool-pink: 330 65% 60%;
+    /* Tool icon colors — saturated accents (iLovePDF-like, not pastel) */
+    --tool-coral: 2 84% 52%;
+    --tool-green: 145 78% 38%;
+    --tool-blue: 211 92% 48%;
+    --tool-yellow: 42 96% 48%;
+    --tool-purple: 266 76% 52%;
+    --tool-orange: 24 96% 50%;
+    --tool-teal: 174 84% 36%;
+    --tool-pink: 328 82% 50%;
 
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(210 20% 98%) 0%, hsl(0 30% 97%) 100%);
@@ -89,15 +89,15 @@
     --input: 217 33% 17%;
     --ring: 0 70% 60%;
 
-    /* Tool icon colors - slightly brighter for dark mode */
-    --tool-coral: 0 70% 65%;
-    --tool-green: 142 52% 60%;
-    --tool-blue: 210 80% 60%;
-    --tool-yellow: 45 90% 60%;
-    --tool-purple: 270 60% 65%;
-    --tool-orange: 25 85% 60%;
-    --tool-teal: 175 60% 50%;
-    --tool-pink: 330 65% 65%;
+    /* Tool icon colors — keep chroma high on dark cards */
+    --tool-coral: 2 86% 62%;
+    --tool-green: 145 72% 52%;
+    --tool-blue: 211 92% 62%;
+    --tool-yellow: 42 96% 58%;
+    --tool-purple: 266 76% 68%;
+    --tool-orange: 24 96% 60%;
+    --tool-teal: 174 78% 50%;
+    --tool-pink: 328 82% 64%;
 
     --gradient-hero: linear-gradient(135deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 100%);
     --gradient-card-hover: linear-gradient(135deg, hsl(222 47% 10%) 0%, hsl(222 47% 8%) 100%);

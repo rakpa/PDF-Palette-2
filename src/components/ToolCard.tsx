@@ -8,14 +8,14 @@ interface ToolCardProps {
 }
 
 const colorClasses = {
-  coral: "bg-tool-coral/10 text-tool-coral group-hover:bg-tool-coral/15",
-  green: "bg-tool-green/10 text-tool-green group-hover:bg-tool-green/15",
-  blue: "bg-tool-blue/10 text-tool-blue group-hover:bg-tool-blue/15",
-  yellow: "bg-tool-yellow/10 text-tool-yellow group-hover:bg-tool-yellow/15",
-  purple: "bg-tool-purple/10 text-tool-purple group-hover:bg-tool-purple/15",
-  orange: "bg-tool-orange/10 text-tool-orange group-hover:bg-tool-orange/15",
-  teal: "bg-tool-teal/10 text-tool-teal group-hover:bg-tool-teal/15",
-  pink: "bg-tool-pink/10 text-tool-pink group-hover:bg-tool-pink/15",
+  coral: "bg-tool-coral/15 text-tool-coral group-hover:bg-tool-coral/25",
+  green: "bg-tool-green/15 text-tool-green group-hover:bg-tool-green/25",
+  blue: "bg-tool-blue/15 text-tool-blue group-hover:bg-tool-blue/25",
+  yellow: "bg-tool-yellow/15 text-tool-yellow group-hover:bg-tool-yellow/25",
+  purple: "bg-tool-purple/15 text-tool-purple group-hover:bg-tool-purple/25",
+  orange: "bg-tool-orange/15 text-tool-orange group-hover:bg-tool-orange/25",
+  teal: "bg-tool-teal/15 text-tool-teal group-hover:bg-tool-teal/25",
+  pink: "bg-tool-pink/15 text-tool-pink group-hover:bg-tool-pink/25",
 };
 
 const ToolCard = ({ tool }: ToolCardProps) => {
@@ -58,11 +58,11 @@ const ToolCard = ({ tool }: ToolCardProps) => {
             colorClasses[tool.color]
           )}
         >
-          <Icon className="h-6 w-6 sm:h-8 sm:w-8" aria-hidden />
+          <Icon className="h-6 w-6 sm:h-8 sm:w-8" strokeWidth={2.4} aria-hidden />
         </div>
 
         <div className="min-w-0 flex-1 sm:flex-none">
-          <h3 className="mb-0.5 pr-12 text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:mb-1.5 sm:pr-16 sm:text-lg">
+          <h3 className="mb-0.5 pr-12 text-base font-bold leading-snug text-zinc-900 dark:text-zinc-50 sm:mb-1.5 sm:pr-16 sm:text-lg">
             {tool.name}
           </h3>
           <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:text-[0.9375rem]">
