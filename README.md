@@ -34,6 +34,9 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
   page comes back as a ZIP
 - **Excel to PDF** – every sheet, with its own number formats, fills, borders,
   merged cells and column widths (`src/lib/excel-to-pdf/`)
+- **PowerPoint to PDF** – one page per slide at the deck's own size, with its
+  text, bullets, pictures, tables, shape fills and theme colours
+  (`src/lib/ppt-to-pdf/`)
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.
@@ -76,7 +79,8 @@ npm run lint     # lint the project
 - `src/lib/office/` – the shared Office engine: one document model, one layout
   pass and one PDF emitter, plus the OOXML zip and XML readers. Each format has
   its own extractor on top — `src/lib/word-to-pdf/` and `src/lib/excel-to-pdf/`
-  — whose only job is to produce that model.
+  — whose only job is to produce that model. Slides are already positioned, so
+  `src/lib/ppt-to-pdf/` skips the flow layout and places pages directly.
 - `src/lib/pdf-pages/` – page-level operations: `organize.ts` rebuilds a
   document from an ordered plan (which every reorder, remove and extract goes
   through), `page-numbers.ts` and `crop.ts` sit on `geometry.ts`, which maps

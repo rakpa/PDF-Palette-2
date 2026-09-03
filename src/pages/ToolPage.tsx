@@ -29,6 +29,7 @@ import {
   mergePDFs,
   pdfToImageFiles,
   pdfToWord,
+  pptToPDF,
   protectPDFWithPassword,
   rotatePDF,
   splitPDF,
@@ -163,6 +164,15 @@ const featureConfig: Record<
     minFiles: 1,
     cta: "Convert to PDF",
     hint: "Upload an .xlsx workbook. Every sheet becomes pages, with its own number formats, colours, borders and merged cells.",
+  },
+  "ppt-to-pdf": {
+    accept: {
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
+    },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to PDF",
+    hint: "Upload a .pptx deck. Each slide becomes a page at its own size, with its text, pictures, tables and theme colours.",
   },
   "page-numbers": {
     accept: { "application/pdf": [".pdf"] },
@@ -367,6 +377,12 @@ const ToolPage = () => {
           break;
         case "excel-to-pdf":
           res = await excelToPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "ppt-to-pdf":
+          res = await pptToPDF(inputFiles[0], (p, message) => {
             onProgress(p);
             if (message) setConvertStatus(message);
           });

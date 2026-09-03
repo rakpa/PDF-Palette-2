@@ -5,6 +5,7 @@ import {
 } from "./ghostscript-compress";
 import { convertWordToPdfBrowser, WordToPdfError } from "./word-to-pdf-browser";
 import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
+import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
@@ -442,6 +443,24 @@ export async function excelToPDF(
         error instanceof ExcelError || error instanceof Error
           ? error.message
           : "Could not convert this workbook.",
+    };
+  }
+}
+
+export async function pptToPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await convertPptToPdfBrowser(file, onProgress);
+    return { success: true, blob, filename, message: "Presentation converted." };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof PowerPointError || error instanceof Error
+          ? error.message
+          : "Could not convert this presentation.",
     };
   }
 }
