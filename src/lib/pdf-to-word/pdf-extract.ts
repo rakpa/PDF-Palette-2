@@ -977,6 +977,17 @@ function findArtworkRegions(
       const h = cluster.rect.y1 - cluster.rect.y0;
       if (w < 24 || h < 24) return false;
       if (w >= pageWidth * 0.97 && h >= pageHeight * 0.97) return false;
+      // A designed CV's sidebar is a page-tall coloured band with a photo and
+      // skill bars on it, and those bars read exactly like a bar chart. It is
+      // a layout device, not a picture: flattening it costs the name, the job
+      // title and every skill their text. A band is recognised by one member
+      // covering most of the cluster while the cluster runs the length of the
+      // page — a real chart is built from parts, none of which fills it.
+      const area = Math.max(1, w * h);
+      const dominated = cluster.members.some(
+        (m) => (m.rect.x1 - m.rect.x0) * (m.rect.y1 - m.rect.y0) >= area * 0.6
+      );
+      if (dominated && (h >= pageHeight * 0.7 || w >= pageWidth * 0.7)) return false;
       // Curves or diagonals mean a drawing: a pie, a diagram, a gradient.
       const curved = cluster.members.some((m) => m.kind === "complex");
       if (curved && cluster.members.length >= 2) return true;
