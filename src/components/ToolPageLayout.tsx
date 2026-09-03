@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ChevronRight, Home } from "lucide-react";
 import { PDFTool } from "@/lib/tools";
 import Navbar from "./Navbar";
@@ -29,58 +28,43 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      
-      <main className="flex-1">
-        {/* Header */}
-        <section className="border-b border-border bg-gradient-to-br from-background to-muted/30 py-4 md:py-5">
-          <div className="container mx-auto px-4">
-            {/* Breadcrumb */}
-            <motion.nav
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-3 flex items-center gap-2 text-sm text-muted-foreground"
-            >
-              <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Home className="h-4 w-4" />
-                Home
-              </Link>
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-foreground">{tool.name}</span>
-            </motion.nav>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mx-auto max-w-2xl text-center"
-            >
+      <main className="flex-1">
+        <section className="border-b border-border bg-gradient-to-br from-background to-muted/30">
+          <div className="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2">
+            <nav className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
+                <Home className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only">Home</span>
+              </Link>
+              <ChevronRight className="h-3.5 w-3.5" />
+              <span className="text-foreground">{tool.name}</span>
+            </nav>
+
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
               <div
                 className={cn(
-                  "mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl",
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
                   colorClasses[tool.color]
                 )}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4" />
               </div>
-              <h1 className="text-xl font-bold text-foreground md:text-2xl">
-                {tool.name}
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground md:text-base">
-                {tool.description}
-              </p>
-            </motion.div>
+              <div className="min-w-0">
+                <h1 className="text-base font-bold leading-tight text-foreground md:text-lg">
+                  {tool.name}
+                </h1>
+                <p className="truncate text-xs text-muted-foreground md:text-sm">
+                  {tool.description}
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Content */}
-        <section className="py-4 md:py-6">
+        <section className="py-3">
           <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              {children}
-            </motion.div>
+            {children}
           </div>
         </section>
       </main>
