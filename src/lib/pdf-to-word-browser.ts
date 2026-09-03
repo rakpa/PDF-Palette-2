@@ -1,19 +1,16 @@
 import { Document, Packer, type ISectionOptions } from "docx";
-import "./promise-with-resolvers-polyfill";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
+import type { PDFPageProxy } from "pdfjs-dist";
 import {
+  PdfReadError,
   createImageRasterCache,
-  extractPage,
+  fitToPage,
+  layoutPage,
+  openPdf,
   renderPageBitmap,
-  type ImageRasterCache,
-} from "./pdf-to-word/pdf-extract";
-import { buildPageLayout, fitToPage, isScannedPage, type Box, type PageLayout } from "./pdf-to-word/layout";
-import { createTableSplitter } from "./pdf-to-word/tables";
+} from "./pdf-to-word/read";
+import type { Box, PageLayout } from "./pdf-to-word/layout";
 import { sectionFor } from "./pdf-to-word/docx-emit";
-import type { PageContent, PdfImage, PdfLine } from "./pdf-to-word/types";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.min.mjs`;
+import type { PdfImage } from "./pdf-to-word/types";
 
 export class PdfToWordError extends Error {
   constructor(
@@ -27,33 +24,6 @@ export class PdfToWordError extends Error {
 
 export type ConversionProgress = (progress: number, message?: string) => void;
 
-/**
- * Build the document tree for one page. Table detection and paragraph building
- * are mutually recursive (cells contain paragraphs, and a cell may itself hold
- * a nested table), so the builders are wired together here.
- */
-function layoutForPage(page: PageContent): PageLayout {
-  const buildCellContent = (lines: PdfLine[]): Box[] => {
-    if (lines.length === 0) return [];
-    const cellPage: PageContent = { ...page, lines, images: [], artwork: [] };
-    // Cells hold plain blocks: no header/footer split and no nested detection,
-    // which keeps a stray aligned pair inside a cell from spawning a table.
-    const cellLayout = buildPageLayout(cellPage, (cellLines) => [cellLines], { scanned: false });
-    return cellLayout.body;
-  };
-
-  return buildPageLayout(page, createTableSplitter(page, buildCellContent), {
-    scanned: isScannedPage(page),
-  });
-}
-
-/**
- * Word applies margins per section, and we emit one section per page. Taking
- * each page's own content box as its margins would make a short page claim a
- * huge bottom margin and push its own text onto an extra page, so pages of the
- * same size share the tightest margins seen across the document. The slack a
- * page then loses at the top is given back as space before its first block.
- */
 function unifyMargins(layouts: PageLayout[]): void {
   const groups = new Map<string, PageLayout[]>();
   for (const layout of layouts) {
@@ -93,19 +63,6 @@ function unifyMargins(layouts: PageLayout[]): void {
   }
 }
 
-async function layoutPage(
-  page: PDFPageProxy,
-  pageNumber: number,
-  rasterCache: ImageRasterCache
-) {
-  const content = await extractPage(page, pdfjsLib, pageNumber, rasterCache);
-  const layout = layoutForPage(content);
-  const pageImage = layout.scanned
-    ? await renderPageBitmap(page, content.width, content.height)
-    : null;
-  return { layout, pageImage };
-}
-
 /** Last resort for a page the layout engine cannot handle: a picture of it. */
 async function fallbackSection(page: PDFPageProxy, pageNumber: number): Promise<ISectionOptions> {
   const viewport = page.getViewport({ scale: 1 });
@@ -128,42 +85,16 @@ async function fallbackSection(page: PDFPageProxy, pageNumber: number): Promise<
   );
 }
 
-type LoadedPdf = { pdf: PDFDocumentProxy; release: () => Promise<void> };
-
-async function loadPdf(data: ArrayBuffer): Promise<LoadedPdf> {
-  const task = pdfjsLib.getDocument({
-    data: new Uint8Array(data.slice(0)),
-    verbosity: 0,
-    useSystemFonts: true,
-    useWorkerFetch: false,
-  });
-  try {
-    const pdf = await task.promise;
-    return { pdf, release: () => task.destroy().catch(() => undefined) };
-  } catch (error) {
-    await task.destroy().catch(() => undefined);
-    const name = (error as { name?: string })?.name ?? "";
-    const message = (error as Error)?.message ?? "";
-    if (name === "PasswordException" || /password/i.test(message)) {
-      throw new PdfToWordError(
-        "This PDF is password-protected. Unlock it first, then convert it to Word.",
-        "password"
-      );
-    }
-    if (name === "InvalidPDFException" || /invalid|corrupt/i.test(message)) {
-      throw new PdfToWordError("This file is not a readable PDF.", "corrupt");
-    }
-    throw new PdfToWordError(message || "The PDF could not be opened.", "failed");
-  }
-}
-
 export async function convertPdfToWordBrowser(
   file: File,
   onProgress?: ConversionProgress
 ): Promise<{ blob: Blob; filename: string }> {
   onProgress?.(5, "Reading PDF…");
   const buffer = await file.arrayBuffer();
-  const { pdf, release } = await loadPdf(buffer);
+  const { pdf, release } = await openPdf(buffer).catch((error) => {
+    if (error instanceof PdfReadError) throw new PdfToWordError(error.message, error.code);
+    throw error;
+  });
 
   if (pdf.numPages === 0) {
     throw new PdfToWordError("This PDF has no pages.", "empty");

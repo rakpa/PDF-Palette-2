@@ -55,7 +55,9 @@ export type ToolFeature =
   | "crop-pdf"
   | "pdf-to-jpg"
   | "excel-to-pdf"
-  | "ppt-to-pdf";
+  | "ppt-to-pdf"
+  | "pdf-to-excel"
+  | "pdf-to-ppt";
 
 export interface PDFTool {
   id: string;
@@ -131,7 +133,7 @@ export const pdfTools: PDFTool[] = [
     color: "green",
     category: ["convert-from"],
     route: "/pdf-to-excel",
-    comingSoon: true,
+    feature: "pdf-to-excel",
   },
   {
     id: "pdf-to-ppt",
@@ -141,7 +143,7 @@ export const pdfTools: PDFTool[] = [
     color: "orange",
     category: ["convert-from"],
     route: "/pdf-to-powerpoint",
-    comingSoon: true,
+    feature: "pdf-to-ppt",
   },
 
   // Row 2

@@ -7,6 +7,8 @@ import { convertWordToPdfBrowser, WordToPdfError } from "./word-to-pdf-browser";
 import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
+import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
+import { convertPdfToPptBrowser } from "./pdf-to-ppt-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
@@ -531,6 +533,36 @@ export async function pdfToImageFiles(
     onProgress?.(8, "Reading PDF…");
     const { blob, filename } = await pdfToImages(file, options, onProgress);
     return { success: true, blob, filename, message: "Images ready." };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not convert this PDF.",
+    };
+  }
+}
+
+export async function pdfToExcel(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await convertPdfToExcelBrowser(file, onProgress);
+    return { success: true, blob, filename, message: "Workbook ready." };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not convert this PDF.",
+    };
+  }
+}
+
+export async function pdfToPpt(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await convertPdfToPptBrowser(file, onProgress);
+    return { success: true, blob, filename, message: "Presentation ready." };
   } catch (error) {
     return {
       success: false,

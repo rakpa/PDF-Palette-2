@@ -37,6 +37,10 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **PowerPoint to PDF** – one page per slide at the deck's own size, with its
   text, bullets, pictures, tables, shape fills and theme colours
   (`src/lib/ppt-to-pdf/`)
+- **PDF to Excel** – tables recovered into sheets, one per page, with numbers
+  arriving as real numbers (`src/lib/pdf-to-excel/`)
+- **PDF to PowerPoint** – one slide per page, with editable text boxes,
+  pictures and tables where they stood (`src/lib/pdf-to-ppt/`)
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.
@@ -65,9 +69,12 @@ npm run lint     # lint the project
 - `src/lib/tools.ts` – the tool catalog. Each tool declares a `feature`
   (a working pdf-lib engine) or `comingSoon: true`.
 - `src/lib/pdf-utils.ts` – the actual PDF operations.
-- `src/lib/pdf-to-word/` – the PDF → Word engine: `pdf-extract.ts` reads a page
-  into a geometric model, `layout.ts` segments it into columns, paragraphs and
-  blocks, `tables.ts` recovers tables, and `docx-emit.ts` writes the document.
+- `src/lib/pdf-to-word/` – reading a PDF: `pdf-extract.ts` reads a page into a
+  geometric model, `layout.ts` segments it into columns, paragraphs and blocks,
+  `tables.ts` recovers tables, and `read.ts` drives the whole pass. All three
+  "from PDF" conversions share it, and differ only in what they write —
+  `docx-emit.ts`, `src/lib/pdf-to-excel/` and `src/lib/pdf-to-ppt/`, the last
+  two on the package writer in `src/lib/office/ooxml-write.ts`.
 - `src/lib/pdf-crypto/` – the PDF standard security handler: `primitives.ts`
   has RC4, MD5, AES and SHA-2 built on Web Crypto, `standard-handler.ts` derives
   file and object keys for revisions 2–6, and `document.ts` walks the file to

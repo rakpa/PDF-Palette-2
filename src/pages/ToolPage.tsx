@@ -27,7 +27,9 @@ import {
   htmlToPDF,
   imagesToPDF,
   mergePDFs,
+  pdfToExcel,
   pdfToImageFiles,
+  pdfToPpt,
   pdfToWord,
   pptToPDF,
   protectPDFWithPassword,
@@ -173,6 +175,20 @@ const featureConfig: Record<
     minFiles: 1,
     cta: "Convert to PDF",
     hint: "Upload a .pptx deck. Each slide becomes a page at its own size, with its text, pictures, tables and theme colours.",
+  },
+  "pdf-to-excel": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to Excel",
+    hint: "Upload a PDF. Tables are recovered into sheets — one per page — with numbers as real numbers.",
+  },
+  "pdf-to-ppt": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to PowerPoint",
+    hint: "Upload a PDF. Each page becomes a slide, with editable text boxes, pictures and tables where they stood.",
   },
   "page-numbers": {
     accept: { "application/pdf": [".pdf"] },
@@ -377,6 +393,18 @@ const ToolPage = () => {
           break;
         case "excel-to-pdf":
           res = await excelToPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "pdf-to-ppt":
+          res = await pdfToPpt(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "pdf-to-excel":
+          res = await pdfToExcel(inputFiles[0], (p, message) => {
             onProgress(p);
             if (message) setConvertStatus(message);
           });
