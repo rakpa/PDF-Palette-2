@@ -164,7 +164,7 @@ export async function rotatePDF(
 export async function compressPDF(
   file: File,
   level: CompressionLevel = "recommended",
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number, status?: string) => void
 ): Promise<ProcessingResult> {
   try {
     const { blob, inputSize, outputSize } = await compressWithGhostscript(

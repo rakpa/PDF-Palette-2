@@ -71,6 +71,16 @@ a tab. Do not reintroduce a service dependency.
   another.
 - Anything that must genuinely remove content (Redact) rebuilds the page as a
   picture. Drawing over text hides nothing.
+- `src/lib/compress-args.ts` holds the whole Ghostscript command line, kept out
+  of the worker so it can be exercised under Node
+  (`node --experimental-strip-types`, feeding the args to `assets/gs.js` with a
+  `wasmBinary`). Two traps live there: the `/screen` and `/ebook` presets set
+  `ColorConversionStrategy=/sRGB`, which is ~4× slower than
+  `/LeaveColorUnchanged` and turns a 1-bit scan into an RGB image; and
+  `CompatibilityLevel=1.4` makes Ghostscript flatten transparency. Ghostscript
+  exits 0 on an encrypted or damaged file after writing a ~3 KB stub, so the
+  worker counts its `Page N` stdout lines against `Processing pages 1 through N`
+  rather than trusting the exit code — those same lines drive the progress bar.
 
 ## Known gap
 

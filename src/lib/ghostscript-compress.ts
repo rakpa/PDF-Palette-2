@@ -8,9 +8,11 @@ type WorkerRequest =
 
 type WorkerResponse =
   | { type: "ready"; id: string }
-  | { type: "progress"; id: string; progress: number }
+  | { type: "progress"; id: string; progress: number; status?: string }
   | { type: "result"; id: string; buffer: ArrayBuffer }
   | { type: "error"; id: string; message: string };
+
+export type CompressProgress = (progress: number, status?: string) => void;
 
 let worker: Worker | null = null;
 let warmupPromise: Promise<void> | null = null;
@@ -23,6 +25,13 @@ function getWorker(): Worker {
     );
   }
   return worker;
+}
+
+/** A worker that has died (out of memory, aborted wasm) can never serve again. */
+function discardWorker(): void {
+  worker?.terminate();
+  worker = null;
+  warmupPromise = null;
 }
 
 /** Preload Ghostscript WASM in the background — call when the compress page opens. */
@@ -38,12 +47,13 @@ export function warmupGhostscript(): Promise<void> {
         w.removeEventListener("message", onMessage);
         w.removeEventListener("error", onError);
         if (data.type === "ready") resolve();
-        else reject(new Error(data.message || "Failed to load compression engine"));
+        else if (data.type === "error") reject(new Error(data.message));
+        else reject(new Error("Failed to load compression engine"));
       };
       const onError = (event: ErrorEvent) => {
         w.removeEventListener("message", onMessage);
         w.removeEventListener("error", onError);
-        warmupPromise = null;
+        discardWorker();
         reject(new Error(event.message || "Compression worker failed"));
       };
       w.addEventListener("message", onMessage);
@@ -60,7 +70,7 @@ export function warmupGhostscript(): Promise<void> {
 export async function compressWithGhostscript(
   file: File,
   level: CompressionLevel = "recommended",
-  onProgress?: (progress: number) => void
+  onProgress?: CompressProgress
 ): Promise<{ blob: Blob; inputSize: number; outputSize: number }> {
   // Engine should already be warm from page load; await just in case.
   await warmupGhostscript();
@@ -75,9 +85,10 @@ export async function compressWithGhostscript(
       if (data.id !== id) return;
 
       if (data.type === "progress") {
-        onProgress?.(data.progress);
+        onProgress?.(data.progress, data.status);
         return;
       }
+      if (data.type === "ready") return;
 
       w.removeEventListener("message", onMessage);
       w.removeEventListener("error", onError);
@@ -99,7 +110,13 @@ export async function compressWithGhostscript(
     const onError = (event: ErrorEvent) => {
       w.removeEventListener("message", onMessage);
       w.removeEventListener("error", onError);
-      reject(new Error(event.message || "Compression worker failed"));
+      discardWorker();
+      reject(
+        new Error(
+          event.message ||
+            "The compression engine stopped — the PDF may be too large for this browser tab."
+        )
+      );
     };
 
     w.addEventListener("message", onMessage);

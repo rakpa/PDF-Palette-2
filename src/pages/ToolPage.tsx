@@ -425,7 +425,10 @@ const ToolPage = () => {
           res = await rotatePDF(inputFiles[0], rotation, undefined, onProgress);
           break;
         case "compress":
-          res = await compressPDF(inputFiles[0], compressionLevel, onProgress);
+          res = await compressPDF(inputFiles[0], compressionLevel, (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
           break;
         case "watermark":
           res = await addWatermark(
@@ -726,7 +729,9 @@ const ToolPage = () => {
                     ? convertStatus || "Recognising…"
                     : tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word"
                       ? convertStatus || "Converting…"
-                      : "Processing…"
+                      : tool.feature === "compress"
+                        ? convertStatus || "Compressing…"
+                        : "Processing…"
                 }
                 indeterminate={
                   (tool.feature === "word-to-pdf" ||
@@ -861,9 +866,9 @@ const CompressOptions = ({
   onChange: (v: CompressionLevel) => void;
 }) => {
   const options: { id: CompressionLevel; label: string; desc: string }[] = [
-    { id: "low", label: "Low", desc: "300 DPI — best quality" },
-    { id: "recommended", label: "Recommended", desc: "150 DPI — best balance" },
-    { id: "extreme", label: "Extreme", desc: "72 DPI — smallest file" },
+    { id: "low", label: "Low", desc: "300 DPI — near-lossless" },
+    { id: "recommended", label: "Recommended", desc: "200 DPI — best balance" },
+    { id: "extreme", label: "Extreme", desc: "100 DPI — smallest file" },
   ];
   return (
     <div className="space-y-3">
@@ -893,7 +898,9 @@ const CompressOptions = ({
         ))}
       </div>
       <p className="text-xs text-muted-foreground">
-        Recommended balances size and quality. Extreme targets the smallest file.
+        Recommended keeps text sharp and colours unchanged while shrinking large
+        images. Low leaves image quality untouched; Extreme targets the smallest
+        file. Scanned text is kept at 300 DPI at every level.
       </p>
     </div>
   );
