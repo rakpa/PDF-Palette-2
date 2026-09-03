@@ -32,29 +32,29 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
       <main className="flex-1">
         <section className="border-b border-border bg-gradient-to-br from-background to-muted/30">
           <div className="container mx-auto px-4 py-3 md:py-4">
-            <nav className="mb-2.5 flex items-center gap-1.5 text-base text-muted-foreground">
+            <nav className="mb-4 flex items-center gap-1.5 text-lg text-muted-foreground md:mb-5">
               <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Home className="h-4 w-4" />
+                <Home className="h-5 w-5" />
                 Home
               </Link>
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
               <span className="text-foreground">{tool.name}</span>
             </nav>
 
             <div className="flex items-start gap-3">
               <div
                 className={cn(
-                  "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                  "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
                   colorClasses[tool.color]
                 )}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-xl font-bold leading-snug text-foreground md:text-2xl">
+                <h1 className="text-2xl font-bold leading-snug text-foreground">
                   {tool.name}
                 </h1>
-                <p className="mt-1 text-base text-muted-foreground">
+                <p className="mt-1.5 text-lg text-muted-foreground">
                   {tool.description}
                 </p>
               </div>
