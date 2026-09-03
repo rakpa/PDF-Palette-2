@@ -41,6 +41,10 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
   arriving as real numbers (`src/lib/pdf-to-excel/`)
 - **PDF to PowerPoint** – one slide per page, with editable text boxes,
   pictures and tables where they stood (`src/lib/pdf-to-ppt/`)
+- **Fill PDF Forms** – every field a PDF declares, filled in here and optionally
+  flattened so the answers can no longer be changed (`src/lib/pdf-forms/`)
+- **Redact PDF** – drag over anything, or search for a phrase; the marked
+  content is removed from the file rather than covered (`src/lib/pdf-redact/`)
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.

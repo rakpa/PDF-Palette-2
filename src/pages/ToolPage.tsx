@@ -42,6 +42,8 @@ import ToolPageLayout from "@/components/ToolPageLayout";
 import PdfEditor from "@/components/pdf-editor/PdfEditor";
 import PageOrganizer from "@/components/pdf-pages/PageOrganizer";
 import PdfCropper from "@/components/pdf-pages/PdfCropper";
+import PdfFormFiller from "@/components/pdf-pages/PdfFormFiller";
+import PdfRedactor from "@/components/pdf-pages/PdfRedactor";
 import { DEFAULT_PAGE_NUMBERS } from "@/lib/pdf-pages/page-numbers";
 import type { NumberPosition, PageNumberOptions } from "@/lib/pdf-pages/page-numbers";
 import type { PdfToImageOptions } from "@/lib/pdf-to-image";
@@ -72,7 +74,9 @@ type InteractiveFeature =
   | "organize-pages"
   | "remove-pages"
   | "extract-pages"
-  | "crop-pdf";
+  | "crop-pdf"
+  | "fill-forms"
+  | "redact";
 
 const featureConfig: Record<
   Exclude<ToolFeature, InteractiveFeature>,
@@ -322,6 +326,22 @@ const ToolPage = () => {
     return (
       <ToolPageLayout tool={tool}>
         <PdfCropper />
+      </ToolPageLayout>
+    );
+  }
+
+  if (tool.feature === "fill-forms") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfFormFiller />
+      </ToolPageLayout>
+    );
+  }
+
+  if (tool.feature === "redact") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfRedactor />
       </ToolPageLayout>
     );
   }

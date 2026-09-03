@@ -18,6 +18,8 @@ import {
   LayoutGrid,
   Trash2,
   FileOutput,
+  FormInput,
+  EyeOff,
   LucideIcon,
 } from "lucide-react";
 
@@ -57,7 +59,9 @@ export type ToolFeature =
   | "excel-to-pdf"
   | "ppt-to-pdf"
   | "pdf-to-excel"
-  | "pdf-to-ppt";
+  | "pdf-to-ppt"
+  | "fill-forms"
+  | "redact";
 
 export interface PDFTool {
   id: string;
@@ -263,6 +267,28 @@ export const pdfTools: PDFTool[] = [
     isNew: true,
     route: "/crop-pdf",
     feature: "crop-pdf",
+  },
+  {
+    id: "fill-forms",
+    name: "Fill PDF Forms",
+    description: "Fill in a PDF's form fields, and lock them if you like",
+    icon: FormInput,
+    color: "orange",
+    category: ["edit"],
+    isNew: true,
+    route: "/fill-forms",
+    feature: "fill-forms",
+  },
+  {
+    id: "redact",
+    name: "Redact PDF",
+    description: "Permanently remove text and images from a PDF",
+    icon: EyeOff,
+    color: "coral",
+    category: ["security"],
+    isNew: true,
+    route: "/redact-pdf",
+    feature: "redact",
   },
 
   // Row 3
