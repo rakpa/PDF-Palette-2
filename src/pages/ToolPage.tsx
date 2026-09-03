@@ -22,6 +22,7 @@ import {
   addWatermark,
   compressPDF,
   downloadResult,
+  excelToPDF,
   getPDFInfo,
   htmlToPDF,
   imagesToPDF,
@@ -152,6 +153,16 @@ const featureConfig: Record<
     minFiles: 1,
     cta: "Protect PDF",
     hint: "Set a password required to open the PDF.",
+  },
+  "excel-to-pdf": {
+    accept: {
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+      "application/vnd.ms-excel.sheet.macroEnabled.12": [".xlsm"],
+    },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to PDF",
+    hint: "Upload an .xlsx workbook. Every sheet becomes pages, with its own number formats, colours, borders and merged cells.",
   },
   "page-numbers": {
     accept: { "application/pdf": [".pdf"] },
@@ -350,6 +361,12 @@ const ToolPage = () => {
           break;
         case "word-to-pdf":
           res = await wordToPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "excel-to-pdf":
+          res = await excelToPDF(inputFiles[0], (p, message) => {
             onProgress(p);
             if (message) setConvertStatus(message);
           });

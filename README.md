@@ -32,6 +32,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **Crop PDF** – drag a crop box; the content is kept, so it can be widened again
 - **PDF to JPG** – render pages to JPG or PNG at up to 300 dpi; more than one
   page comes back as a ZIP
+- **Excel to PDF** – every sheet, with its own number formats, fills, borders,
+  merged cells and column widths (`src/lib/excel-to-pdf/`)
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.
@@ -71,6 +73,10 @@ npm run lint     # lint the project
   in a script-free sandbox, `text-layer.ts` reads back where every word landed,
   `paginate.ts` chooses page breaks that never cut a line in half, and
   `render.ts` captures each page and writes the invisible text over it.
+- `src/lib/office/` – the shared Office engine: one document model, one layout
+  pass and one PDF emitter, plus the OOXML zip and XML readers. Each format has
+  its own extractor on top — `src/lib/word-to-pdf/` and `src/lib/excel-to-pdf/`
+  — whose only job is to produce that model.
 - `src/lib/pdf-pages/` – page-level operations: `organize.ts` rebuilds a
   document from an ordered plan (which every reorder, remove and extract goes
   through), `page-numbers.ts` and `crop.ts` sit on `geometry.ts`, which maps

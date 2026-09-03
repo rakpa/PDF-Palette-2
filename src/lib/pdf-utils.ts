@@ -4,6 +4,7 @@ import {
   compressWithGhostscript,
 } from "./ghostscript-compress";
 import { convertWordToPdfBrowser, WordToPdfError } from "./word-to-pdf-browser";
+import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
@@ -427,6 +428,24 @@ export async function wordToPDF(
 
 // Convert PDF to Word. This runs entirely in the browser, in development and
 // in production alike, so what you test locally is what ships.
+export async function excelToPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await convertExcelToPdfBrowser(file, onProgress);
+    return { success: true, blob, filename, message: "Workbook converted." };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof ExcelError || error instanceof Error
+          ? error.message
+          : "Could not convert this workbook.",
+    };
+  }
+}
+
 export async function pdfToWord(
   file: File,
   onProgress?: (progress: number, message?: string) => void

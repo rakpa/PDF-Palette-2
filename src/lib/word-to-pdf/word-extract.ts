@@ -12,8 +12,8 @@ import type {
   TableCellBlock,
   TableRowBlock,
   WordDocument,
-} from "./types";
-import { decodeUtf8, openZip, type ZipFile } from "./zip";
+} from "../office/types";
+import { decodeUtf8, openZip, type ZipFile } from "../office/zip";
 import {
   attr,
   descendants,
@@ -26,7 +26,7 @@ import {
   parseXml,
   twip,
   val,
-} from "./xml";
+} from "../office/xml";
 
 const LETTER_W = 612;
 const LETTER_H = 792;

@@ -53,7 +53,8 @@ export type ToolFeature =
   | "extract-pages"
   | "page-numbers"
   | "crop-pdf"
-  | "pdf-to-jpg";
+  | "pdf-to-jpg"
+  | "excel-to-pdf";
 
 export interface PDFTool {
   id: string;
@@ -162,7 +163,7 @@ export const pdfTools: PDFTool[] = [
     color: "green",
     category: ["convert-to"],
     route: "/excel-to-pdf",
-    comingSoon: true,
+    feature: "excel-to-pdf",
   },
   {
     id: "ppt-to-pdf",

@@ -1,6 +1,7 @@
 /**
- * Minimal ZIP reader for .docx packages (store + deflate).
- * Word files do not use ZIP64, encryption, or spanning archives.
+ * Minimal ZIP reader for Office packages (store + deflate).
+ * .docx, .xlsx and .pptx files do not use ZIP64, encryption, or spanning
+ * archives.
  */
 
 const LOCAL = 0x04034b50;

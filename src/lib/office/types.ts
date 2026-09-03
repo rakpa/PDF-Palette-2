@@ -1,10 +1,15 @@
 /**
- * Flow-first model of a Word document.
+ * The document model every Office format is read into.
+ *
+ * Word, Excel and PowerPoint arrive as different XML, but a paragraph is a
+ * paragraph and a table is a table — so each extractor's job is to produce
+ * this, and one layout pass and one emitter turn it into a PDF.
  *
  * Coordinates are in points (1/72 inch), origin at the top-left of the page,
  * y growing downwards — the same space the PDF emitter converts to pdf-lib's
- * bottom-left origin. Extract talks in Word's own units (twips / EMUs / half
- * points) and converts once, so layout and emit never see those.
+ * bottom-left origin. Each extractor talks in its own units (twips, EMUs,
+ * half points, spreadsheet character widths) and converts once, so layout and
+ * emit never see those.
  */
 
 export type Align = "left" | "center" | "right" | "justify";

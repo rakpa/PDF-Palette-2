@@ -1,7 +1,7 @@
 import { PDFDocument } from "pdf-lib";
-import { embedStandardFonts } from "./word-to-pdf/fonts";
-import { layoutDocument } from "./word-to-pdf/layout";
-import { emitPdf } from "./word-to-pdf/pdf-emit";
+import { embedStandardFonts } from "./office/fonts";
+import { layoutDocument } from "./office/layout";
+import { emitPdf } from "./office/pdf-emit";
 import { extractWordDocument } from "./word-to-pdf/word-extract";
 
 export class WordToPdfError extends Error {
