@@ -47,6 +47,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
   content is removed from the file rather than covered (`src/lib/pdf-redact/`)
 - **Compare PDF** – a word-level diff of two versions plus a per-page visual
   comparison (`src/lib/pdf-compare/`)
+- **OCR PDF** – scanned pages recognised in the tab with Tesseract, then given
+  an invisible text layer so they can be searched and copied (`src/lib/pdf-ocr/`)
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.
@@ -100,6 +102,10 @@ npm run lint     # lint the project
   between the page's own space and the one the reader sees on a rotated page.
 - `src/lib/pdf-to-image.ts` – renders pages with pdf.js and packs several into
   a ZIP with `src/lib/zip-write.ts`.
+- `src/lib/pdf-ocr/` – OCR: each page is rendered, recognised with Tesseract in
+  a worker, and an invisible Unicode text layer is written over the original
+  page. Worker, WASM cores and English traineddata are shipped next to the app
+  the same way Ghostscript is (`vite.tesseract.ts`).
 - `src/lib/pdf-editor/` – the editor engine behind Edit PDF and Sign PDF:
   `document.ts` opens and renders pages, `geometry.ts` maps between screen and
   PDF space, `state.ts` holds the document with undo/redo, and `export.ts`

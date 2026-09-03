@@ -4,6 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { ghostscriptAssetsPlugin } from "./vite.ghostscript";
 import { pdfjsWorkerPlugin } from "./vite.pdfjs";
+import { tesseractAssetsPlugin } from "./vite.tesseract";
 import { crossOriginIsolationPlugin } from "./vite.crossOriginIsolation";
 
 // https://vitejs.dev/config/
@@ -56,6 +57,7 @@ export default defineConfig(({ mode }) => ({
     crossOriginIsolationPlugin(),
     ghostscriptAssetsPlugin(),
     pdfjsWorkerPlugin(),
+    tesseractAssetsPlugin(),
     react(),
     mode === "development" && componentTagger(),
   ].filter(Boolean),

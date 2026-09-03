@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { warmupGhostscript } from "@/lib/ghostscript-compress";
+import { warmupOcr } from "@/lib/pdf-ocr/ocr";
 import { getToolByRoute, ToolFeature } from "@/lib/tools";
 import {
   CompressionLevel,
@@ -37,6 +38,7 @@ import {
   splitPDF,
   unlockPDF,
   wordToPDF,
+  ocrPDF,
 } from "@/lib/pdf-utils";
 import ToolPageLayout from "@/components/ToolPageLayout";
 import PdfEditor from "@/components/pdf-editor/PdfEditor";
@@ -217,6 +219,13 @@ const featureConfig: Record<
     cta: "Convert to PDF",
     hint: "Provide an HTML file or a URL.",
   },
+  ocr: {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Make searchable",
+    hint: "Upload a scanned PDF. Each page is recognised in your browser and the original look is kept, with a selectable text layer added.",
+  },
 };
 
 /** Parse "1-3, 5, 8-10" into page ranges. */
@@ -276,6 +285,13 @@ const ToolPage = () => {
     if (tool?.feature !== "compress") return;
     warmupGhostscript().catch(() => {
       // Warmup is best-effort; compress will retry loading the engine.
+    });
+  }, [tool?.feature]);
+
+  useEffect(() => {
+    if (tool?.feature !== "ocr") return;
+    warmupOcr().catch(() => {
+      // Warmup is best-effort; OCR will retry loading the engine.
     });
   }, [tool?.feature]);
 
@@ -488,6 +504,12 @@ const ToolPage = () => {
             }
           );
           break;
+        case "ocr":
+          res = await ocrPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
         case "split": {
           const parsed = parseRanges(ranges);
           if (ranges.trim() && parsed.length === 0) {
@@ -693,12 +715,16 @@ const ToolPage = () => {
               <ProgressBar
                 progress={progress}
                 label={
-                  tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word"
-                    ? convertStatus || "Converting…"
-                    : "Processing…"
+                  tool.feature === "ocr"
+                    ? convertStatus || "Recognising…"
+                    : tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word"
+                      ? convertStatus || "Converting…"
+                      : "Processing…"
                 }
                 indeterminate={
-                  (tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word") &&
+                  (tool.feature === "word-to-pdf" ||
+                    tool.feature === "pdf-to-word" ||
+                    tool.feature === "ocr") &&
                   progress === 0 &&
                   !convertStatus
                 }

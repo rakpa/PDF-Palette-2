@@ -16,6 +16,7 @@ import { addPageNumbers } from "./pdf-pages/page-numbers";
 import type { PageNumberOptions } from "./pdf-pages/page-numbers";
 import { pdfToImages } from "./pdf-to-image";
 import type { PdfToImageOptions } from "./pdf-to-image";
+import { ocrPdf, OcrError } from "./pdf-ocr/ocr";
 import type { CompressionLevel } from "./compression-types";
 
 export type { CompressionLevel };
@@ -567,6 +568,36 @@ export async function pdfToPpt(
     return {
       success: false,
       message: error instanceof Error ? error.message : "Could not convert this PDF.",
+    };
+  }
+}
+
+export async function ocrPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename, ocrPages, skippedPages, words } = await ocrPdf(file, onProgress);
+    let message: string;
+    if (ocrPages === 0 && skippedPages > 0) {
+      message = "This PDF is already searchable — nothing to recognise.";
+    } else if (words === 0) {
+      message = ocrPages === 1
+        ? "The page was scanned, but no readable text was found."
+        : "The pages were scanned, but no readable text was found.";
+    } else if (skippedPages > 0) {
+      message = `Made ${ocrPages} page${ocrPages === 1 ? "" : "s"} searchable. ${skippedPages} already had text.`;
+    } else {
+      message = `Made ${ocrPages} page${ocrPages === 1 ? "" : "s"} searchable.`;
+    }
+    return { success: true, blob, filename, message };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof OcrError || error instanceof Error
+          ? error.message
+          : "Could not recognise this PDF.",
     };
   }
 }

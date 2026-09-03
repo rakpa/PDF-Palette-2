@@ -21,6 +21,7 @@ import {
   FormInput,
   EyeOff,
   Scale,
+  ScanText,
   LucideIcon,
 } from "lucide-react";
 
@@ -63,7 +64,8 @@ export type ToolFeature =
   | "pdf-to-ppt"
   | "fill-forms"
   | "redact"
-  | "compare";
+  | "compare"
+  | "ocr";
 
 export interface PDFTool {
   id: string;
@@ -302,6 +304,17 @@ export const pdfTools: PDFTool[] = [
     isNew: true,
     route: "/compare-pdf",
     feature: "compare",
+  },
+  {
+    id: "ocr",
+    name: "OCR PDF",
+    description: "Make scanned pages searchable and selectable",
+    icon: ScanText,
+    color: "teal",
+    category: ["edit", "convert-from"],
+    isNew: true,
+    route: "/ocr-pdf",
+    feature: "ocr",
   },
 
   // Row 3
