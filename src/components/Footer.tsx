@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, Github, Twitter } from "lucide-react";
+import { FileText, Github } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -15,8 +15,8 @@ const Footer = () => {
               <span className="text-xl font-bold text-foreground">PDF Palette</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Free online PDF tools for everyone. All processing happens in your
-              browser - your files never leave your device.
+              Free online PDF tools. Almost all processing happens in your
+              browser — we do not take your files as customer data.
             </p>
           </div>
 
@@ -79,24 +79,24 @@ const Footer = () => {
             <h4 className="mb-4 font-semibold text-foreground">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
+                <Link to="/about" className="hover:text-foreground transition-colors">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
+                <Link to="/privacy" className="hover:text-foreground transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
+                <Link to="/terms" className="hover:text-foreground transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
+                <Link to="/contact" className="hover:text-foreground transition-colors">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -109,14 +109,11 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="#"
+              href="https://github.com/rakpa/PDF-Palette-2"
               className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Twitter className="h-5 w-5" />
-            </a>
-            <a
-              href="#"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              rel="noopener noreferrer"
+              target="_blank"
+              aria-label="PDF Palette on GitHub"
             >
               <Github className="h-5 w-5" />
             </a>

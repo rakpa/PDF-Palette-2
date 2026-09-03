@@ -1,0 +1,52 @@
+import { useEffect, type ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+interface LegalPageProps {
+  title: string;
+  description?: string;
+  updated?: string;
+  children: ReactNode;
+}
+
+const LegalPage = ({ title, description, updated, children }: LegalPageProps) => {
+  useEffect(() => {
+    const previous = document.title;
+    document.title = `${title} | PDF Palette`;
+    return () => {
+      document.title = previous;
+    };
+  }, [title]);
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="container mx-auto px-4 py-10 md:py-16 max-w-3xl">
+        <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
+          <Link to="/" className="hover:text-foreground transition-colors">
+            Home
+          </Link>
+          <ChevronRight className="h-4 w-4 shrink-0" />
+          <span className="text-foreground">{title}</span>
+        </nav>
+        <header className="mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">{title}</h1>
+          {description && (
+            <p className="mt-3 text-lg text-muted-foreground leading-relaxed">{description}</p>
+          )}
+          {updated && (
+            <p className="mt-2 text-sm text-muted-foreground">Last updated: {updated}</p>
+          )}
+        </header>
+        <article className="space-y-8 text-muted-foreground leading-relaxed [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h2]:mt-2 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-2 [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline">
+          {children}
+        </article>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default LegalPage;
