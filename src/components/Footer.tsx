@@ -25,13 +25,13 @@ const Footer = () => {
             <h4 className="mb-4 font-semibold text-foreground">Popular Tools</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/merge-pdf" className="hover:text-foreground transition-colors">
-                  Merge PDF
+                <Link to="/pdf-to-word" className="hover:text-foreground transition-colors">
+                  PDF to Word
                 </Link>
               </li>
               <li>
-                <Link to="/split-pdf" className="hover:text-foreground transition-colors">
-                  Split PDF
+                <Link to="/word-to-pdf" className="hover:text-foreground transition-colors">
+                  Word to PDF
                 </Link>
               </li>
               <li>
@@ -40,8 +40,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/pdf-to-word" className="hover:text-foreground transition-colors">
-                  PDF to Word
+                <Link to="/merge-pdf" className="hover:text-foreground transition-colors">
+                  Merge PDF
                 </Link>
               </li>
             </ul>
@@ -67,8 +67,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/word-to-pdf" className="hover:text-foreground transition-colors">
-                  Word to PDF
+                <Link to="/excel-to-pdf" className="hover:text-foreground transition-colors">
+                  Excel to PDF
                 </Link>
               </li>
             </ul>

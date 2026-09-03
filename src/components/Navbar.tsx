@@ -34,14 +34,14 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-1 md:flex">
-            <Link to="/merge-pdf">
+            <Link to="/pdf-to-word">
               <Button variant="ghost" size="sm">
-                Merge PDF
+                PDF to Word
               </Button>
             </Link>
-            <Link to="/split-pdf">
+            <Link to="/word-to-pdf">
               <Button variant="ghost" size="sm">
-                Split PDF
+                Word to PDF
               </Button>
             </Link>
             <Link to="/compress-pdf">
@@ -128,18 +128,18 @@ const Navbar = () => {
           >
             <div className="container mx-auto space-y-2 px-4 py-4">
               <Link
-                to="/merge-pdf"
+                to="/pdf-to-word"
                 className="block rounded-lg px-3 py-2 hover:bg-muted"
                 onClick={() => setIsOpen(false)}
               >
-                Merge PDF
+                PDF to Word
               </Link>
               <Link
-                to="/split-pdf"
+                to="/word-to-pdf"
                 className="block rounded-lg px-3 py-2 hover:bg-muted"
                 onClick={() => setIsOpen(false)}
               >
-                Split PDF
+                Word to PDF
               </Link>
               <Link
                 to="/compress-pdf"

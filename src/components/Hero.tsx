@@ -18,8 +18,8 @@ const Hero = () => {
           </h1>
 
           <p className="mx-auto mb-4 max-w-2xl text-sm text-muted-foreground md:mb-5 md:text-base">
-            Merge, split, compress, convert, and edit PDFs — free, fast, and ready
-            when you are.
+            Convert Word and PDF, compress, merge, split, and edit — free, fast,
+            and ready when you are.
           </p>
 
           <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground md:text-sm">
