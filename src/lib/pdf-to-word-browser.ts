@@ -1,4 +1,3 @@
-import { Document, Packer, type ISectionOptions } from "docx";
 import type { PDFPageProxy } from "pdfjs-dist";
 import {
   PdfReadError,
@@ -9,7 +8,7 @@ import {
   renderPageBitmap,
 } from "./pdf-to-word/read";
 import type { Box, PageLayout } from "./pdf-to-word/layout";
-import { sectionFor } from "./pdf-to-word/docx-emit";
+import { writeDocument } from "./pdf-to-word/docx-emit";
 import type { PdfImage } from "./pdf-to-word/types";
 
 export class PdfToWordError extends Error {
@@ -64,11 +63,14 @@ function unifyMargins(layouts: PageLayout[]): void {
 }
 
 /** Last resort for a page the layout engine cannot handle: a picture of it. */
-async function fallbackSection(page: PDFPageProxy, pageNumber: number): Promise<ISectionOptions> {
+async function fallbackPage(
+  page: PDFPageProxy,
+  pageNumber: number
+): Promise<{ layout: PageLayout; pageImage: PdfImage | null }> {
   const viewport = page.getViewport({ scale: 1 });
   const image = await renderPageBitmap(page, viewport.width, viewport.height);
-  return sectionFor(
-    {
+  return {
+    layout: {
       pageNumber,
       width: viewport.width,
       height: viewport.height,
@@ -81,10 +83,20 @@ async function fallbackSection(page: PDFPageProxy, pageNumber: number): Promise<
       body: [],
       scanned: true,
     },
-    image
-  );
+    pageImage: image,
+  };
 }
 
+function yieldUi(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+/**
+ * Rebuild a PDF as a Word document in the browser.
+ *
+ * Same shape as Word → PDF: extract, lay out, then emit with the Office
+ * package writer. The file never leaves the machine.
+ */
 export async function convertPdfToWordBrowser(
   file: File,
   onProgress?: ConversionProgress
@@ -100,7 +112,7 @@ export async function convertPdfToWordBrowser(
     throw new PdfToWordError("This PDF has no pages.", "empty");
   }
 
-  const pages: Array<{ layout: PageLayout; pageImage: PdfImage | null } | ISectionOptions> = [];
+  const pages: Array<{ layout: PageLayout; pageImage: PdfImage | null }> = [];
   const rasterCache = createImageRasterCache();
   try {
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
@@ -108,13 +120,14 @@ export async function convertPdfToWordBrowser(
         6 + (pageNumber / pdf.numPages) * 80,
         `Rebuilding page ${pageNumber} of ${pdf.numPages}…`
       );
+      await yieldUi();
       const page = await pdf.getPage(pageNumber);
       try {
         pages.push(await layoutPage(page, pageNumber, rasterCache));
       } catch (error) {
         console.warn(`pdf-to-word: page ${pageNumber} fell back to an image`, error);
         try {
-          pages.push(await fallbackSection(page, pageNumber));
+          pages.push(await fallbackPage(page, pageNumber));
         } catch {
           // Skip the page rather than losing the whole document.
         }
@@ -126,37 +139,20 @@ export async function convertPdfToWordBrowser(
     await release();
   }
 
-  const built = pages.filter(
-    (entry): entry is { layout: PageLayout; pageImage: PdfImage | null } => "layout" in entry
-  );
-  unifyMargins(built.map((entry) => entry.layout));
-
-  const sections: ISectionOptions[] = pages.map((entry) =>
-    "layout" in entry ? sectionFor(entry.layout, entry.pageImage) : entry
-  );
-
-  if (sections.length === 0) {
+  if (pages.length === 0) {
     throw new PdfToWordError("No page of this PDF could be converted.", "failed");
   }
 
+  unifyMargins(pages.map((entry) => entry.layout));
+
   onProgress?.(90, "Building Word document…");
-  const baseName = file.name.replace(/\.pdf$/i, "").trim() || "document";
-  const doc = new Document({
-    title: baseName,
-    description: "Converted from PDF by PDF Palette",
-    sections,
+  await yieldUi();
+  const bytes = await writeDocument(pages);
+  const blob = new Blob([bytes as unknown as BlobPart], {
+    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   });
 
-  let blob: Blob;
-  try {
-    blob = await Packer.toBlob(doc);
-  } catch {
-    const packed = await Packer.toArrayBuffer(doc);
-    blob = new Blob([packed], {
-      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    });
-  }
-
+  const baseName = file.name.replace(/\.pdf$/i, "").trim() || "document";
   onProgress?.(100, "Done");
   return { blob, filename: `${baseName}.docx` };
 }

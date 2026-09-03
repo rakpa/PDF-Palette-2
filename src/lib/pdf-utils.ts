@@ -16,7 +16,6 @@ import { addPageNumbers } from "./pdf-pages/page-numbers";
 import type { PageNumberOptions } from "./pdf-pages/page-numbers";
 import { pdfToImages } from "./pdf-to-image";
 import type { PdfToImageOptions } from "./pdf-to-image";
-import { ocrPdf, OcrError } from "./pdf-ocr/ocr";
 import type { CompressionLevel } from "./compression-types";
 
 export type { CompressionLevel };
@@ -576,6 +575,7 @@ export async function ocrPDF(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
+  const { ocrPdf, OcrError } = await import("./pdf-ocr/ocr");
   try {
     const { blob, filename, ocrPages, skippedPages, words } = await ocrPdf(file, onProgress);
     let message: string;

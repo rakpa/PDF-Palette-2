@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 
 import { warmupGhostscript } from "@/lib/ghostscript-compress";
-import { warmupOcr } from "@/lib/pdf-ocr/ocr";
 import { getToolByRoute, ToolFeature } from "@/lib/tools";
 import {
   CompressionLevel,
@@ -290,9 +289,17 @@ const ToolPage = () => {
 
   useEffect(() => {
     if (tool?.feature !== "ocr") return;
-    warmupOcr().catch(() => {
-      // Warmup is best-effort; OCR will retry loading the engine.
-    });
+    let cancelled = false;
+    import("@/lib/pdf-ocr/ocr")
+      .then(({ warmupOcr }) => {
+        if (!cancelled) return warmupOcr();
+      })
+      .catch(() => {
+        // Warmup is best-effort; OCR will retry loading the engine.
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [tool?.feature]);
 
   useEffect(() => {
