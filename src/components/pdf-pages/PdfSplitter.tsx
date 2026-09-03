@@ -348,7 +348,7 @@ const PdfSplitter = () => {
         </div>
       </div>
 
-      <aside className="w-full shrink-0 rounded-xl border border-border bg-card lg:sticky lg:top-4 lg:w-80">
+      <aside className="w-full shrink-0 rounded-xl border border-border bg-card lg:sticky lg:top-16 lg:w-80">
         <div className="border-b border-border px-4 py-3">
           <h2 className="text-lg font-semibold text-foreground">Split</h2>
         </div>

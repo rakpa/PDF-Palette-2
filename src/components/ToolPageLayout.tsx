@@ -31,30 +31,30 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
 
       <main className="flex-1">
         <section className="border-b border-border bg-gradient-to-br from-background to-muted/30">
-          <div className="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2">
-            <nav className="flex items-center gap-1 text-xs text-muted-foreground">
+          <div className="container mx-auto px-4 py-3 md:py-4">
+            <nav className="mb-2.5 flex items-center gap-1.5 text-sm text-muted-foreground">
               <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Home className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only">Home</span>
+                <Home className="h-4 w-4" />
+                Home
               </Link>
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight className="h-4 w-4" />
               <span className="text-foreground">{tool.name}</span>
             </nav>
 
-            <div className="flex min-w-0 flex-1 items-center gap-2.5">
+            <div className="flex items-start gap-3">
               <div
                 className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                  "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
                   colorClasses[tool.color]
                 )}
               >
                 <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-base font-bold leading-tight text-foreground md:text-lg">
+                <h1 className="text-lg font-bold leading-snug text-foreground md:text-xl">
                   {tool.name}
                 </h1>
-                <p className="truncate text-xs text-muted-foreground md:text-sm">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   {tool.description}
                 </p>
               </div>
@@ -62,7 +62,7 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
           </div>
         </section>
 
-        <section className="py-3">
+        <section className="py-5 md:py-6">
           <div className="container mx-auto px-4">
             {children}
           </div>
