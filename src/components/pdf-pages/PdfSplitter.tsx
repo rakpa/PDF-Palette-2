@@ -281,7 +281,7 @@ const PdfSplitter = () => {
             setError(null);
           }}
         />
-        <p className="text-center text-lg text-muted-foreground">
+        <p className="text-center text-base text-muted-foreground">
           Split a PDF by page ranges or into one file per page.
         </p>
         {loading && (
@@ -302,12 +302,12 @@ const PdfSplitter = () => {
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
       <div className="min-w-0 flex-1 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card px-3 py-2 text-lg text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card px-3 py-2 text-base text-muted-foreground">
           <span>
             {pageCount} page{pageCount === 1 ? "" : "s"}
             {tab === "pages" ? ` · ${pickedCount} selected` : ""}
           </span>
-          <Button variant="outline" size="sm" className="text-lg" onClick={reset}>
+          <Button variant="outline" size="sm" onClick={reset}>
             <RefreshCw className="mr-1.5 h-4 w-4" />
             Another file
           </Button>
@@ -341,16 +341,16 @@ const PdfSplitter = () => {
                     size={200}
                   />
                 </div>
-                <span className="text-base font-medium text-muted-foreground">{index + 1}</span>
+                <span className="text-sm font-medium text-muted-foreground">{index + 1}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      <aside className="w-full shrink-0 rounded-xl border border-border bg-card lg:sticky lg:top-16 lg:w-[22rem]">
+      <aside className="w-full shrink-0 rounded-xl border border-border bg-card lg:sticky lg:top-16 lg:w-80">
         <div className="border-b border-border px-4 py-3">
-          <h2 className="text-2xl font-semibold text-foreground">Split</h2>
+          <h2 className="text-xl font-semibold text-foreground">Split</h2>
         </div>
 
         <div className="space-y-5 p-4">
@@ -372,7 +372,7 @@ const PdfSplitter = () => {
           {tab === "range" ? (
             <>
               <div className="space-y-2">
-                <p className="text-lg font-medium text-foreground">Range mode:</p>
+                <p className="text-base font-medium text-foreground">Range mode:</p>
                 <div className="grid grid-cols-2 gap-2">
                   <KindButton
                     active={rangeKind === "custom"}
@@ -392,7 +392,7 @@ const PdfSplitter = () => {
                   {rows.map((row, index) => (
                     <div key={row.id} className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1 text-lg font-medium">
+                        <div className="flex items-center gap-1 text-base font-medium">
                           <div className="flex flex-col">
                             <button
                               type="button"
@@ -428,23 +428,23 @@ const PdfSplitter = () => {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <Label className="text-base text-muted-foreground">from page</Label>
+                          <Label className="text-sm text-muted-foreground">from page</Label>
                           <Input
                             type="number"
                             min={1}
                             max={pageCount}
-                            className="md:text-lg"
+                            className="md:text-base"
                             value={row.from}
                             onChange={(event) => updateRow(row.id, "from", event.target.value)}
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-base text-muted-foreground">to</Label>
+                          <Label className="text-sm text-muted-foreground">to</Label>
                           <Input
                             type="number"
                             min={1}
                             max={pageCount}
-                            className="md:text-lg"
+                            className="md:text-base"
                             value={row.to}
                             onChange={(event) => updateRow(row.id, "to", event.target.value)}
                           />
@@ -455,7 +455,7 @@ const PdfSplitter = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-primary text-lg text-primary hover:bg-primary/5 hover:text-primary"
+                    className="w-full border-primary text-base text-primary hover:bg-primary/5 hover:text-primary"
                     onClick={() =>
                       setRows((current) => [
                         ...current,
@@ -476,22 +476,22 @@ const PdfSplitter = () => {
                       type="number"
                       min={1}
                       max={pageCount}
-                      className="md:text-lg"
+                      className="md:text-base"
                       value={every}
                       onChange={(event) =>
                         setEvery(parsePage(event.target.value, every, pageCount))
                       }
                     />
-                    <span className="text-lg text-muted-foreground">pages</span>
+                    <span className="text-base text-muted-foreground">pages</span>
                   </div>
-                  <p className="text-base text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Creates {fixedRanges(pageCount, every).length} file
                     {fixedRanges(pageCount, every).length === 1 ? "" : "s"}.
                   </p>
                 </div>
               )}
 
-              <label className="flex items-start gap-2 text-lg leading-snug">
+              <label className="flex items-start gap-2 text-base leading-snug">
                 <Checkbox
                   checked={mergeRanges}
                   onCheckedChange={(value) => setMergeRanges(value === true)}
@@ -503,7 +503,7 @@ const PdfSplitter = () => {
           ) : (
             <>
               <div className="space-y-2">
-                <p className="text-lg font-medium text-foreground">Extract mode:</p>
+                <p className="text-base font-medium text-foreground">Extract mode:</p>
                 <div className="grid grid-cols-2 gap-2">
                   <KindButton
                     active={extractMode === "all"}
@@ -519,19 +519,19 @@ const PdfSplitter = () => {
               </div>
               {extractMode === "select" && (
                 <div className="space-y-1.5">
-                  <Label htmlFor="pick-pages" className="text-base text-muted-foreground">
+                  <Label htmlFor="pick-pages" className="text-sm text-muted-foreground">
                     Pages
                   </Label>
                   <Input
                     id="pick-pages"
                     placeholder="e.g. 1-10, 15, 20-22"
-                    className="md:text-lg"
+                    className="md:text-base"
                     value={pageQuery}
                     onChange={(event) => applyPageQuery(event.target.value)}
                   />
                 </div>
               )}
-              <div className="flex items-start gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-lg text-sky-900 dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-100">
+              <div className="flex items-start gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-base text-sky-900 dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-100">
                 <Info className="mt-0.5 h-4 w-4 shrink-0" />
                 {extractMode === "select" ? (
                   <p>
@@ -558,12 +558,12 @@ const PdfSplitter = () => {
                 )}
               </div>
               {extractMode === "select" && pickedCount === 0 && (
-                <p className="text-lg text-destructive">Select at least one page.</p>
+                <p className="text-base text-destructive">Select at least one page.</p>
               )}
             </>
           )}
 
-          <Button className="w-full text-lg" size="lg" onClick={split} disabled={!canSplit}>
+          <Button className="w-full text-base" size="lg" onClick={split} disabled={!canSplit}>
             {saving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -593,7 +593,7 @@ function ModeTab({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative flex flex-col items-center gap-1.5 rounded-lg border px-2 py-3 text-base font-medium transition",
+        "relative flex flex-col items-center gap-1.5 rounded-lg border px-2 py-3 text-sm font-medium transition",
         active
           ? "border-primary bg-primary/5 text-foreground"
           : "border-border bg-muted/40 text-muted-foreground hover:border-primary/40"
@@ -624,7 +624,7 @@ function KindButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-lg border px-2 py-2.5 text-lg font-medium transition",
+        "rounded-lg border px-2 py-2.5 text-base font-medium transition",
         active
           ? "border-primary bg-background text-primary"
           : "border-transparent bg-muted text-muted-foreground hover:bg-muted/80"
