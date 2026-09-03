@@ -59,6 +59,36 @@ function parsePage(raw: string, fallback: number, total: number): number {
   return clampPage(Number.isNaN(n) ? fallback : n, total);
 }
 
+/** Parse "1-10, 15, 20-22" into a picked mask. */
+function parseSelection(input: string, total: number): boolean[] {
+  const picked = Array.from({ length: total }, () => false);
+  for (const chunk of input.split(",")) {
+    const text = chunk.trim();
+    if (!text) continue;
+    const [a, b] = text.split("-").map((n) => Number.parseInt(n.trim(), 10));
+    if (Number.isNaN(a)) continue;
+    const end = b === undefined || Number.isNaN(b) ? a : b;
+    for (let n = Math.max(1, a); n <= Math.min(total, end); n++) picked[n - 1] = true;
+  }
+  return picked;
+}
+
+function formatSelection(picked: boolean[]): string {
+  const runs: string[] = [];
+  let start = -1;
+  for (let i = 0; i <= picked.length; i++) {
+    const on = i < picked.length && picked[i];
+    if (on && start < 0) start = i;
+    if (!on && start >= 0) {
+      const from = start + 1;
+      const to = i;
+      runs.push(from === to ? `${from}` : `${from}-${to}`);
+      start = -1;
+    }
+  }
+  return runs.join(", ");
+}
+
 const PdfSplitter = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [loaded, setLoaded] = useState<LoadedPdf | null>(null);
@@ -72,6 +102,7 @@ const PdfSplitter = () => {
   const [every, setEvery] = useState(1);
   const [extractMode, setExtractMode] = useState<ExtractMode>("all");
   const [picked, setPicked] = useState<boolean[]>([]);
+  const [pageQuery, setPageQuery] = useState("");
   const loadedRef = useRef<LoadedPdf | null>(null);
 
   useEffect(() => {
@@ -98,6 +129,7 @@ const PdfSplitter = () => {
         const total = result.pages.length;
         setRows([{ id: newRangeId(), from: 1, to: total }]);
         setPicked(Array.from({ length: total }, () => true));
+        setPageQuery("");
         setExtractMode("all");
         setTab("range");
         setRangeKind("custom");
@@ -141,23 +173,44 @@ const PdfSplitter = () => {
     return customRanges;
   }, [tab, pageRanges, rangeKind, pageCount, every, customRanges]);
 
-  const willMerge = tab === "range" && mergeRanges;
+  const willMerge =
+    (tab === "range" && mergeRanges) || (tab === "pages" && extractMode === "select");
   const outputCount = willMerge ? (activeRanges.length > 0 ? 1 : 0) : activeRanges.length;
   const pickedCount = picked.filter(Boolean).length;
 
   const canSplit = !!loaded && !!file && !saving && outputCount > 0;
 
+  const applyPicked = (next: boolean[]) => {
+    setPicked(next);
+    setPageQuery(formatSelection(next));
+  };
+
   const setExtract = (mode: ExtractMode) => {
     setExtractMode(mode);
     if (mode === "all") {
-      setPicked((current) => current.map(() => true));
+      applyPicked(Array.from({ length: pageCount }, () => true));
+    } else {
+      applyPicked(Array.from({ length: pageCount }, () => false));
     }
   };
 
   const togglePage = (index: number) => {
+    const leavingAll = extractMode === "all" || tab !== "pages";
     if (tab !== "pages") setTab("pages");
     setExtractMode("select");
-    setPicked((current) => current.map((on, i) => (i === index ? !on : on)));
+    setPicked((current) => {
+      const next = leavingAll
+        ? current.map((_, i) => i === index)
+        : current.map((on, i) => (i === index ? !on : on));
+      setPageQuery(formatSelection(next));
+      return next;
+    });
+  };
+
+  const applyPageQuery = (text: string) => {
+    setPageQuery(text);
+    setExtractMode("select");
+    setPicked(parseSelection(text, pageCount));
   };
 
   const updateRow = (id: number, key: "from" | "to", raw: string) => {
@@ -213,6 +266,7 @@ const PdfSplitter = () => {
     setFiles([]);
     setError(null);
     setPicked([]);
+    setPageQuery("");
   };
 
   if (!loaded) {
@@ -461,15 +515,42 @@ const PdfSplitter = () => {
                   />
                 </div>
               </div>
+              {extractMode === "select" && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="pick-pages" className="text-xs text-muted-foreground">
+                    Pages
+                  </Label>
+                  <Input
+                    id="pick-pages"
+                    placeholder="e.g. 1-10, 15, 20-22"
+                    value={pageQuery}
+                    onChange={(event) => applyPageQuery(event.target.value)}
+                  />
+                </div>
+              )}
               <div className="flex items-start gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900 dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-100">
                 <Info className="mt-0.5 h-4 w-4 shrink-0" />
-                <p>
-                  Selected pages will be converted into separate PDF files.{" "}
-                  <strong>
-                    {outputCount} PDF{outputCount === 1 ? "" : "s"}
-                  </strong>{" "}
-                  will be created.
-                </p>
+                {extractMode === "select" ? (
+                  <p>
+                    {pickedCount === 0
+                      ? "No pages selected. Type a range such as 1-10, or click pages in the grid."
+                      : (
+                        <>
+                          Selected pages will be extracted into{" "}
+                          <strong>one PDF</strong>
+                          {` (${pickedCount} page${pickedCount === 1 ? "" : "s"})`}.
+                        </>
+                      )}
+                  </p>
+                ) : (
+                  <p>
+                    Every page will be saved as its own PDF.{" "}
+                    <strong>
+                      {outputCount} PDF{outputCount === 1 ? "" : "s"}
+                    </strong>{" "}
+                    will be created.
+                  </p>
+                )}
               </div>
               {extractMode === "select" && pickedCount === 0 && (
                 <p className="text-sm text-destructive">Select at least one page.</p>
