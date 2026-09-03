@@ -62,27 +62,79 @@ export async function mergePDFs(
   }
 }
 
+export type SplitRange = { start: number; end: number };
+
+export type SplitPdfOptions = {
+  /** Combine every range into one PDF instead of one file per range. */
+  merge?: boolean;
+  baseName?: string;
+};
+
+function indicesForRange(range: SplitRange, pageCount: number): number[] {
+  const indices: number[] = [];
+  for (let p = range.start - 1; p < range.end; p++) {
+    if (p >= 0 && p < pageCount) indices.push(p);
+  }
+  return indices;
+}
+
+async function pdfFromIndices(
+  source: Awaited<ReturnType<typeof PDFDocument.load>>,
+  pageIndices: number[]
+): Promise<Blob> {
+  const newPdf = await PDFDocument.create();
+  const pages = await newPdf.copyPages(source, pageIndices);
+  pages.forEach((page) => newPdf.addPage(page));
+  const pdfBytes = await newPdf.save();
+  return new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
+}
+
+function rangeLabel(range: SplitRange): string {
+  return range.start === range.end ? `${range.start}` : `${range.start}-${range.end}`;
+}
+
 // Split PDF into individual pages or ranges
 export async function splitPDF(
   file: File,
-  ranges: { start: number; end: number }[],
-  onProgress?: (progress: number) => void
+  ranges: SplitRange[],
+  onProgress?: (progress: number) => void,
+  options?: SplitPdfOptions
 ): Promise<ProcessingResult[]> {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await PDFDocument.load(arrayBuffer);
     const pageCount = pdf.getPageCount();
+    const base = options?.baseName?.replace(/\.pdf$/i, "") || "split";
     const results: ProcessingResult[] = [];
+
+    if (options?.merge) {
+      const pageIndices: number[] = [];
+      for (const range of ranges) {
+        pageIndices.push(...indicesForRange(range, pageCount));
+      }
+      if (pageIndices.length === 0) {
+        return [
+          {
+            success: false,
+            message: `Those pages are out of range (document has ${pageCount} page${pageCount === 1 ? "" : "s"}).`,
+          },
+        ];
+      }
+      const blob = await pdfFromIndices(pdf, pageIndices);
+      onProgress?.(100);
+      return [
+        {
+          success: true,
+          message: `Extracted ${pageIndices.length} page${pageIndices.length === 1 ? "" : "s"} into one PDF.`,
+          blob,
+          filename: `${base}_ranges.pdf`,
+        },
+      ];
+    }
 
     for (let i = 0; i < ranges.length; i++) {
       const range = ranges[i];
-      const pageIndices = [];
-
-      for (let p = range.start - 1; p < range.end; p++) {
-        if (p >= 0 && p < pageCount) {
-          pageIndices.push(p);
-        }
-      }
+      const pageIndices = indicesForRange(range, pageCount);
 
       // Skip ranges that don't map to any real page instead of emitting an empty PDF.
       if (pageIndices.length === 0) {
@@ -94,23 +146,17 @@ export async function splitPDF(
         continue;
       }
 
-      const newPdf = await PDFDocument.create();
-      const pages = await newPdf.copyPages(pdf, pageIndices);
-      pages.forEach((page) => newPdf.addPage(page));
-      
-      const pdfBytes = await newPdf.save();
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
-      
+      const blob = await pdfFromIndices(pdf, pageIndices);
       results.push({
         success: true,
         message: `Pages ${range.start}-${range.end} extracted`,
         blob,
-        filename: `split_${range.start}-${range.end}.pdf`,
+        filename: `${base}_${rangeLabel(range)}.pdf`,
       });
-      
+
       onProgress?.(((i + 1) / ranges.length) * 100);
     }
-    
+
     return results;
   } catch (error) {
     return [{
