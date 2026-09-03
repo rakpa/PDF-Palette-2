@@ -24,6 +24,14 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
   given the password
 - **HTML to PDF** – lay an uploaded HTML file out with the browser's own engine
   and capture it, with a real, searchable text layer (`src/lib/html-to-pdf/`)
+- **Organize PDF** – reorder pages by dragging, and rotate, duplicate or delete
+  any of them
+- **Remove Pages** / **Extract Pages** – pick pages on the page itself, or by
+  typing ranges; the two stay in step
+- **Add Page Numbers** – position, format, starting number, range and face
+- **Crop PDF** – drag a crop box; the content is kept, so it can be widened again
+- **PDF to JPG** – render pages to JPG or PNG at up to 300 dpi; more than one
+  page comes back as a ZIP
 
 **Word → PDF** uses a small local service that drives LibreOffice, and the
 HTML → PDF *URL* field uses it too — a tab cannot read another site's HTML.
@@ -63,6 +71,12 @@ npm run lint     # lint the project
   in a script-free sandbox, `text-layer.ts` reads back where every word landed,
   `paginate.ts` chooses page breaks that never cut a line in half, and
   `render.ts` captures each page and writes the invisible text over it.
+- `src/lib/pdf-pages/` – page-level operations: `organize.ts` rebuilds a
+  document from an ordered plan (which every reorder, remove and extract goes
+  through), `page-numbers.ts` and `crop.ts` sit on `geometry.ts`, which maps
+  between the page's own space and the one the reader sees on a rotated page.
+- `src/lib/pdf-to-image.ts` – renders pages with pdf.js and packs several into
+  a ZIP with `src/lib/zip-write.ts`.
 - `src/lib/pdf-editor/` – the editor engine behind Edit PDF and Sign PDF:
   `document.ts` opens and renders pages, `geometry.ts` maps between screen and
   PDF space, `state.ts` holds the document with undo/redo, and `export.ts`

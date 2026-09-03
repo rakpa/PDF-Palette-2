@@ -13,6 +13,11 @@ import {
   PenTool,
   Lock,
   Unlock,
+  Crop,
+  Hash,
+  LayoutGrid,
+  Trash2,
+  FileOutput,
   LucideIcon,
 } from "lucide-react";
 
@@ -42,7 +47,13 @@ export type ToolFeature =
   | "protect-pdf"
   | "html-to-pdf"
   | "edit-pdf"
-  | "sign-pdf";
+  | "sign-pdf"
+  | "organize-pages"
+  | "remove-pages"
+  | "extract-pages"
+  | "page-numbers"
+  | "crop-pdf"
+  | "pdf-to-jpg";
 
 export interface PDFTool {
   id: string;
@@ -182,7 +193,7 @@ export const pdfTools: PDFTool[] = [
     color: "yellow",
     category: ["convert-from"],
     route: "/pdf-to-jpg",
-    comingSoon: true,
+    feature: "pdf-to-jpg",
   },
   {
     id: "rotate",
@@ -193,6 +204,61 @@ export const pdfTools: PDFTool[] = [
     category: ["organize"],
     route: "/rotate-pdf",
     feature: "rotate",
+  },
+  {
+    id: "organize",
+    name: "Organize PDF",
+    description: "Reorder, rotate, duplicate and delete pages visually",
+    icon: LayoutGrid,
+    color: "purple",
+    category: ["organize"],
+    isNew: true,
+    route: "/organize-pdf",
+    feature: "organize-pages",
+  },
+  {
+    id: "remove-pages",
+    name: "Remove Pages",
+    description: "Delete the pages you don't want to keep",
+    icon: Trash2,
+    color: "coral",
+    category: ["organize"],
+    isNew: true,
+    route: "/remove-pages",
+    feature: "remove-pages",
+  },
+  {
+    id: "extract-pages",
+    name: "Extract Pages",
+    description: "Pull selected pages out into a new PDF",
+    icon: FileOutput,
+    color: "teal",
+    category: ["organize"],
+    isNew: true,
+    route: "/extract-pages",
+    feature: "extract-pages",
+  },
+  {
+    id: "page-numbers",
+    name: "Add Page Numbers",
+    description: "Number pages, with your own position and format",
+    icon: Hash,
+    color: "blue",
+    category: ["edit"],
+    isNew: true,
+    route: "/page-numbers",
+    feature: "page-numbers",
+  },
+  {
+    id: "crop",
+    name: "Crop PDF",
+    description: "Trim margins and set a new visible page area",
+    icon: Crop,
+    color: "green",
+    category: ["edit"],
+    isNew: true,
+    route: "/crop-pdf",
+    feature: "crop-pdf",
   },
 
   // Row 3

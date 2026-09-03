@@ -8,6 +8,10 @@ import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
+import { addPageNumbers } from "./pdf-pages/page-numbers";
+import type { PageNumberOptions } from "./pdf-pages/page-numbers";
+import { pdfToImages } from "./pdf-to-image";
+import type { PdfToImageOptions } from "./pdf-to-image";
 import type { CompressionLevel } from "./compression-types";
 
 export type { CompressionLevel };
@@ -455,6 +459,48 @@ export async function pdfToWord(
 }
 
 // Convert images to PDF
+export async function addPageNumbersToPDF(
+  file: File,
+  options: PageNumberOptions,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    onProgress?.(20, "Reading PDF…");
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    onProgress?.(55, "Numbering pages…");
+    const output = await addPageNumbers(bytes, options);
+    onProgress?.(100, "Done");
+    return {
+      success: true,
+      blob: new Blob([output as unknown as BlobPart], { type: "application/pdf" }),
+      filename: `${file.name.replace(/\.pdf$/i, "") || "document"}_numbered.pdf`,
+      message: "Page numbers added.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not number this PDF.",
+    };
+  }
+}
+
+export async function pdfToImageFiles(
+  file: File,
+  options: PdfToImageOptions,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    onProgress?.(8, "Reading PDF…");
+    const { blob, filename } = await pdfToImages(file, options, onProgress);
+    return { success: true, blob, filename, message: "Images ready." };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not convert this PDF.",
+    };
+  }
+}
+
 export async function imagesToPDF(
   files: File[],
   onProgress?: (progress: number) => void

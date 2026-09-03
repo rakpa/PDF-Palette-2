@@ -18,6 +18,7 @@ import { getToolByRoute, ToolFeature } from "@/lib/tools";
 import {
   CompressionLevel,
   ProcessingResult,
+  addPageNumbersToPDF,
   addWatermark,
   compressPDF,
   downloadResult,
@@ -25,6 +26,7 @@ import {
   htmlToPDF,
   imagesToPDF,
   mergePDFs,
+  pdfToImageFiles,
   pdfToWord,
   protectPDFWithPassword,
   rotatePDF,
@@ -34,6 +36,11 @@ import {
 } from "@/lib/pdf-utils";
 import ToolPageLayout from "@/components/ToolPageLayout";
 import PdfEditor from "@/components/pdf-editor/PdfEditor";
+import PageOrganizer from "@/components/pdf-pages/PageOrganizer";
+import PdfCropper from "@/components/pdf-pages/PdfCropper";
+import { DEFAULT_PAGE_NUMBERS } from "@/lib/pdf-pages/page-numbers";
+import type { NumberPosition, PageNumberOptions } from "@/lib/pdf-pages/page-numbers";
+import type { PdfToImageOptions } from "@/lib/pdf-to-image";
 import FileUploader, { UploadedFile } from "@/components/FileUploader";
 import ProgressBar from "@/components/ProgressBar";
 import NotFound from "./NotFound";
@@ -54,8 +61,17 @@ import {
  * Per-feature upload constraints for the one-shot tools. The editor features
  * run their own interactive flow and never reach this table.
  */
+/** Tools that own their whole surface rather than the upload-and-convert flow. */
+type InteractiveFeature =
+  | "edit-pdf"
+  | "sign-pdf"
+  | "organize-pages"
+  | "remove-pages"
+  | "extract-pages"
+  | "crop-pdf";
+
 const featureConfig: Record<
-  Exclude<ToolFeature, "edit-pdf" | "sign-pdf">,
+  Exclude<ToolFeature, InteractiveFeature>,
   {
     accept: Record<string, string[]>;
     maxFiles: number;
@@ -137,6 +153,20 @@ const featureConfig: Record<
     cta: "Protect PDF",
     hint: "Set a password required to open the PDF.",
   },
+  "page-numbers": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Add page numbers",
+    hint: "Choose where the number sits and how it reads.",
+  },
+  "pdf-to-jpg": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to images",
+    hint: "Every page becomes an image. More than one page comes back as a ZIP.",
+  },
   "html-to-pdf": {
     accept: { "text/html": [".html", ".htm"] },
     maxFiles: 1,
@@ -154,9 +184,10 @@ function parseRanges(input: string): { start: number; end: number }[] {
     .filter(Boolean)
     .map((chunk) => {
       const [a, b] = chunk.split("-").map((n) => parseInt(n.trim(), 10));
-      const start = a;
-      const end = Number.isNaN(b) ? a : b;
-      return { start, end };
+      // A lone page has no second number at all, and `Number.isNaN` says
+      // nothing about `undefined` — so test for it before falling back.
+      const end = b === undefined || Number.isNaN(b) ? a : b;
+      return { start: a, end };
     })
     .filter((r) => !Number.isNaN(r.start) && r.start > 0 && r.end >= r.start);
 }
@@ -182,11 +213,17 @@ const ToolPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [htmlUrl, setHtmlUrl] = useState("");
+  const [pageNumbers, setPageNumbers] = useState<PageNumberOptions>(DEFAULT_PAGE_NUMBERS);
+  const [imageOptions, setImageOptions] = useState<PdfToImageOptions>({
+    format: "jpg",
+    dpi: 150,
+    quality: 0.92,
+  });
 
   const config = useMemo(
     () =>
-      tool?.feature && tool.feature !== "edit-pdf" && tool.feature !== "sign-pdf"
-        ? featureConfig[tool.feature]
+      tool?.feature && tool.feature in featureConfig
+        ? featureConfig[tool.feature as keyof typeof featureConfig]
         : undefined,
     [tool]
   );
@@ -218,6 +255,36 @@ const ToolPage = () => {
     return (
       <ToolPageLayout tool={tool}>
         <PdfEditor mode={tool.feature === "sign-pdf" ? "sign" : "edit"} />
+      </ToolPageLayout>
+    );
+  }
+
+  // Choosing pages, or a crop, is a thing you do by looking at the document —
+  // so these tools show it rather than asking for typed page numbers.
+  if (
+    tool.feature === "organize-pages" ||
+    tool.feature === "remove-pages" ||
+    tool.feature === "extract-pages"
+  ) {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PageOrganizer
+          mode={
+            tool.feature === "organize-pages"
+              ? "organize"
+              : tool.feature === "remove-pages"
+                ? "remove"
+                : "extract"
+          }
+        />
+      </ToolPageLayout>
+    );
+  }
+
+  if (tool.feature === "crop-pdf") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfCropper />
       </ToolPageLayout>
     );
   }
@@ -305,6 +372,18 @@ const ToolPage = () => {
             break;
           }
           res = await protectPDFWithPassword(inputFiles[0], password, (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "page-numbers":
+          res = await addPageNumbersToPDF(inputFiles[0], pageNumbers, (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "pdf-to-jpg":
+          res = await pdfToImageFiles(inputFiles[0], imageOptions, (p, message) => {
             onProgress(p);
             if (message) setConvertStatus(message);
           });
@@ -458,6 +537,14 @@ const ToolPage = () => {
                   />
                 )}
               </div>
+            )}
+
+            {tool.feature === "page-numbers" && (
+              <PageNumberOptionsPanel value={pageNumbers} onChange={setPageNumbers} />
+            )}
+
+            {tool.feature === "pdf-to-jpg" && (
+              <ImageOptionsPanel value={imageOptions} onChange={setImageOptions} />
             )}
 
             {(tool.feature === "unlock-pdf" ||
@@ -724,6 +811,211 @@ const ConversionServiceStatus = ({
     </div>
   );
 };
+
+const POSITIONS: Array<{ id: NumberPosition; label: string }> = [
+  { id: "top-left", label: "Top left" },
+  { id: "top-center", label: "Top centre" },
+  { id: "top-right", label: "Top right" },
+  { id: "bottom-left", label: "Bottom left" },
+  { id: "bottom-center", label: "Bottom centre" },
+  { id: "bottom-right", label: "Bottom right" },
+];
+
+const FORMATS: Array<{ id: string; label: string }> = [
+  { id: "{n}", label: "1" },
+  { id: "{n} / {N}", label: "1 / 10" },
+  { id: "Page {n} of {N}", label: "Page 1 of 10" },
+  { id: "- {n} -", label: "- 1 -" },
+];
+
+const PageNumberOptionsPanel = ({
+  value,
+  onChange,
+}: {
+  value: PageNumberOptions;
+  onChange: (next: PageNumberOptions) => void;
+}) => {
+  const set = <K extends keyof PageNumberOptions>(key: K, next: PageNumberOptions[K]) =>
+    onChange({ ...value, [key]: next });
+
+  return (
+    <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+      <div className="space-y-2">
+        <Label>Position</Label>
+        <div className="grid grid-cols-3 gap-2">
+          {POSITIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => set("position", option.id)}
+              className={cn(
+                "rounded-lg border px-2 py-2 text-xs transition",
+                value.position === option.id
+                  ? "border-primary bg-primary/10 font-medium text-foreground"
+                  : "border-border text-muted-foreground hover:border-primary/40"
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Format</Label>
+        <div className="flex flex-wrap gap-2">
+          {FORMATS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => set("format", option.id)}
+              className={cn(
+                "rounded-lg border px-3 py-1.5 text-xs transition",
+                value.format === option.id
+                  ? "border-primary bg-primary/10 font-medium text-foreground"
+                  : "border-border text-muted-foreground hover:border-primary/40"
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="pn-start" className="text-xs">
+            Start at
+          </Label>
+          <Input
+            id="pn-start"
+            type="number"
+            min={0}
+            value={value.startAt}
+            onChange={(e) => set("startAt", Math.max(0, Number(e.target.value) || 0))}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="pn-from" className="text-xs">
+            First page
+          </Label>
+          <Input
+            id="pn-from"
+            type="number"
+            min={1}
+            value={value.fromPage}
+            onChange={(e) => set("fromPage", Math.max(1, Number(e.target.value) || 1))}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="pn-to" className="text-xs">
+            Last page
+          </Label>
+          <Input
+            id="pn-to"
+            type="number"
+            min={0}
+            placeholder="End"
+            value={value.toPage || ""}
+            onChange={(e) => set("toPage", Math.max(0, Number(e.target.value) || 0))}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="pn-size" className="text-xs">
+            Text size
+          </Label>
+          <Input
+            id="pn-size"
+            type="number"
+            min={4}
+            max={72}
+            value={value.fontSize}
+            onChange={(e) => set("fontSize", Number(e.target.value) || 11)}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {(["sans", "serif", "mono"] as const).map((face) => (
+          <button
+            key={face}
+            type="button"
+            onClick={() => set("face", face)}
+            className={cn(
+              "rounded-lg border px-3 py-1.5 text-xs capitalize transition",
+              value.face === face
+                ? "border-primary bg-primary/10 font-medium text-foreground"
+                : "border-border text-muted-foreground hover:border-primary/40"
+            )}
+          >
+            {face}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ImageOptionsPanel = ({
+  value,
+  onChange,
+}: {
+  value: PdfToImageOptions;
+  onChange: (next: PdfToImageOptions) => void;
+}) => (
+  <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+    <div className="space-y-2">
+      <Label>Format</Label>
+      <div className="flex gap-2">
+        {(["jpg", "png"] as const).map((format) => (
+          <button
+            key={format}
+            type="button"
+            onClick={() => onChange({ ...value, format })}
+            className={cn(
+              "rounded-lg border px-4 py-2 text-sm uppercase transition",
+              value.format === format
+                ? "border-primary bg-primary/10 font-medium text-foreground"
+                : "border-border text-muted-foreground hover:border-primary/40"
+            )}
+          >
+            {format}
+          </button>
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {value.format === "png"
+          ? "Lossless, and keeps crisp edges — larger files."
+          : "Smaller files, ideal for photos and scans."}
+      </p>
+    </div>
+
+    <div className="space-y-2">
+      <Label>Quality</Label>
+      <div className="flex flex-wrap gap-2">
+        {[
+          { dpi: 96, label: "Screen · 96 dpi" },
+          { dpi: 150, label: "Good · 150 dpi" },
+          { dpi: 300, label: "Print · 300 dpi" },
+        ].map((option) => (
+          <button
+            key={option.dpi}
+            type="button"
+            onClick={() => onChange({ ...value, dpi: option.dpi })}
+            className={cn(
+              "rounded-lg border px-3 py-1.5 text-xs transition",
+              value.dpi === option.dpi
+                ? "border-primary bg-primary/10 font-medium text-foreground"
+                : "border-border text-muted-foreground hover:border-primary/40"
+            )}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: boolean }) => {
   // Every tool now runs inside the tab, except fetching a URL for HTML → PDF.
