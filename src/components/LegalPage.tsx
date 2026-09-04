@@ -1,8 +1,9 @@
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { DEFAULT_DESCRIPTION, useSeo } from "@/lib/seo";
 
 interface LegalPageProps {
   title: string;
@@ -12,13 +13,10 @@ interface LegalPageProps {
 }
 
 const LegalPage = ({ title, description, updated, children }: LegalPageProps) => {
-  useEffect(() => {
-    const previous = document.title;
-    document.title = `${title} | PDF Palette`;
-    return () => {
-      document.title = previous;
-    };
-  }, [title]);
+  useSeo({
+    title: `${title} | PDF Palette`,
+    description: description ?? DEFAULT_DESCRIPTION,
+  });
 
   return (
     <div className="min-h-screen bg-background">

@@ -2,8 +2,10 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
 import { PDFTool } from "@/lib/tools";
+import { getToolContent, useSeo } from "@/lib/seo";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import ToolSeoContent from "./ToolSeoContent";
 import { cn } from "@/lib/utils";
 
 interface ToolPageLayoutProps {
@@ -24,6 +26,13 @@ const colorClasses = {
 
 const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
   const Icon = tool.icon;
+  const content = getToolContent(tool.route);
+
+  useSeo({
+    title: content?.title ?? `${tool.name} — Free Online Tool | PDF Palette`,
+    description: content?.description ?? tool.description,
+    path: tool.route,
+  });
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -65,6 +74,7 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
         <section className="py-5 md:py-6">
           <div className="container mx-auto px-4">
             {children}
+            {content && <ToolSeoContent tool={tool} content={content} />}
           </div>
         </section>
       </main>

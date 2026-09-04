@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsGrid from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from "@/lib/seo";
 
 const Features = lazy(() => import("@/components/Features"));
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
@@ -12,6 +13,8 @@ const BelowFoldFallback = () => (
 );
 
 const Index = () => {
+  useSeo({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION, path: "/" });
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />

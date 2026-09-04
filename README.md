@@ -72,6 +72,23 @@ npm run build    # production build
 npm run lint     # lint the project
 ```
 
+## SEO
+
+`npm run build` runs `scripts/prerender.mjs` after Vite. It writes a static
+`dist/<route>/index.html` for every route — each with its own title,
+description, canonical, Open Graph tags and JSON-LD — plus `sitemap.xml`,
+`robots.txt` and `404.html`. Vercel serves those static files before the SPA
+rewrite, so crawlers get real per-page metadata; `useSeo` in `src/lib/seo.ts`
+keeps the head correct once React takes over routing.
+
+Landing-page copy (intro, how-to steps, FAQs) lives in
+`src/lib/tool-content.json`, keyed by route, and is rendered by
+`ToolSeoContent`. Adding a tool means adding an entry there as well as in
+`src/lib/tools.ts`.
+
+Set `SITE_URL` at build time so canonical and Open Graph URLs point at the real
+origin. On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is used automatically.
+
 ## Architecture
 
 - `src/lib/tools.ts` – the tool catalog. Each tool declares a `feature`
