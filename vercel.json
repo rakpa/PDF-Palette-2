@@ -39,7 +39,7 @@
       "root": ".",
       "framework": "vite",
       "rewrites": [
-        { "source": "/(.*)", "destination": "/index.html" }
+        { "source": "/((?!assets/|gs-wasm/|libre-wasm/|tesseract/|.*\\..*).*)", "destination": "/index.html" }
       ]
     },
     "word-to-pdf": {

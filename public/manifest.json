@@ -1,0 +1,14 @@
+{
+  "name": "PDF Palette — Free Online PDF Tools",
+  "short_name": "PDF Palette",
+  "description": "27 free PDF tools that run in your browser. Merge, split, compress, convert, sign, OCR and edit PDFs — nothing is ever uploaded.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#db3f3f",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

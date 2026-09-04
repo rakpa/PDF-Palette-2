@@ -93,6 +93,7 @@ const organization = {
   name: SITE_NAME,
   url: `${siteUrl}/`,
   logo: `${siteUrl}/og-image.png`,
+  sameAs: ["https://github.com/rakpa/PDF-Palette-2"],
 };
 
 function homeGraph() {

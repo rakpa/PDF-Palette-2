@@ -89,6 +89,18 @@ Landing-page copy (intro, how-to steps, FAQs) lives in
 Set `SITE_URL` at build time so canonical and Open Graph URLs point at the real
 origin. On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is used automatically.
 
+**Verify after every deploy** that Vercel is actually serving the prerendered
+per-route files rather than falling back to the shared `index.html` shell —
+the frontend service's SPA-fallback rewrite in `vercel.json` is scoped to
+exclude asset and dotted-file paths, but this only confirms in production:
+
+```bash
+curl -s https://<your-domain>/merge-pdf | grep -o '<title>[^<]*</title>'
+# expect: <title>Merge PDF — Combine PDF Files Free | PDF Palette</title>
+# a title of "PDF Palette — 27 Free PDF Tools..." here means every route is
+# falling back to the homepage shell and the per-route SEO isn't live.
+```
+
 ## Architecture
 
 - `src/lib/tools.ts` – the tool catalog. Each tool declares a `feature`
