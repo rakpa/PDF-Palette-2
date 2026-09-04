@@ -13,13 +13,13 @@ const Hero = () => {
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-6xl text-center">
           <h1 className="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:mb-4 md:whitespace-nowrap md:text-[2.35rem] lg:text-4xl">
-            Every tool you need to work with{" "}
-            <span className="text-primary">PDFs</span> in one place
+            27 PDF tools that never leave{" "}
+            <span className="text-primary">your browser</span>
           </h1>
 
           <p className="mx-auto mb-4 max-w-2xl text-sm text-muted-foreground md:mb-5 md:text-base">
-            Convert Word and PDF, compress, merge, split, and edit — free, fast,
-            and ready when you are.
+            Merge, split, compress, convert, sign, OCR and edit — free, fast,
+            and processed entirely on your device.
           </p>
 
           <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground md:text-sm">

@@ -6,7 +6,7 @@ const features = [
     icon: ShieldCheck,
     title: "Private by design",
     description:
-      "Your files are processed right inside your browser — they never touch a server.",
+      "Your files are processed in your browser and never uploaded. Converting a web page from a URL is the one exception — see our Privacy Policy.",
     color: "text-tool-green bg-tool-green/10",
   },
   {
@@ -25,9 +25,9 @@ const features = [
   },
   {
     icon: Cpu,
-    title: "Works offline",
+    title: "Nothing to install",
     description:
-      "Once loaded, the tools keep working even without an internet connection.",
+      "There's no app to download and no account to create — open a tool in a tab and it's ready to use.",
     color: "text-tool-blue bg-tool-blue/10",
   },
 ];

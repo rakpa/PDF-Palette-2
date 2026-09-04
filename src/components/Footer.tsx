@@ -15,8 +15,12 @@ const Footer = () => {
               <span className="text-xl font-bold text-foreground">PDF Palette</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Free online PDF tools. Almost all processing happens in your
-              browser — we do not take your files as customer data.
+              Free PDF tools that run in your browser. Files are never
+              uploaded — the one exception is documented in our{" "}
+              <Link to="/privacy" className="underline hover:text-foreground transition-colors">
+                Privacy Policy
+              </Link>
+              .
             </p>
           </div>
 
