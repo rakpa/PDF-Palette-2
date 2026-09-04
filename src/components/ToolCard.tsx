@@ -31,19 +31,10 @@ const ToolCard = ({ tool }: ToolCardProps) => {
         )}
       >
         <div className="absolute right-3 top-3 flex gap-1.5 sm:right-4 sm:top-4">
-          {tool.comingSoon ? (
-            <Badge
-              variant="secondary"
-              className="h-5 px-2 text-[11px] font-medium text-muted-foreground"
-            >
-              Soon
+          {tool.popular && (
+            <Badge className="h-5 bg-primary/10 px-2 text-[11px] font-medium text-primary hover:bg-primary/10">
+              Popular
             </Badge>
-          ) : (
-            tool.popular && (
-              <Badge className="h-5 bg-primary/10 px-2 text-[11px] font-medium text-primary hover:bg-primary/10">
-                Popular
-              </Badge>
-            )
           )}
           {tool.isNew && !tool.popular && (
             <Badge className="h-5 bg-tool-green px-2 text-[11px] text-white hover:bg-tool-green/90">

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, File, X, AlertCircle } from "lucide-react";
+import { Upload, File, X, AlertCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -122,6 +122,14 @@ const FileUploader = ({
     setError(null);
   };
 
+  const moveFile = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= files.length) return;
+    const reordered = [...files];
+    [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+    onFilesChange(reordered);
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept,
@@ -223,7 +231,33 @@ const FileUploader = ({
                 transition={{ delay: index * 0.05 }}
                 className="flex items-center gap-3 rounded-lg border border-border bg-card p-3"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                {files.length > 1 && (
+                  <div className="flex shrink-0 flex-col">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-6 text-muted-foreground disabled:opacity-30"
+                      disabled={index === 0}
+                      onClick={() => moveFile(index, -1)}
+                      aria-label={`Move ${uploadedFile.file.name} earlier`}
+                    >
+                      <ChevronUp className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-6 text-muted-foreground disabled:opacity-30"
+                      disabled={index === files.length - 1}
+                      onClick={() => moveFile(index, 1)}
+                      aria-label={`Move ${uploadedFile.file.name} later`}
+                    >
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                )}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <File className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -244,6 +278,11 @@ const FileUploader = ({
                 </Button>
               </motion.div>
             ))}
+            {files.length > 1 && (
+              <p className="text-center text-xs text-muted-foreground">
+                Use the arrows to change the order files are combined in.
+              </p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

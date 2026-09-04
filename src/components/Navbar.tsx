@@ -1,24 +1,29 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown, FileText } from "lucide-react";
+import { Menu, X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { pdfTools } from "@/lib/tools";
+import { categories, getToolsByCategory } from "@/lib/tools";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
+/** All real categories, excluding the "all" pseudo-category used by the homepage filter. */
+const toolCategories = categories.filter((category) => category.id !== "all");
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const convertTools = pdfTools.filter(
-    (t) => t.category.includes("convert-to") || t.category.includes("convert-from")
-  );
-  const allTools = pdfTools.slice(0, 8);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-lg">
@@ -50,48 +55,47 @@ const Navbar = () => {
               </Button>
             </Link>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1">
-                  Convert PDF
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-48">
-                {convertTools.map((tool) => (
-                  <DropdownMenuItem key={tool.id} asChild>
-                    <Link to={tool.route} className="flex items-center gap-2">
-                      <tool.icon className="h-4 w-4" />
-                      {tool.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1">
-                  All PDF Tools
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-48">
-                {allTools.map((tool) => (
-                  <DropdownMenuItem key={tool.id} asChild>
-                    <Link to={tool.route} className="flex items-center gap-2">
-                      <tool.icon className="h-4 w-4" />
-                      {tool.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuItem asChild>
-                  <Link to="/#tools" className="font-medium text-primary">
-                    View all tools →
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-10 bg-transparent text-sm font-medium">
+                    All Tools
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid w-[720px] grid-cols-3 gap-x-6 gap-y-5 p-5">
+                      {toolCategories.map((category) => (
+                        <div key={category.id}>
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            {category.label}
+                          </p>
+                          <ul className="space-y-1">
+                            {getToolsByCategory(category.id).map((tool) => (
+                              <li key={tool.id}>
+                                <Link
+                                  to={tool.route}
+                                  className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground"
+                                >
+                                  <tool.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                  {tool.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-border p-3">
+                      <Link
+                        to="/#tools"
+                        className="block rounded-md px-2 py-1.5 text-center text-sm font-medium text-primary hover:bg-accent"
+                      >
+                        Browse all 27 tools →
+                      </Link>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Right side */}
@@ -124,7 +128,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-border md:hidden"
+            className="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-border md:hidden"
           >
             <div className="container mx-auto space-y-2 px-4 py-4">
               <Link
@@ -148,13 +152,32 @@ const Navbar = () => {
               >
                 Compress PDF
               </Link>
-              <Link
-                to="/#tools"
-                className="block rounded-lg px-3 py-2 font-medium text-primary hover:bg-muted"
-                onClick={() => setIsOpen(false)}
-              >
-                All PDF Tools
-              </Link>
+
+              <Accordion type="single" collapsible>
+                {toolCategories.map((category) => (
+                  <AccordionItem key={category.id} value={category.id} className="border-border">
+                    <AccordionTrigger className="px-3 py-2 text-sm font-medium hover:no-underline">
+                      {category.label}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-1 pb-1">
+                        {getToolsByCategory(category.id).map((tool) => (
+                          <Link
+                            key={tool.id}
+                            to={tool.route}
+                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <tool.icon className="h-4 w-4 shrink-0" />
+                            {tool.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+
               <Link to="/#tools" onClick={() => setIsOpen(false)}>
                 <Button size="sm" className="mt-2 w-full">
                   Explore tools

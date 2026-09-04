@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Download,
   Loader2,
-  Sparkles,
   RotateCw,
   ShieldCheck,
   Wand2,
@@ -96,7 +95,7 @@ const featureConfig: Record<
     maxFiles: 20,
     minFiles: 2,
     cta: "Merge PDFs",
-    hint: "Add two or more PDFs. They’ll be combined in the order shown.",
+    hint: "Add two or more PDFs. They’ll be combined in the order shown — use the arrows to rearrange them.",
   },
   rotate: {
     accept: { "application/pdf": [".pdf"] },
@@ -219,6 +218,19 @@ const featureConfig: Record<
     hint: "Upload a scanned PDF. Each page is recognised in your browser and the original look is kept, with a selectable text layer added.",
   },
 };
+
+/**
+ * Everything runs in the tab, so a large file can exhaust the browser's own
+ * memory well before it hits the upload size cap. Name that case instead of
+ * surfacing whatever cryptic message the failed allocation threw.
+ */
+function describeProcessingError(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  if (/out of memory|allocation failed|invalid array length|invalid typed array/i.test(message)) {
+    return "This file is too large for your browser to process in one go. Try splitting it into smaller files first, or use a device with more memory.";
+  }
+  return err instanceof Error ? message : "Something went wrong.";
+}
 
 const ToolPage = () => {
   const { toolRoute } = useParams();
@@ -516,7 +528,7 @@ const ToolPage = () => {
         toast.error(res.message);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong.";
+      const message = describeProcessingError(err);
       setResult({ success: false, message });
       toast.error(message);
     } finally {
@@ -531,8 +543,10 @@ const ToolPage = () => {
   return (
     <ToolPageLayout tool={tool}>
       <div className="mx-auto max-w-2xl">
-        {tool.comingSoon || !config ? (
-          <ComingSoon />
+        {!config ? (
+          <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-10 text-center text-muted-foreground">
+            This tool isn’t available yet.
+          </div>
         ) : (
           <div className="space-y-4">
             {showConversionServiceStatus && (
@@ -1094,25 +1108,5 @@ const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: bool
     </div>
   );
 };
-
-const ComingSoon = () => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.97 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="rounded-2xl border border-dashed border-border bg-muted/30 p-10 text-center"
-  >
-    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-      <Sparkles className="h-7 w-7" />
-    </div>
-    <h3 className="text-xl font-semibold text-foreground">Coming soon</h3>
-    <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-      This tool needs secure server-side processing that we’re still building.
-      In the meantime, explore the tools that already run fully in your browser.
-    </p>
-    <Button asChild className="mt-6">
-      <a href="/#tools">Browse available tools</a>
-    </Button>
-  </motion.div>
-);
 
 export default ToolPage;

@@ -34,10 +34,7 @@ export type ToolCategory =
   | "edit"
   | "security";
 
-/**
- * Client-side capabilities implemented in the browser.
- * Tools without a `feature` are showcased but flagged `comingSoon`.
- */
+/** Client-side capabilities implemented in the browser. Every tool has one. */
 export type ToolFeature =
   | "merge"
   | "split"
@@ -72,18 +69,13 @@ export interface PDFTool {
   name: string;
   description: string;
   icon: LucideIcon;
-  /** Optional icon to display when `comingSoon` is true. */
-  comingSoonIcon?: LucideIcon;
   color: "coral" | "green" | "blue" | "yellow" | "purple" | "orange" | "teal" | "pink";
   category: ToolCategory[];
   isNew?: boolean;
   /** Shown with a subtle highlight on the homepage grid. */
   popular?: boolean;
   route: string;
-  /** Maps the tool to a working pdf-lib engine. Omit for not-yet-available tools. */
-  feature?: ToolFeature;
-  /** True when the tool is showcased but not functional in the browser yet. */
-  comingSoon?: boolean;
+  feature: ToolFeature;
 }
 
 /**
@@ -245,7 +237,6 @@ export const pdfTools: PDFTool[] = [
     name: "Unlock PDF",
     description: "Remove password protection from PDF",
     icon: Unlock,
-    comingSoonIcon: Lock,
     color: "pink",
     category: ["security"],
     route: "/unlock-pdf",
