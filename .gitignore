@@ -17,6 +17,8 @@ dist/libre-wasm
 .env
 .env.*
 !.env.example
+pdfservices-api-credentials.json
+**/pdfservices-api-credentials.json
 services/word-to-pdf/python/__pycache__/
 services/word-to-pdf/python/**/*.pyc
 

@@ -60,9 +60,12 @@ the check. But verify cheaply, and be careful that the test itself is sound:
 
 ## Architecture
 
-Everything runs in the browser. There is no server-side conversion left except
-fetching a URL for HTML → PDF, which the same-origin policy makes impossible in
-a tab. Do not reintroduce a service dependency.
+Most tools run in the browser. PDF → Word and Word → PDF call Adobe PDF
+Services from `services/word-to-pdf` (REST client:
+`services/word-to-pdf/src/lib/adobe-pdf-services.ts`). Keep the client secret
+on the server — never a `VITE_` env var.
+HTML → PDF from a URL still needs the same service. Do not reintroduce further
+service dependencies.
 
 - `src/lib/office/` — shared Office engine: one document model, one layout pass,
   one PDF emitter, plus OOXML zip/XML read and write. Format-specific extractors

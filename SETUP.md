@@ -3,9 +3,12 @@
 ## What you need
 
 1. **Node.js**
-2. **LibreOffice** — for Word → PDF only ([libreoffice.org](https://www.libreoffice.org/))
+2. **Adobe PDF Services credentials** — for PDF → Word and Word → PDF.
+   Copy `services/word-to-pdf/.env.example` to `services/word-to-pdf/.env`
+   and set `PDF_SERVICES_CLIENT_ID` and `PDF_SERVICES_CLIENT_SECRET`.
+   On Vercel, set the same two variables on the `word-to-pdf` service.
 
-No Python, no Redis, no Docker, no cloud APIs.
+LibreOffice is optional (Word → PDF falls back to it if Adobe is not configured).
 
 ---
 
@@ -25,8 +28,8 @@ cd C:\RAKESH\pdf-palette
 npm run dev
 ```
 
-- **Word → PDF:** http://localhost:8080/word-to-pdf (LibreOffice)
-- **PDF → Word:** http://localhost:8080/pdf-to-word (in-browser, no setup)
+- **Word → PDF:** http://localhost:8080/word-to-pdf (Adobe PDF Services)
+- **PDF → Word:** http://localhost:8080/pdf-to-word (Adobe PDF Services)
 - **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
 - **Protect / Unlock PDF:** http://localhost:8080/protect-pdf, `/unlock-pdf`
@@ -36,14 +39,13 @@ npm run dev
 
 ---
 
-## PDF → Word engine
+## PDF → Word and Word → PDF
 
-PDF → Word is built entirely from our own code and runs in the browser, so the
-file never leaves the machine and development behaves exactly like production.
-`pdfjs-dist` reads the page and [`docx`](https://docx.js.org/) writes the
-result; everything between the two lives in `src/lib/pdf-to-word/`.
+Both tools call Adobe PDF Services from `services/word-to-pdf`. The browser
+never sees the client secret. If the service is down, the in-browser engines
+in `src/lib/pdf-to-word/` and `src/lib/word-to-pdf/` are used as a fallback.
 
-It reconstructs:
+The in-browser PDF → Word fallback reconstructs:
 
 - Page size, orientation, margins and page breaks — one Word section per page
 - Running headers and footers, as real Word headers and footers

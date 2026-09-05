@@ -10,13 +10,13 @@ function filenameFromDisposition(header: string | null): string | null {
   return match?.[1]?.replace(/"/g, "") ?? null;
 }
 
-const API_BASE = "/api/word-to-pdf";
+const API_BASE = "/api/pdf-to-word";
 
-export async function convertWordToPdfLocal(
+export async function convertPdfToWordLocal(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<{ blob: Blob; filename: string }> {
-  onProgress?.(10, "Uploading document…");
+  onProgress?.(10, "Uploading PDF…");
 
   const form = new FormData();
   form.append("file", file, file.name);
@@ -26,10 +26,10 @@ export async function convertWordToPdfLocal(
   let res: Response;
   try {
     res = await fetch(
-      conversionServiceUrl(`${API_BASE}/convert`, "/v1/word-to-pdf/convert"),
+      conversionServiceUrl(`${API_BASE}/convert`, "/v1/pdf-to-word/convert"),
       {
-      method: "POST",
-      body: form,
+        method: "POST",
+        body: form,
       }
     );
   } catch (error) {
@@ -37,7 +37,7 @@ export async function convertWordToPdfLocal(
   }
 
   if (!res.ok) {
-    let message = "Word to PDF conversion failed";
+    let message = "PDF to Word conversion failed";
     try {
       const data = (await res.json()) as { error?: string };
       if (data.error) message = data.error;
@@ -49,11 +49,10 @@ export async function convertWordToPdfLocal(
 
   onProgress?.(90, "Preparing download…");
   const blob = await res.blob();
-  const baseName = file.name.replace(/\.(docx?|DOCX?)$/i, "") || "document";
+  const baseName = file.name.replace(/\.pdf$/i, "") || "document";
   const filename =
-    filenameFromDisposition(res.headers.get("Content-Disposition")) ?? `${baseName}.pdf`;
+    filenameFromDisposition(res.headers.get("Content-Disposition")) ?? `${baseName}.docx`;
 
   onProgress?.(100, "Done");
   return { blob, filename };
 }
-

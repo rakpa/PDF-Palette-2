@@ -3,10 +3,21 @@ import { conversionServiceUrl } from "./runtime-config";
 export type ConversionHealth = {
   status: "ok" | "degraded" | "unavailable";
   checks?: {
+    adobe?: boolean;
     libreOffice?: boolean;
   };
   message?: string;
 };
+
+export class ConversionServiceError extends Error {
+  constructor(
+    message: string,
+    readonly kind: "unavailable" | "rejected" | "failed"
+  ) {
+    super(message);
+    this.name = "ConversionServiceError";
+  }
+}
 
 export type ConversionFeature =
   | "word-to-pdf"
@@ -17,6 +28,23 @@ export type ConversionFeature =
 
 const SERVICE_DOWN_MESSAGE =
   "Conversion service is not running. Stop the app and run: npm run dev (starts both the website and conversion service).";
+
+export function serviceErrorFromFetch(error: unknown): ConversionServiceError {
+  return new ConversionServiceError(parseConversionFetchError(error), "unavailable");
+}
+
+export function serviceErrorFromResponse(
+  status: number,
+  message: string
+): ConversionServiceError {
+  if (status === 503 || status === 502 || status === 504) {
+    return new ConversionServiceError(message, "unavailable");
+  }
+  if (status >= 400 && status < 500) {
+    return new ConversionServiceError(message, "rejected");
+  }
+  return new ConversionServiceError(message, "failed");
+}
 
 export function parseConversionFetchError(error: unknown): string {
   if (error instanceof TypeError) {
@@ -93,6 +121,9 @@ export function conversionBlockedMessage(
 function buildHealthMessage(checks?: ConversionHealth["checks"]): string | undefined {
   if (!checks) return undefined;
   const issues: string[] = [];
+  if (checks.adobe === false) {
+    issues.push("Adobe PDF Services is not configured");
+  }
   if (checks.libreOffice === false) {
     issues.push("LibreOffice is not installed");
   }

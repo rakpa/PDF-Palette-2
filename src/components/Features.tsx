@@ -6,7 +6,7 @@ const features = [
     icon: ShieldCheck,
     title: "Private by design",
     description:
-      "Your files are processed in your browser and never uploaded. Converting a web page from a URL is the one exception — see our Privacy Policy.",
+      "Most tools process files in your browser. PDF to Word, Word to PDF, and converting a web page from a URL are the exceptions — see our Privacy Policy.",
     color: "text-tool-green bg-tool-green/10",
   },
   {

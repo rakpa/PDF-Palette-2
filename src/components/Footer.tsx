@@ -15,8 +15,8 @@ const Footer = () => {
               <span className="text-xl font-bold text-foreground">PDF Palette</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Free PDF tools that run in your browser. Files are never
-              uploaded — the one exception is documented in our{" "}
+              Free PDF tools that mostly run in your browser. PDF to Word and
+              Word to PDF use Adobe PDF Services — see our{" "}
               <Link to="/privacy" className="underline hover:text-foreground transition-colors">
                 Privacy Policy
               </Link>

@@ -10,6 +10,8 @@ const envSchema = z.object({
   CONVERSION_TIMEOUT_MS: z.coerce.number().default(5 * 60 * 1000),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
   CORS_ORIGIN: z.string().default("http://localhost:8080"),
+  PDF_SERVICES_CLIENT_ID: z.string().optional(),
+  PDF_SERVICES_CLIENT_SECRET: z.string().optional(),
 });
 
 export type AppConfig = z.infer<typeof envSchema>;

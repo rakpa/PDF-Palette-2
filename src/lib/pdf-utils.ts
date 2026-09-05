@@ -3,6 +3,9 @@ import { saveAs } from "file-saver";
 import {
   compressWithGhostscript,
 } from "./ghostscript-compress";
+import { convertWordToPdfLocal } from "./word-to-pdf-client";
+import { convertPdfToWordLocal } from "./pdf-to-word-client";
+import { ConversionServiceError } from "./conversion-service-client";
 import { convertWordToPdfBrowser, WordToPdfError } from "./word-to-pdf-browser";
 import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
@@ -370,14 +373,18 @@ function formatFileSize(bytes: number): string {
   return (bytes / 1024 / 1024).toFixed(1) + " MB";
 }
 
-// Convert Word to PDF. This runs entirely in the browser, in development and
-// in production alike, so what you test locally is what ships.
+function shouldFallbackToBrowser(error: unknown): boolean {
+  return error instanceof ConversionServiceError && error.kind === "unavailable";
+}
+
+// Convert Word to PDF via Adobe PDF Services. If the conversion service is
+// down or Adobe is not configured, fall back to the in-browser engine.
 export async function wordToPDF(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = await convertWordToPdfBrowser(file, onProgress);
+    const { blob, filename } = await convertWordToPdfLocal(file, onProgress);
     return {
       success: true,
       message: "Word document converted to PDF successfully!",
@@ -385,6 +392,21 @@ export async function wordToPDF(
       filename,
     };
   } catch (error) {
+    if (shouldFallbackToBrowser(error)) {
+      try {
+        const { blob, filename } = await convertWordToPdfBrowser(file, onProgress);
+        return {
+          success: true,
+          message: "Word document converted to PDF successfully!",
+          blob,
+          filename,
+        };
+      } catch (browserError) {
+        if (browserError instanceof WordToPdfError) {
+          return { success: false, message: browserError.message };
+        }
+      }
+    }
     if (error instanceof WordToPdfError) {
       return { success: false, message: error.message };
     }
@@ -444,7 +466,7 @@ export async function pdfToWord(
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = await convertPdfToWordBrowser(file, onProgress);
+    const { blob, filename } = await convertPdfToWordLocal(file, onProgress);
     return {
       success: true,
       message: "PDF converted to Word successfully!",
@@ -452,6 +474,21 @@ export async function pdfToWord(
       filename,
     };
   } catch (error) {
+    if (shouldFallbackToBrowser(error)) {
+      try {
+        const { blob, filename } = await convertPdfToWordBrowser(file, onProgress);
+        return {
+          success: true,
+          message: "PDF converted to Word successfully!",
+          blob,
+          filename,
+        };
+      } catch (browserError) {
+        if (browserError instanceof PdfToWordError) {
+          return { success: false, message: browserError.message };
+        }
+      }
+    }
     // The converter reports what actually went wrong (a password, a damaged
     // file); anything else is unexpected and worth showing verbatim.
     if (error instanceof PdfToWordError) {

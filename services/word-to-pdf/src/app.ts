@@ -4,6 +4,7 @@ import { pinoHttp } from "pino-http";
 import type { AppConfig } from "./config.js";
 import type { Logger } from "./logger.js";
 import { createWordToPdfRouter } from "./routes/word-to-pdf.js";
+import { createPdfToWordRouter } from "./routes/pdf-to-word.js";
 import { createHealthRouter } from "./routes/health.js";
 import { createUnlockPdfRouter } from "./routes/unlock-pdf.js";
 import { createProtectPdfRouter } from "./routes/protect-pdf.js";
@@ -49,6 +50,7 @@ export function createApp(config: AppConfig, log: Logger) {
   const api = express.Router();
   api.use(createHealthRouter(config));
   api.use("/v1/word-to-pdf", createWordToPdfRouter(config, log));
+  api.use("/v1/pdf-to-word", createPdfToWordRouter(config, log));
   api.use("/v1/unlock-pdf", createUnlockPdfRouter(config, log));
   api.use("/v1/protect-pdf", createProtectPdfRouter(config, log));
   api.use("/v1/html-to-pdf", createHtmlToPdfRouter(config, log));

@@ -17,8 +17,8 @@ export function conversionServiceUrl(devPath: string, prodPath: string): string 
   return `${getConversionServicePrefix()}${cleanProd}`;
 }
 
-/** Vercel cannot run LibreOffice/Python — use in-browser converters instead. */
+/** Word ↔ PDF now go through Adobe on the conversion service in every environment. */
 export function useBrowserOfficeConversion(): boolean {
-  return import.meta.env.PROD;
+  return false;
 }
 

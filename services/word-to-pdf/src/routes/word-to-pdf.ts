@@ -1,9 +1,12 @@
 import fs from "node:fs";
+import path from "node:path";
 import { Router } from "express";
 import type { AppConfig } from "../config.js";
 import type { Logger } from "../logger.js";
 import { TempWorkspace } from "../lib/temp-workspace.js";
 import { streamWordUpload, UploadError } from "../lib/streaming-upload.js";
+import { AdobeConversionError } from "../lib/adobe-pdf-services.js";
+import { adobeConfigured, convertWordToPdfAdobe } from "../lib/adobe-convert.js";
 import { runWordToPdfConversion } from "../lib/convert.js";
 
 export function createWordToPdfRouter(config: AppConfig, log: Logger): Router {
@@ -23,19 +26,32 @@ export function createWordToPdfRouter(config: AppConfig, log: Logger): Router {
         "upload complete"
       );
 
-      const result = await runWordToPdfConversion(
-        upload.filePath,
-        workspace.outputDir,
-        workspace.profileDir,
-        upload.originalName,
-        config,
-        requestLog
-      );
+      const useAdobe = adobeConfigured(config);
+      const adobeOutputPath = path.join(workspace.outputDir, "converted.pdf");
+      const result = useAdobe
+        ? {
+            ...(await convertWordToPdfAdobe(
+              upload.filePath,
+              adobeOutputPath,
+              upload.originalName,
+              config,
+              requestLog
+            )),
+            outputPath: adobeOutputPath,
+          }
+        : await runWordToPdfConversion(
+            upload.filePath,
+            workspace.outputDir,
+            workspace.profileDir,
+            upload.originalName,
+            config,
+            requestLog
+          );
 
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", `attachment; filename="${result.pdfFilename}"`);
       res.setHeader("X-Page-Count", String(result.pageCount));
-      res.setHeader("X-Conversion-Engine", "libreoffice-headless");
+      res.setHeader("X-Conversion-Engine", useAdobe ? "adobe-pdf-services" : "libreoffice-headless");
 
       const stream = fs.createReadStream(result.outputPath);
 
@@ -61,6 +77,8 @@ export function createWordToPdfRouter(config: AppConfig, log: Logger): Router {
       const status =
         error instanceof UploadError
           ? error.statusCode
+          : error instanceof AdobeConversionError
+            ? error.statusCode
           : /password|encrypt/i.test(message)
             ? 422
             : /corrupt|valid/i.test(message)

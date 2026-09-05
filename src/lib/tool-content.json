@@ -1,12 +1,12 @@
 {
   "/pdf-to-word": {
     "name": "PDF to Word",
-    "title": "PDF to Word Converter — Free, No Upload | PDF Palette",
-    "description": "Convert PDF to an editable Word (.docx) document free. Layout, fonts and tables are rebuilt in your browser — your file is never uploaded to a server.",
-    "intro": "Turn a PDF back into an editable Word document. PDF Palette reads the page geometry — columns, paragraphs, tables and fonts — and rebuilds it as a .docx you can open and edit in Word, Google Docs or LibreOffice. The whole conversion runs inside your browser tab, so the document never leaves your device.",
+    "title": "PDF to Word Converter — Adobe PDF Services | PDF Palette",
+    "description": "Convert PDF to an editable Word (.docx) document free. Adobe PDF Services preserves layout, fonts and tables.",
+    "intro": "Turn a PDF back into an editable Word document. PDF Palette sends the file to Adobe PDF Services, which rebuilds it as a .docx you can open and edit in Word, Google Docs or LibreOffice. The file is used for conversion only and is not stored by PDF Palette.",
     "steps": [
       "Drop your PDF onto the upload area, or click to pick a file.",
-      "Wait for the page analysis to finish — text, columns and tables are detected automatically.",
+      "Wait while Adobe PDF Services converts the document.",
       "Download the .docx file and open it in Word, Google Docs or LibreOffice."
     ],
     "faqs": [
@@ -20,28 +20,28 @@
       },
       {
         "q": "Is my file uploaded anywhere?",
-        "a": "No. The conversion runs entirely in your browser using JavaScript. Nothing is sent to a server and nothing is stored."
+        "a": "Yes — this tool sends the PDF to Adobe PDF Services for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
       },
       {
         "q": "Is there a file size or page limit?",
-        "a": "There is no account limit. The practical ceiling is your device's memory — very large scanned PDFs may be slow on a phone."
+        "a": "Adobe PDF Services accepts typical document sizes. Very large scanned PDFs may take longer to convert."
       }
     ]
   },
   "/word-to-pdf": {
     "name": "Word to PDF",
-    "title": "Word to PDF Converter — Free DOCX to PDF | PDF Palette",
-    "description": "Convert Word documents to PDF free. Fonts, tables, images and page layout are preserved, and the file is converted in your browser, never uploaded.",
-    "intro": "Convert a .docx or .doc file into a PDF that looks the way your document does. PDF Palette lays out the document with its own typesetting engine — fonts, colours, alignment, tables, images, headers and page breaks — and writes the PDF directly in your browser.",
+    "title": "Word to PDF Converter — Adobe PDF Services | PDF Palette",
+    "description": "Convert Word documents to PDF free. Adobe PDF Services preserves fonts, tables, images and page layout.",
+    "intro": "Convert a .docx or .doc file into a PDF that looks the way your document does. PDF Palette sends the file to Adobe PDF Services, which keeps fonts, colours, tables, images, headers and page breaks. The file is used for conversion only and is not stored by PDF Palette.",
     "steps": [
       "Select the Word document you want to convert.",
-      "Let the layout pass run — text flow, tables and images are positioned page by page.",
+      "Wait while Adobe PDF Services converts the document.",
       "Download the finished PDF."
     ],
     "faqs": [
       {
         "q": "Do I need Microsoft Word installed?",
-        "a": "No. Nothing is installed and no account is needed. The document is read and rendered by the browser."
+        "a": "No. Nothing is installed and no PDF Palette account is needed. Adobe PDF Services performs the conversion."
       },
       {
         "q": "Are fonts embedded in the PDF?",
