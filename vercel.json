@@ -51,7 +51,7 @@
     },
     "adobe": {
       "root": "services/adobe",
-      "framework": "express",
+      "framework": "node",
       "entrypoint": "server.js",
       "functions": {
         "server.js": {
