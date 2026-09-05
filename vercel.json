@@ -45,28 +45,22 @@
     "frontend": {
       "root": ".",
       "framework": "vite",
-      "functions": {
-        "api/adobe.js": {
-          "maxDuration": 300
-        }
-      },
       "rewrites": [
         { "source": "/((?!assets/|gs-wasm/|libre-wasm/|tesseract/|api/|.*\\..*).*)", "destination": "/index.html" }
       ]
     },
-    "word-to-pdf": {
-      "root": "services/word-to-pdf",
-      "framework": "express",
-      "entrypoint": "app.js",
+    "adobe": {
+      "root": "services/adobe",
       "functions": {
-        "app.js": {
-          "maxDuration": 300,
-          "excludeFiles": "{node_modules/playwright,node_modules/playwright-core,node_modules/@playwright}/**"
+        "server.js": {
+          "maxDuration": 300
         }
       }
     }
   },
   "rewrites": [
+    { "source": "/api/adobe", "destination": { "service": "adobe" } },
+    { "source": "/api/adobe/(.*)", "destination": { "service": "adobe" } },
     { "source": "/(.*)", "destination": { "service": "frontend" } }
   ]
 }

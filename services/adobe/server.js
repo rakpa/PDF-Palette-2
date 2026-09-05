@@ -1,3 +1,5 @@
+import { createServer } from "node:http";
+
 const ADOBE_BASE = "https://pdf-services.adobe.io";
 const PDF_TYPE = "application/pdf";
 const DOCX_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -181,7 +183,12 @@ async function runJob(assetID, operation) {
 
 function routePath(url) {
   const path = (url || "/").split("?")[0];
-  return path.replace(/^\/api\/adobe/, "").replace(/^\/_\/word-to-pdf/, "") || "/";
+  return (
+    path
+      .replace(/^\/api\/adobe/, "")
+      .replace(/^\/_\/adobe/, "")
+      .replace(/^\/_\/word-to-pdf/, "") || "/"
+  );
 }
 
 function send(res, status, body) {
@@ -208,7 +215,7 @@ function readJson(req) {
   });
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   try {
     const method = String(req.method || "GET").toUpperCase();
     const path = routePath(req.url);
@@ -290,3 +297,13 @@ export default async function handler(req, res) {
     });
   }
 }
+
+const server = createServer((req, res) => {
+  handler(req, res).catch((error) => {
+    if (!res.headersSent) {
+      send(res, 500, { error: error.message || "Conversion service failed" });
+    }
+  });
+});
+
+server.listen(Number(process.env.PORT) || 3002);

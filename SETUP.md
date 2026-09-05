@@ -6,7 +6,7 @@
 2. **Adobe PDF Services credentials** — for PDF → Word and Word → PDF.
    Copy `services/word-to-pdf/.env.example` to `services/word-to-pdf/.env`
    and set `PDF_SERVICES_CLIENT_ID` and `PDF_SERVICES_CLIENT_SECRET`.
-   On Vercel, set the same two variables on the `word-to-pdf` service.
+   On Vercel, set the same two variables on the project (or the `adobe` service).
 
 LibreOffice is optional (Word → PDF falls back to it if Adobe is not configured).
 
@@ -41,9 +41,11 @@ npm run dev
 
 ## PDF → Word and Word → PDF
 
-Both tools call Adobe PDF Services from `services/word-to-pdf`. The browser
-never sees the client secret. If the service is down, the in-browser engines
-in `src/lib/pdf-to-word/` and `src/lib/word-to-pdf/` are used as a fallback.
+Both tools call Adobe PDF Services from `services/adobe` in production (a
+plain Node server on `/api/adobe`). Locally, `npm run dev` still proxies
+through `services/word-to-pdf`. The browser never sees the client secret.
+If the service is down, the in-browser engines in `src/lib/pdf-to-word/`
+and `src/lib/word-to-pdf/` are used as a fallback.
 
 The in-browser PDF → Word fallback reconstructs:
 

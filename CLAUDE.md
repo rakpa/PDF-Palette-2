@@ -61,8 +61,9 @@ the check. But verify cheaply, and be careful that the test itself is sound:
 ## Architecture
 
 Most tools run in the browser. PDF → Word and Word → PDF call Adobe PDF
-Services from `services/word-to-pdf` (REST client:
-`services/word-to-pdf/src/lib/adobe-pdf-services.ts`). Keep the client secret
+Services over REST (`POST /token`, `/assets`, `/operation/exportpdf` or
+`/operation/createpdf`). Production uses `services/adobe`; local `npm run
+dev` still proxies through `services/word-to-pdf`. Keep the client secret
 on the server — never a `VITE_` env var.
 HTML → PDF from a URL still needs the same service. Do not reintroduce further
 service dependencies.
