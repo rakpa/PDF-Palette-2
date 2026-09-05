@@ -221,12 +221,7 @@ function paragraphXml(box: ParagraphBox, leftEdge: number, rightEdge: number, ba
   }
 
   const line = Math.max(box.leading, box.fontSize * 1.02);
-  // "atLeast" lets Word grow a line to suit its own font metrics, which is
-  // exactly what must not happen: the leading here is the one measured from
-  // the PDF's own baselines, and a substituted face with taller metrics would
-  // push a few lines off every dense page. The page counts stop matching, and
-  // the whole document drifts.
-  const lineRule = "exact";
+  const lineRule = box.leading >= box.fontSize * 1.18 ? "exact" : "atLeast";
   const indents: string[] = [];
   if (indentLeft > 1) indents.push(`w:left="${twip(indentLeft)}"`);
   if (indentRight > 2) indents.push(`w:right="${twip(indentRight)}"`);

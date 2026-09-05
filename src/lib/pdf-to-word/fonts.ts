@@ -11,7 +11,13 @@
 const SUBSET_PREFIX = /^[A-Z]{6}\+/;
 const STYLE_SUFFIX =
   /[-_,]?(?:regular|book|roman|normal|italic|oblique|bold|semibold|demibold|demi|extrabold|ultrabold|black|heavy|light|extralight|ultralight|thin|medium|condensed|narrow|caption|display|text|subhead)+$/i;
-const TRAILING_TAGS = /(?:MT|PS|PSMT|Std|Pro|LT|W\d{2}|SC)$/;
+/**
+ * Foundry tags that are not part of the name a reader's machine knows. "Pro"
+ * and "Std" are deliberately absent: they belong to the family — Minion Pro,
+ * Myriad Pro — and trimming them leaves "Minion", which resolves to nothing
+ * and makes Word substitute something arbitrary for the whole document.
+ */
+const TRAILING_TAGS = /(?:MT|PS|PSMT|LT|W\d{2}|SC)$/;
 
 /** Base-14 and other very common PDF faces that have a canonical Word name. */
 const FAMILY_ALIASES: ReadonlyArray<[RegExp, string]> = [
@@ -56,36 +62,6 @@ const SPACED_NAMES: ReadonlyArray<[RegExp, string]> = [
   [/^jetbrainsmono/i, "JetBrains Mono"],
 ];
 
-/**
- * Families a reader's machine can actually be expected to have.
- *
- * A PDF names the face it embedded, and stripping the foundry tags off
- * "MinionPro-Regular" leaves "Minion" — a name no system resolves, so Word
- * silently substitutes something arbitrary and the document stops looking
- * like the original. Anything not on this list is mapped to a face that is
- * certainly present, chosen to match its shape.
- */
-const SAFE_FAMILIES = new Set(
-  [
-    "Arial", "Times New Roman", "Courier New", "Calibri", "Cambria", "Candara",
-    "Consolas", "Constantia", "Corbel", "Georgia", "Verdana", "Tahoma",
-    "Trebuchet MS", "Segoe UI", "Garamond", "Palatino Linotype", "Book Antiqua",
-    "Century Gothic", "Franklin Gothic", "Comic Sans MS", "Impact",
-    "Lucida Console", "Lucida Sans", "MS Gothic", "Symbol", "Wingdings",
-    "DejaVu Sans", "DejaVu Serif", "DejaVu Sans Mono", "Noto Sans",
-    "Noto Serif", "Noto Sans Mono", "Open Sans", "PT Sans", "PT Serif",
-    "Roboto Mono", "Source Code Pro", "Source Sans Pro", "JetBrains Mono",
-  ].map((f) => f.toLowerCase())
-);
-
-/** The nearest certainly-available face for a family we cannot count on. */
-function substituteFamily(family: string, monospace: boolean): string {
-  if (SAFE_FAMILIES.has(family.toLowerCase())) return family;
-  if (monospace || MONO_RE.test(family)) return "Courier New";
-  if (SERIF_RE.test(family)) return "Times New Roman";
-  return "Arial";
-}
-
 const BOLD_RE = /(?:^|[-_,\s])(?:bold|black|heavy|extrabold|ultrabold|semibold|demibold|demi)/i;
 const ITALIC_RE = /(?:^|[-_,\s])(?:italic|oblique)/i;
 const MONO_RE = /mono|courier|consol|menlo|monaco|typewriter|code|cmtt/i;
@@ -129,14 +105,7 @@ export function resolveFontName(rawName: string): {
       monospace,
     };
   }
-  // Classify against the original name, not the trimmed one: "MinionPro" says
-  // serif, while what survives trimming may say nothing at all.
-  return {
-    family: substituteFamily(family, monospace || MONO_RE.test(name)),
-    bold,
-    italic,
-    monospace,
-  };
+  return { family, bold, italic, monospace };
 }
 
 /** Fallback used when only pdf.js' generic CSS family is available. */
