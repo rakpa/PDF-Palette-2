@@ -21,13 +21,21 @@ export function createApp(config: AppConfig, log: Logger) {
   if (process.env.VERCEL_URL) {
     allowedOrigins.add(`https://${process.env.VERCEL_URL}`);
   }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    allowedOrigins.add(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+  }
 
   app.use(express.json({ limit: "32kb" }));
 
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.has(origin)) {
+        if (
+          !origin ||
+          allowedOrigins.has(origin) ||
+          /\.vercel\.app$/i.test(origin) ||
+          process.env.VERCEL
+        ) {
           callback(null, true);
           return;
         }

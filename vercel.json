@@ -55,7 +55,8 @@
       "entrypoint": "src/index.ts",
       "functions": {
         "src/index.ts": {
-          "maxDuration": 300
+          "maxDuration": 300,
+          "excludeFiles": "{node_modules/playwright,node_modules/playwright-core,node_modules/@playwright}/**"
         }
       }
     }

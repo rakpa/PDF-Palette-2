@@ -19,7 +19,6 @@
     "pino-http": "^10.4.0",
     "playwright": "^1.54.0",
     "uuid": "^11.0.5",
-    "vite_react_shadcn_ts": "file:../..",
     "yauzl": "^2.10.0",
     "zod": "^3.25.76"
   },
