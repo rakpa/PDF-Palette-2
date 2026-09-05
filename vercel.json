@@ -52,11 +52,12 @@
     "word-to-pdf": {
       "root": "services/word-to-pdf",
       "framework": "express",
-      "entrypoint": "src/vercel-handler.ts",
+      "entrypoint": "app.js",
       "functions": {
-        "src/vercel-handler.ts": {
+        "app.js": {
           "maxDuration": 300,
-          "excludeFiles": "{node_modules/playwright,node_modules/playwright-core,node_modules/@playwright}/**"
+          "includeFiles": "app.js",
+          "excludeFiles": "{node_modules/playwright,node_modules/playwright-core,node_modules/@playwright,src,dist}/**"
         }
       }
     }
