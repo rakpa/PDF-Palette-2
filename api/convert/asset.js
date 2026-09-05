@@ -16,9 +16,14 @@ export default async function handler(req, res) {
       kind === "word"
         ? await createUploadJob(wordInputFormat(filename), "pdf")
         : await createUploadJob("pdf", "docx");
+    const base =
+      kind === "word"
+        ? filename.replace(/\.docx?$/i, "") || "document"
+        : filename.replace(/\.pdf$/i, "") || "document";
     sendJson(res, 200, {
       ...created,
       mediaType: kind === "word" ? mediaTypeForWord(filename) : PDF_TYPE,
+      filename: kind === "word" ? `${base}.pdf` : `${base}.docx`,
     });
   } catch (error) {
     sendError(res, error);

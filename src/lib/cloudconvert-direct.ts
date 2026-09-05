@@ -11,12 +11,7 @@ type AssetResponse = {
   uploadUrl: string;
   formParameters: Record<string, string>;
   mediaType: string;
-};
-
-type JobResponse = {
-  jobId: string;
-  filename: string;
-  contentType: string;
+  filename?: string;
 };
 
 type StatusResponse = {
@@ -26,8 +21,8 @@ type StatusResponse = {
 
 /** CloudConvert finishes most jobs in seconds; a long book can take a few minutes. */
 const POLL_TIMEOUT_MS = 5 * 60 * 1000;
-const POLL_MIN_MS = 1500;
-const POLL_MAX_MS = 5000;
+/** Tight poll: Apryse often finishes between our old 1.5–5s backoff gaps. */
+const POLL_MS = 400;
 
 async function throwHttpError(res: Response, fallback: string): Promise<never> {
   let message = fallback;
@@ -155,7 +150,6 @@ async function waitForJob(
   message?: string
 ): Promise<string> {
   const deadline = Date.now() + POLL_TIMEOUT_MS;
-  let delay = POLL_MIN_MS;
   let progress = 45;
 
   while (Date.now() < deadline) {
@@ -168,8 +162,7 @@ async function waitForJob(
 
     progress = Math.min(progress + 4, 82);
     onProgress?.(progress, message);
-    await new Promise((resolve) => setTimeout(resolve, delay));
-    delay = Math.min(Math.round(delay * 1.3), POLL_MAX_MS);
+    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
   }
   throw serviceErrorFromResponse(504, "CloudConvert took too long to convert this file.");
 }
@@ -200,17 +193,10 @@ export async function convertFileViaCloudConvert(options: {
   await postFile(asset.uploadUrl, options.file, asset.formParameters || {});
 
   options.onProgress?.(45, options.convertingMessage);
-  const job = await postJson<JobResponse>(
-    convertApiUrl("job"),
-    { jobId: asset.jobId, filename: options.file.name, kind: options.kind },
-    "CloudConvert conversion failed"
-  );
-  if (!job.jobId) {
-    throw new Error("CloudConvert did not return a job id.");
-  }
+  const filename = asset.filename || outputFilename(options.file.name, options.kind);
 
   const downloadUri = await waitForJob(
-    job.jobId,
+    asset.jobId,
     options.onProgress,
     options.convertingMessage
   );
@@ -218,5 +204,12 @@ export async function convertFileViaCloudConvert(options: {
   options.onProgress?.(88, "Preparing download…");
   const blob = await getFile(downloadUri);
   options.onProgress?.(100, "Done");
-  return { blob, filename: job.filename };
+  return { blob, filename };
+}
+
+function outputFilename(name: string, kind: "pdf-to-word" | "word-to-pdf"): string {
+  if (kind === "pdf-to-word") {
+    return `${name.replace(/\.pdf$/i, "") || "document"}.docx`;
+  }
+  return `${name.replace(/\.docx?$/i, "") || "document"}.pdf`;
 }

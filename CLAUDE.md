@@ -67,11 +67,11 @@ the REST client in `api/_lib/cloudconvert.js` — and `vite.convertApi.ts` mount
 the same handlers on the dev server, so `/api/convert/*` means the same thing
 everywhere. Keep `CLOUDCONVERT_API_KEY` on the server — never a `VITE_` env var.
 
-Converted DOCX gets one repair on the way out (`docx-rules.ts`): a rule under a
-chapter title comes back as a floating shape at a fixed offset, and the
-`wrapNone` variant floats over the text once Word re-breaks the lines — a struck-
-through table of contents. They are switched to `wrapTopAndBottom`. Hairlines
-only, and it returns the file untouched on any error.
+Converted DOCX gets two cheap repairs on the way out. `docx-rules.ts` switches
+hairline `wrapNone` chapter rules to `wrapTopAndBottom`. `docx-cover.ts` pins
+page 1 of the source PDF as a full-page picture when that page looks like a
+cover (sparse text and/or a painted image) — CloudConvert/Apryse often clips
+those. Hairlines and covers only; anything else is left untouched.
 
 The browser drives the job: it asks for an upload form, POSTs the file
 straight to CloudConvert (past the 4.5 MB request-body limit), then polls
