@@ -6,10 +6,46 @@ import type { Logger } from "../logger.js";
 import { TempWorkspace } from "../lib/temp-workspace.js";
 import { streamPdfUpload, UploadError } from "../lib/streaming-upload.js";
 import { AdobeConversionError } from "../lib/adobe-pdf-services.js";
-import { convertPdfToWordAdobe } from "../lib/adobe-convert.js";
+import { beginAdobeUpload, convertPdfToWordAdobe, finishAdobeJob } from "../lib/adobe-convert.js";
+import { ADOBE_MEDIA } from "../lib/adobe-pdf-services.js";
 
 export function createPdfToWordRouter(config: AppConfig, log: Logger): Router {
   const router = Router();
+
+  router.post("/asset", async (req, res) => {
+    try {
+      const created = await beginAdobeUpload(config, ADOBE_MEDIA.pdf);
+      res.json(created);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not start upload";
+      const status = error instanceof AdobeConversionError ? error.statusCode : 500;
+      log.error({ error: message }, "pdf-to-word asset create failed");
+      res.status(status).json({ error: message });
+    }
+  });
+
+  router.post("/jobs", async (req, res) => {
+    const assetID = typeof req.body?.assetID === "string" ? req.body.assetID.trim() : "";
+    const filename = typeof req.body?.filename === "string" ? req.body.filename : "document.pdf";
+    if (!assetID) {
+      res.status(400).json({ error: "assetID is required." });
+      return;
+    }
+    try {
+      const result = await finishAdobeJob(config, log, {
+        assetID,
+        filename,
+        operation: "exportpdf",
+      });
+      res.setHeader("X-Conversion-Engine", "adobe-pdf-services");
+      res.json(result);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Conversion failed";
+      const status = error instanceof AdobeConversionError ? error.statusCode : 500;
+      log.error({ error: message, status }, "pdf-to-word job failed");
+      res.status(status).json({ error: message });
+    }
+  });
 
   router.post("/convert", async (req, res) => {
     const workspace = new TempWorkspace(config.TEMP_ROOT);

@@ -6,11 +6,53 @@ import type { Logger } from "../logger.js";
 import { TempWorkspace } from "../lib/temp-workspace.js";
 import { streamWordUpload, UploadError } from "../lib/streaming-upload.js";
 import { AdobeConversionError } from "../lib/adobe-pdf-services.js";
-import { adobeConfigured, convertWordToPdfAdobe } from "../lib/adobe-convert.js";
+import {
+  adobeConfigured,
+  beginAdobeUpload,
+  convertWordToPdfAdobe,
+  finishAdobeJob,
+  mediaTypeForWord,
+} from "../lib/adobe-convert.js";
 import { runWordToPdfConversion } from "../lib/convert.js";
 
 export function createWordToPdfRouter(config: AppConfig, log: Logger): Router {
   const router = Router();
+
+  router.post("/asset", async (req, res) => {
+    try {
+      const filename = typeof req.body?.filename === "string" ? req.body.filename : "document.docx";
+      const created = await beginAdobeUpload(config, mediaTypeForWord(filename));
+      res.json(created);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not start upload";
+      const status = error instanceof AdobeConversionError ? error.statusCode : 500;
+      log.error({ error: message }, "word-to-pdf asset create failed");
+      res.status(status).json({ error: message });
+    }
+  });
+
+  router.post("/jobs", async (req, res) => {
+    const assetID = typeof req.body?.assetID === "string" ? req.body.assetID.trim() : "";
+    const filename = typeof req.body?.filename === "string" ? req.body.filename : "document.docx";
+    if (!assetID) {
+      res.status(400).json({ error: "assetID is required." });
+      return;
+    }
+    try {
+      const result = await finishAdobeJob(config, log, {
+        assetID,
+        filename,
+        operation: "createpdf",
+      });
+      res.setHeader("X-Conversion-Engine", "adobe-pdf-services");
+      res.json(result);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Conversion failed";
+      const status = error instanceof AdobeConversionError ? error.statusCode : 500;
+      log.error({ error: message, status }, "word-to-pdf job failed");
+      res.status(status).json({ error: message });
+    }
+  });
 
   router.post("/convert", async (req, res) => {
     const workspace = new TempWorkspace(config.TEMP_ROOT);

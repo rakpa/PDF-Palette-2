@@ -37,6 +37,12 @@ export function serviceErrorFromResponse(
   status: number,
   message: string
 ): ConversionServiceError {
+  if (status === 413) {
+    return new ConversionServiceError(
+      message || "This file is too large to send through the conversion service.",
+      "failed"
+    );
+  }
   if (status === 503 || status === 502 || status === 504) {
     return new ConversionServiceError(message, "unavailable");
   }

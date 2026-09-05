@@ -1,59 +1,23 @@
-import {
-  serviceErrorFromFetch,
-  serviceErrorFromResponse,
-} from "./conversion-service-client";
+import { convertFileViaAdobe } from "./adobe-direct";
 import { conversionServiceUrl } from "./runtime-config";
 
-function filenameFromDisposition(header: string | null): string | null {
-  if (!header) return null;
-  const match = /filename\*?=(?:UTF-8''|")?([^";]+)/i.exec(header);
-  return match?.[1]?.replace(/"/g, "") ?? null;
+function mediaTypeForWord(name: string): string {
+  return /\.doc$/i.test(name) && !/\.docx$/i.test(name)
+    ? "application/msword"
+    : "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 }
-
-const API_BASE = "/api/word-to-pdf";
 
 export async function convertWordToPdfLocal(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<{ blob: Blob; filename: string }> {
-  onProgress?.(10, "Uploading document…");
-
-  const form = new FormData();
-  form.append("file", file, file.name);
-
-  onProgress?.(35, "Converting with Adobe PDF Services…");
-
-  let res: Response;
-  try {
-    res = await fetch(
-      conversionServiceUrl(`${API_BASE}/convert`, "/v1/word-to-pdf/convert"),
-      {
-      method: "POST",
-      body: form,
-      }
-    );
-  } catch (error) {
-    throw serviceErrorFromFetch(error);
-  }
-
-  if (!res.ok) {
-    let message = "Word to PDF conversion failed";
-    try {
-      const data = (await res.json()) as { error?: string };
-      if (data.error) message = data.error;
-    } catch {
-      message = `${message} (HTTP ${res.status})`;
-    }
-    throw serviceErrorFromResponse(res.status, message);
-  }
-
-  onProgress?.(90, "Preparing download…");
-  const blob = await res.blob();
-  const baseName = file.name.replace(/\.(docx?|DOCX?)$/i, "") || "document";
-  const filename =
-    filenameFromDisposition(res.headers.get("Content-Disposition")) ?? `${baseName}.pdf`;
-
-  onProgress?.(100, "Done");
-  return { blob, filename };
+  return convertFileViaAdobe({
+    file,
+    mediaType: mediaTypeForWord(file.name),
+    assetUrl: conversionServiceUrl("/api/word-to-pdf/asset", "/v1/word-to-pdf/asset"),
+    jobsUrl: conversionServiceUrl("/api/word-to-pdf/jobs", "/v1/word-to-pdf/jobs"),
+    onProgress,
+    uploadingMessage: "Uploading document to Adobe…",
+    convertingMessage: "Converting with Adobe PDF Services…",
+  });
 }
-

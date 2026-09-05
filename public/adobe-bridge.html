@@ -1,0 +1,39 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Adobe transfer</title>
+<script>
+  window.addEventListener("message", async (event) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (!data || data.type !== "adobe-transfer" || !event.source) return;
+    const reply = (payload) => {
+      event.source.postMessage({ type: "adobe-transfer-result", id: data.id, ...payload }, event.origin);
+    };
+    try {
+      if (data.action === "put") {
+        const res = await fetch(data.url, {
+          method: "PUT",
+          headers: { "Content-Type": data.mediaType },
+          body: data.body,
+        });
+        if (!res.ok) throw new Error("Adobe upload failed (HTTP " + res.status + ")");
+        reply({ ok: true });
+        return;
+      }
+      if (data.action === "get") {
+        const res = await fetch(data.url);
+        if (!res.ok) throw new Error("Adobe download failed (HTTP " + res.status + ")");
+        const body = await res.arrayBuffer();
+        event.source.postMessage(
+          { type: "adobe-transfer-result", id: data.id, ok: true, body },
+          event.origin,
+          [body]
+        );
+        return;
+      }
+      throw new Error("Unknown Adobe transfer action");
+    } catch (error) {
+      reply({ ok: false, error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+</script>

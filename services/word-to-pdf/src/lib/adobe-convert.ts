@@ -6,6 +6,9 @@ import {
   ADOBE_MEDIA,
   AdobeConversionError,
   convertAssetWithAdobe,
+  createAdobeAsset,
+  deleteAdobeAsset,
+  runAdobeJob,
   type AdobeCredentials,
 } from "./adobe-pdf-services.js";
 import { validateOfficeFile } from "./office-file-validator.js";
@@ -36,7 +39,7 @@ function requireAdobe(config: AppConfig): AdobeCredentials {
   return credentials;
 }
 
-function mediaTypeForWord(filename: string): string {
+export function mediaTypeForWord(filename: string): string {
   return /\.doc$/i.test(filename) && !/\.docx$/i.test(filename)
     ? ADOBE_MEDIA.doc
     : ADOBE_MEDIA.docx;
@@ -80,6 +83,53 @@ export async function convertWordToPdfAdobe(
     byteLength: pdfValidation.byteLength,
     pdfFilename,
   };
+}
+
+export async function beginAdobeUpload(
+  config: AppConfig,
+  mediaType: string
+): Promise<{ assetID: string; uploadUri: string; mediaType: string }> {
+  const credentials = requireAdobe(config);
+  const created = await createAdobeAsset(credentials, mediaType);
+  return { ...created, mediaType };
+}
+
+export async function finishAdobeJob(
+  config: AppConfig,
+  log: Logger,
+  options: {
+    assetID: string;
+    filename: string;
+    operation: "exportpdf" | "createpdf";
+  }
+): Promise<{ downloadUri: string; filename: string; contentType: string }> {
+  const credentials = requireAdobe(config);
+  const originalName = path.basename(options.filename) || "document";
+  log.info({ originalName, operation: options.operation }, "adobe job started");
+
+  try {
+    const result = await runAdobeJob({
+      credentials,
+      assetID: options.assetID,
+      operation: options.operation,
+      targetFormat: options.operation === "exportpdf" ? "docx" : undefined,
+      timeoutMs: config.CONVERSION_TIMEOUT_MS,
+    });
+
+    const filename =
+      options.operation === "exportpdf"
+        ? path.basename(originalName, path.extname(originalName)) + ".docx"
+        : path.basename(originalName, path.extname(originalName)) + ".pdf";
+    const contentType =
+      options.operation === "exportpdf" ? ADOBE_MEDIA.docx : ADOBE_MEDIA.pdf;
+
+    log.info({ filename }, "adobe job completed");
+    void deleteAdobeAsset(credentials, options.assetID);
+    return { downloadUri: result.downloadUri, filename, contentType };
+  } catch (error) {
+    void deleteAdobeAsset(credentials, options.assetID);
+    throw error;
+  }
 }
 
 export async function convertPdfToWordAdobe(

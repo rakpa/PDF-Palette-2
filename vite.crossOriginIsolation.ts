@@ -6,7 +6,18 @@ export function crossOriginIsolationPlugin(): Plugin {
     name: "cross-origin-isolation",
     enforce: "pre",
     configureServer(server) {
-      prependMiddleware(server, (_req, res, next) => {
+      prependMiddleware(server, (req, res, next) => {
+        const url = req.url?.split("?")[0] ?? "";
+        if (url === "/adobe-bridge.html") {
+          const writeHead = res.writeHead.bind(res);
+          res.writeHead = ((...args: Parameters<typeof res.writeHead>) => {
+            res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+            res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+            return writeHead(...args);
+          }) as typeof res.writeHead;
+          next();
+          return;
+        }
         res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
         next();
       });

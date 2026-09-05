@@ -22,6 +22,8 @@ export function createApp(config: AppConfig, log: Logger) {
     allowedOrigins.add(`https://${process.env.VERCEL_URL}`);
   }
 
+  app.use(express.json({ limit: "32kb" }));
+
   app.use(
     cors({
       origin: (origin, callback) => {

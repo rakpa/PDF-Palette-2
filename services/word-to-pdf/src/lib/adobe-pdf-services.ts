@@ -315,6 +315,50 @@ async function downloadAsset(downloadUri: string, timeoutMs: number): Promise<Bu
   return Buffer.from(await res.arrayBuffer());
 }
 
+export async function createAdobeAsset(
+  credentials: AdobeCredentials,
+  mediaType: string,
+  timeoutMs = 20_000
+): Promise<{ assetID: string; uploadUri: string }> {
+  const token = await getAdobeAccessToken(credentials, timeoutMs);
+  return createAsset(credentials, token, mediaType, timeoutMs);
+}
+
+export async function runAdobeJob(options: {
+  credentials: AdobeCredentials;
+  assetID: string;
+  operation: "exportpdf" | "createpdf";
+  targetFormat?: "docx";
+  timeoutMs: number;
+}): Promise<{ downloadUri: string; resultAssetID?: string }> {
+  const token = await getAdobeAccessToken(options.credentials);
+  const jobBody: Record<string, unknown> = { assetID: options.assetID };
+  if (options.operation === "exportpdf") {
+    jobBody.targetFormat = options.targetFormat ?? "docx";
+  }
+
+  const location = await submitJob(
+    options.credentials,
+    token,
+    `/operation/${options.operation}`,
+    jobBody,
+    Math.min(options.timeoutMs, 30_000)
+  );
+  const result = await pollJob(options.credentials, token, location, options.timeoutMs);
+  if (!result.downloadUri) {
+    throw new AdobeConversionError("Adobe finished the job but returned no download URL.", 502);
+  }
+  return { downloadUri: result.downloadUri, resultAssetID: result.assetID };
+}
+
+export async function deleteAdobeAsset(
+  credentials: AdobeCredentials,
+  assetID: string
+): Promise<void> {
+  const token = await getAdobeAccessToken(credentials);
+  await deleteAsset(credentials, token, assetID);
+}
+
 export async function convertAssetWithAdobe(options: {
   credentials: AdobeCredentials;
   inputPath: string;
