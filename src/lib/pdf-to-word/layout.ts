@@ -501,7 +501,13 @@ function buildParagraphs(
     const slop = Math.max(2, line.fontSize * 0.3);
 
     const gap = line.baseline - prev.baseline;
-    const tight = gap > 0 && gap <= blockLeading * 1.32;
+    // The block's median gap alone is not enough: a title page holds a handful
+    // of widely spaced lines, so the median is itself large and every line
+    // reads as a continuation of the one above. Lines of one paragraph are
+    // never set more than about 1.6 times their own size apart, so that caps
+    // it — a subtitle and an author's name stay separate paragraphs.
+    const singleLine = Math.max(prev.fontSize, line.fontSize) * 1.6;
+    const tight = gap > 0 && gap <= Math.min(blockLeading * 1.32, singleLine);
     const sameSize = Math.abs(line.fontSize - prev.fontSize) <= Math.max(0.6, prev.fontSize * 0.09);
     const sameShading = line.shading === prev.shading;
 

@@ -384,7 +384,31 @@ export function createTableSplitter(
             return LIST_MARKER.test(text) || /^\(?[0-9A-Za-z]{1,3}[.)]?$/.test(text);
           });
 
-      if (j - i >= 3 && !isList) {
+      // A table of contents aligns exactly like a two- or four-column table:
+      // a title, then a page number. What gives it away is that the numbers
+      // climb as the list goes down, which a column of data almost never does
+      // beside long prose. Reading it as a table costs the tab leaders and
+      // makes the entries uneditable.
+      const rowsHere = segmented.slice(i, j);
+      const cellText = (row: (typeof segmented)[number], k: number) =>
+        row[k].spans.map((s) => s.text).join("").trim();
+      const isContents = (() => {
+        let numeric = 0;
+        for (let k = 0; k < columnCount; k++) {
+          const values = rowsHere.map((row) => cellText(row, k));
+          if (!values.every((v) => /^\d{1,4}$/.test(v))) continue;
+          const numbers = values.map(Number);
+          const climbs = numbers.every((n, at) => at === 0 || n >= numbers[at - 1]);
+          const prose =
+            k > 0 &&
+            rowsHere.every((row) => cellText(row, k - 1).length >= 8) &&
+            rowsHere.some((row) => cellText(row, k - 1).includes(" "));
+          if (climbs && prose) numeric += 1;
+        }
+        return numeric > 0;
+      })();
+
+      if (j - i >= 3 && !isList && !isContents) {
         const table = buildAlignedTable(lines.slice(i, j), segmented.slice(i, j));
         if (table) {
           out.push({ start: i, end: j, table });
