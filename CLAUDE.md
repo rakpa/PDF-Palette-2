@@ -20,6 +20,12 @@ not preferences.
 Also: don't re-read files already in context, batch independent tool calls into
 one message, and keep commit messages to what a reader needs.
 
+## Reporting
+
+Summarise fixes as short bullets — what changed, the number that proves it, what
+is still open. No walls of prose, no narration of the steps taken. Detail belongs
+in the commit message, where it can be read on demand.
+
 Long sessions get more expensive per turn because the whole history replays. When
 a session has run long and the current task is self-contained, say so and suggest
 starting fresh with a one-line brief.
