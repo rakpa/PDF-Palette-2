@@ -2,6 +2,7 @@ import {
   serviceErrorFromFetch,
   serviceErrorFromResponse,
 } from "./conversion-service-client";
+import { adobeApiUrl } from "./runtime-config";
 
 type Progress = (progress: number, message?: string) => void;
 
@@ -12,10 +13,20 @@ type AssetResponse = {
 };
 
 type JobResponse = {
-  downloadUri: string;
+  statusUrl: string;
   filename: string;
   contentType: string;
 };
+
+type StatusResponse = {
+  state: "running" | "done";
+  downloadUri?: string;
+};
+
+/** Adobe finishes most jobs in seconds; a long book can take a few minutes. */
+const POLL_TIMEOUT_MS = 5 * 60 * 1000;
+const POLL_MIN_MS = 1500;
+const POLL_MAX_MS = 5000;
 
 async function throwHttpError(res: Response, fallback: string): Promise<never> {
   let message = fallback;
@@ -103,30 +114,72 @@ async function getFile(downloadUri: string): Promise<Blob> {
   }
 }
 
+async function postJson<T>(url: string, body: unknown, fallback: string): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch (error) {
+    throw serviceErrorFromFetch(error);
+  }
+  if (!res.ok) await throwHttpError(res, fallback);
+  return (await res.json()) as T;
+}
+
+/**
+ * Polls from the browser rather than inside the serverless function: a request
+ * that waits for Adobe outlives the platform's execution limit and comes back
+ * as an opaque 500.
+ */
+async function waitForJob(
+  statusUrl: string,
+  onProgress?: Progress,
+  message?: string
+): Promise<string> {
+  const deadline = Date.now() + POLL_TIMEOUT_MS;
+  let delay = POLL_MIN_MS;
+  let progress = 45;
+
+  while (Date.now() < deadline) {
+    const status = await postJson<StatusResponse>(
+      adobeApiUrl("status"),
+      { statusUrl },
+      "Adobe conversion failed"
+    );
+    if (status.state === "done" && status.downloadUri) return status.downloadUri;
+
+    progress = Math.min(progress + 4, 82);
+    onProgress?.(progress, message);
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    delay = Math.min(Math.round(delay * 1.3), POLL_MAX_MS);
+  }
+  throw serviceErrorFromResponse(
+    504,
+    "Adobe PDF Services took too long to convert this file."
+  );
+}
+
 export async function convertFileViaAdobe(options: {
   file: File;
   mediaType: string;
-  assetUrl: string;
-  jobsUrl: string;
+  kind: "pdf-to-word" | "word-to-pdf";
   onProgress?: Progress;
   uploadingMessage: string;
   convertingMessage: string;
 }): Promise<{ blob: Blob; filename: string }> {
   options.onProgress?.(8, options.uploadingMessage);
-  let assetRes: Response;
-  try {
-    assetRes = await fetch(options.assetUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename: options.file.name, mediaType: options.mediaType }),
-    });
-  } catch (error) {
-    throw serviceErrorFromFetch(error);
-  }
-  if (!assetRes.ok) {
-    await throwHttpError(assetRes, "Could not start Adobe conversion");
-  }
-  const asset = (await assetRes.json()) as AssetResponse;
+
+  const asset = await postJson<AssetResponse>(
+    adobeApiUrl("asset"),
+    {
+      filename: options.file.name,
+      kind: options.kind === "word-to-pdf" ? "word" : "pdf",
+    },
+    "Could not start Adobe conversion"
+  );
   if (!asset.assetID || !asset.uploadUri) {
     throw new Error("Adobe PDF Services did not return an upload URL.");
   }
@@ -135,26 +188,23 @@ export async function convertFileViaAdobe(options: {
   await putFile(asset.uploadUri, options.file, asset.mediaType || options.mediaType);
 
   options.onProgress?.(45, options.convertingMessage);
-  let jobRes: Response;
-  try {
-    jobRes = await fetch(options.jobsUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ assetID: asset.assetID, filename: options.file.name }),
-    });
-  } catch (error) {
-    throw serviceErrorFromFetch(error);
-  }
-  if (!jobRes.ok) {
-    await throwHttpError(jobRes, "Adobe conversion failed");
-  }
-  const job = (await jobRes.json()) as JobResponse;
-  if (!job.downloadUri) {
-    throw new Error("Adobe PDF Services did not return a download URL.");
+  const job = await postJson<JobResponse>(
+    adobeApiUrl("job"),
+    { assetID: asset.assetID, filename: options.file.name, kind: options.kind },
+    "Adobe conversion failed"
+  );
+  if (!job.statusUrl) {
+    throw new Error("Adobe PDF Services did not return a job status URL.");
   }
 
-  options.onProgress?.(85, "Preparing download…");
-  const blob = await getFile(job.downloadUri);
+  const downloadUri = await waitForJob(
+    job.statusUrl,
+    options.onProgress,
+    options.convertingMessage
+  );
+
+  options.onProgress?.(88, "Preparing download…");
+  const blob = await getFile(downloadUri);
   options.onProgress?.(100, "Done");
   return { blob, filename: job.filename };
 }

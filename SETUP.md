@@ -41,9 +41,22 @@ npm run dev
 
 ## PDF → Word and Word → PDF
 
-Both tools call Adobe PDF Services from `services/adobe` in production (a
-plain Node server on `/api/adobe`). Locally, `npm run dev` still proxies
-through `services/word-to-pdf`. The browser never sees the client secret.
+Both tools call Adobe PDF Services through the serverless functions in
+`api/adobe/` (`/api/adobe/asset`, `/job`, `/status`, `/health`) — the same
+handlers in production and under `npm run dev`. The browser never sees the
+client secret; it only receives the short-lived presigned Adobe URLs.
+
+Set these on the deployment (Vercel → Settings → Environment Variables) or in a
+local `.env.local`, taking the values from `pdfservices-api-credentials.json`:
+
+```
+PDF_SERVICES_CLIENT_ID=<client_credentials.client_id>
+PDF_SERVICES_CLIENT_SECRET=<client_credentials.client_secret>
+```
+
+Check they arrived with `curl https://<your-app>/api/adobe/health` — it reports
+`"checks": { "adobe": true }` when the credentials are readable.
+
 If the service is down, the in-browser engines in `src/lib/pdf-to-word/`
 and `src/lib/word-to-pdf/` are used as a fallback.
 

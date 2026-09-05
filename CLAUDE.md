@@ -62,9 +62,17 @@ the check. But verify cheaply, and be careful that the test itself is sound:
 
 Most tools run in the browser. PDF → Word and Word → PDF call Adobe PDF
 Services over REST (`POST /token`, `/assets`, `/operation/exportpdf` or
-`/operation/createpdf`). Production uses `services/adobe`; local `npm run
-dev` still proxies through `services/word-to-pdf`. Keep the client secret
-on the server — never a `VITE_` env var.
+`/operation/createpdf`). They live in `api/adobe/*.js` — ordinary Vercel
+serverless functions, with the REST client in `api/_lib/adobe.js` — and
+`vite.adobeApi.ts` mounts the same handlers on the dev server, so `/api/adobe/*`
+means the same thing everywhere. Keep the client secret on the server — never a
+`VITE_` env var.
+
+The browser drives the job: it asks for a presigned `uploadUri`, PUTs the file
+straight to Adobe (past the 4.5 MB request-body limit), starts the job, then
+polls `/api/adobe/status` itself. Never poll Adobe *inside* a function — the
+wait outlives the platform's execution limit and surfaces as an opaque HTTP 500,
+which is exactly the bug this replaced.
 HTML → PDF from a URL still needs the same service. Do not reintroduce further
 service dependencies.
 

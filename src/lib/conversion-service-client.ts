@@ -1,4 +1,4 @@
-import { conversionServiceUrl } from "./runtime-config";
+import { adobeApiUrl, conversionServiceUrl } from "./runtime-config";
 
 export type ConversionHealth = {
   status: "ok" | "degraded" | "unavailable";
@@ -70,7 +70,7 @@ export function parseConversionFetchError(error: unknown): string {
 
 export async function checkConversionHealth(): Promise<ConversionHealth> {
   try {
-    const res = await fetch(conversionServiceUrl("/api/conversion/health", "/health"), {
+    const res = await fetch(adobeApiUrl("health"), {
       method: "GET",
       signal: AbortSignal.timeout(5000),
     });

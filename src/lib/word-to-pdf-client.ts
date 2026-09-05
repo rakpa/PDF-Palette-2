@@ -1,5 +1,5 @@
 import { convertFileViaAdobe } from "./adobe-direct";
-import { conversionServiceUrl } from "./runtime-config";
+
 
 function mediaTypeForWord(name: string): string {
   return /\.doc$/i.test(name) && !/\.docx$/i.test(name)
@@ -14,8 +14,7 @@ export async function convertWordToPdfLocal(
   return convertFileViaAdobe({
     file,
     mediaType: mediaTypeForWord(file.name),
-    assetUrl: conversionServiceUrl("/api/word-to-pdf/asset", "/v1/word-to-pdf/asset"),
-    jobsUrl: conversionServiceUrl("/api/word-to-pdf/jobs", "/v1/word-to-pdf/jobs"),
+    kind: "word-to-pdf",
     onProgress,
     uploadingMessage: "Uploading document to Adobe…",
     convertingMessage: "Converting with Adobe PDF Services…",

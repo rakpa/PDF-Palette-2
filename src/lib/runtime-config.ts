@@ -5,9 +5,18 @@ function trimSlash(value: string): string {
 export function getConversionServicePrefix(): string {
   // Vercel services rewrite prefix (prod). In dev, Vite proxy handles /api/*.
   const prefix =
-    (import.meta as any).env?.VITE_CONVERSION_PREFIX ??
+    (import.meta.env as Record<string, string | undefined>).VITE_CONVERSION_PREFIX ??
     "/api/adobe";
   return trimSlash(prefix);
+}
+
+/**
+ * Adobe PDF Services runs as plain Vercel serverless functions under
+ * /api/adobe/*, and the Vite dev server mounts the same handlers, so the path
+ * is identical in every environment.
+ */
+export function adobeApiUrl(name: "health" | "asset" | "job" | "status"): string {
+  return `/api/adobe/${name}`;
 }
 
 export function conversionServiceUrl(devPath: string, prodPath: string): string {

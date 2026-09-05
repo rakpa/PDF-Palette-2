@@ -6,6 +6,7 @@ import { ghostscriptAssetsPlugin } from "./vite.ghostscript";
 import { pdfjsWorkerPlugin } from "./vite.pdfjs";
 import { tesseractAssetsPlugin } from "./vite.tesseract";
 import { crossOriginIsolationPlugin } from "./vite.crossOriginIsolation";
+import { adobeApiPlugin } from "./vite.adobeApi";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -18,25 +19,6 @@ export default defineConfig(({ mode }) => ({
       "Cross-Origin-Resource-Policy": "same-origin",
     },
     proxy: {
-      "/api/conversion/health": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-        rewrite: () => "/health",
-      },
-      "/api/word-to-pdf": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/word-to-pdf/, "/v1/word-to-pdf"),
-        timeout: 600_000,
-        proxyTimeout: 600_000,
-      },
-      "/api/pdf-to-word": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/pdf-to-word/, "/v1/pdf-to-word"),
-        timeout: 600_000,
-        proxyTimeout: 600_000,
-      },
       "/api/unlock-pdf": {
         target: "http://localhost:3001",
         changeOrigin: true,
@@ -62,6 +44,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     crossOriginIsolationPlugin(),
+    adobeApiPlugin(mode),
     ghostscriptAssetsPlugin(),
     pdfjsWorkerPlugin(),
     tesseractAssetsPlugin(),
