@@ -399,10 +399,15 @@ export function createTableSplitter(
           if (!values.every((v) => /^\d{1,4}$/.test(v))) continue;
           const numbers = values.map(Number);
           const climbs = numbers.every((n, at) => at === 0 || n >= numbers[at - 1]);
+          // The column beside the numbers has to read as titles: never a bare
+          // number itself, and mostly long enough to be a heading. Short
+          // entries — "Scans", "Joins" — are normal in a contents list, so
+          // this asks for a majority rather than every row.
+          const titles = k > 0 ? rowsHere.map((row) => cellText(row, k - 1)) : [];
           const prose =
-            k > 0 &&
-            rowsHere.every((row) => cellText(row, k - 1).length >= 8) &&
-            rowsHere.some((row) => cellText(row, k - 1).includes(" "));
+            titles.length > 0 &&
+            titles.every((t) => t.length > 0 && !/^\d{1,4}$/.test(t)) &&
+            titles.filter((t) => t.length >= 8).length * 2 >= titles.length;
           if (climbs && prose) numeric += 1;
         }
         return numeric > 0;

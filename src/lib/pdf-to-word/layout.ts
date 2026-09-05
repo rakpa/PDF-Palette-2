@@ -909,6 +909,7 @@ export function fitToPage(layout: PageLayout): void {
     if (box.kind === "spacer") continue;
     box.spaceBefore *= keep;
   }
+
 }
 
 export function isScannedPage(page: PageContent): boolean {
