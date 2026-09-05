@@ -19,7 +19,7 @@ const Hero = () => {
 
           <p className="mx-auto mb-4 max-w-2xl text-sm text-muted-foreground md:mb-5 md:text-base">
             Merge, split, compress, convert, sign, OCR and edit — free and fast.
-            PDF to Word and Word to PDF use Adobe PDF Services.
+            PDF to Word and Word to PDF use CloudConvert.
           </p>
 
           <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground md:text-sm">

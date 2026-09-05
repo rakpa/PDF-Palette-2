@@ -11,7 +11,7 @@ const Privacy = () => (
       <h2>The short version</h2>
       <p>
         We do not ask you to sign up. We do not take your documents as customer data. Most tools process
-        files in your browser. PDF to Word and Word to PDF send the file to Adobe PDF Services for
+        files in your browser. PDF to Word and Word to PDF send the file to CloudConvert for
         conversion only — PDF Palette does not keep a copy. We do not sell personal information, because
         we do not run a customer database of people or files.
       </p>
@@ -49,10 +49,10 @@ const Privacy = () => (
     <section>
       <h2>Remote exceptions</h2>
       <p>
-        <strong>PDF to Word</strong> and <strong>Word to PDF</strong> send the selected file to Adobe PDF
-        Services so Adobe can convert it. We use that path only to return the converted file. PDF Palette
-        does not keep the upload or the result after the download is ready. Adobe processes the file under
-        Adobe’s own terms for PDF Services.
+        <strong>PDF to Word</strong> and <strong>Word to PDF</strong> send the selected file to CloudConvert
+        so it can convert it. We use that path only to return the converted file. PDF Palette
+        does not keep the upload or the result after the download is ready. CloudConvert processes the file under
+        CloudConvert’s own terms.
       </p>
       <p>
         If you use HTML to PDF and paste a <strong>web page URL</strong>, that URL is sent to a conversion
@@ -96,7 +96,7 @@ const Privacy = () => (
       <h2>Third parties</h2>
       <p>
         Script libraries (PDF, Office, OCR, and similar) load as part of the web app so processing can happen
-        in your browser. PDF to Word and Word to PDF share the file with Adobe PDF Services for conversion.
+        in your browser. PDF to Word and Word to PDF share the file with CloudConvert for conversion.
         The HTML to PDF URL path uses the conversion service only to fetch and render that page.
       </p>
     </section>

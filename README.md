@@ -1,7 +1,7 @@
 # PDF Palette
 
 Free, privacy-first PDF tools. Most run **entirely in your browser**. PDF to
-Word and Word to PDF use Adobe PDF Services. No sign-up, no watermarks.
+Word and Word to PDF use CloudConvert. No sign-up, no watermarks.
 
 ## Features
 
@@ -13,9 +13,9 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **Compress PDF** – strip metadata and re-pack object streams
 - **Add Watermark** – stamp custom diagonal text on every page
 - **JPG to PDF** – turn JPG/PNG images into a PDF
-- **PDF to Word** – convert a PDF to an editable `.docx` with Adobe PDF Services
-  (`services/word-to-pdf`, with an in-browser fallback in `src/lib/pdf-to-word/`)
-- **Word to PDF** – convert `.doc` / `.docx` to PDF with Adobe PDF Services
+- **PDF to Word** – convert a PDF to an editable `.docx` with CloudConvert
+  (`api/convert`, with an in-browser fallback in `src/lib/pdf-to-word/`)
+- **Word to PDF** – convert `.doc` / `.docx` to PDF with CloudConvert
 - **Edit PDF** – add text, images, shapes, freehand ink, highlights and
   whiteout; rotate, duplicate, reorder and delete pages
 - **Sign PDF** – draw, type or upload a signature and place it on the page
@@ -51,8 +51,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **OCR PDF** – scanned pages recognised in the tab with Tesseract, then given
   an invisible text layer so they can be searched and copied (`src/lib/pdf-ocr/`)
 
-**PDF ↔ Word** use Adobe PDF Services through the conversion service. The
-HTML → PDF *URL* field uses that service too — a tab cannot read another
+**PDF ↔ Word** use CloudConvert through `/api/convert`. The
+HTML → PDF *URL* field uses the local service — a tab cannot read another
 site's HTML. Everything else runs in the tab.
 
 The remaining tools are showcased and flagged **“Soon”**.

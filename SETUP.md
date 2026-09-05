@@ -3,12 +3,12 @@
 ## What you need
 
 1. **Node.js**
-2. **Adobe PDF Services credentials** — for PDF → Word and Word → PDF.
-   Copy `services/word-to-pdf/.env.example` to `services/word-to-pdf/.env`
-   and set `PDF_SERVICES_CLIENT_ID` and `PDF_SERVICES_CLIENT_SECRET`.
-   On Vercel, set the same two variables on the project (or the `adobe` service).
+2. **CloudConvert API key** — for PDF → Word and Word → PDF.
+   Copy `.env.example` to `.env.local` and set `CLOUDCONVERT_API_KEY`.
+   On Vercel, set the same variable on the project.
 
-LibreOffice is optional (Word → PDF falls back to it if Adobe is not configured).
+LibreOffice is optional (Word → PDF falls back to the in-browser engine if
+CloudConvert is not configured).
 
 ---
 
@@ -28,8 +28,8 @@ cd C:\RAKESH\pdf-palette
 npm run dev
 ```
 
-- **Word → PDF:** http://localhost:8080/word-to-pdf (Adobe PDF Services)
-- **PDF → Word:** http://localhost:8080/pdf-to-word (Adobe PDF Services)
+- **Word → PDF:** http://localhost:8080/word-to-pdf (CloudConvert)
+- **PDF → Word:** http://localhost:8080/pdf-to-word (CloudConvert)
 - **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
 - **Protect / Unlock PDF:** http://localhost:8080/protect-pdf, `/unlock-pdf`
@@ -41,21 +41,21 @@ npm run dev
 
 ## PDF → Word and Word → PDF
 
-Both tools call Adobe PDF Services through the serverless functions in
-`api/adobe/` (`/api/adobe/asset`, `/job`, `/status`, `/health`) — the same
+Both tools call CloudConvert through the serverless functions in
+`api/convert/` (`/api/convert/asset`, `/job`, `/status`, `/health`) — the same
 handlers in production and under `npm run dev`. The browser never sees the
-client secret; it only receives the short-lived presigned Adobe URLs.
+API key; it only receives the short-lived CloudConvert upload form.
 
-Set these on the deployment (Vercel → Settings → Environment Variables) or in a
-local `.env.local`, taking the values from `pdfservices-api-credentials.json`:
+Set this on the deployment (Vercel → Settings → Environment Variables) or in a
+local `.env.local`:
 
 ```
-PDF_SERVICES_CLIENT_ID=<client_credentials.client_id>
-PDF_SERVICES_CLIENT_SECRET=<client_credentials.client_secret>
+CLOUDCONVERT_API_KEY=<your CloudConvert API key>
 ```
 
-Check they arrived with `curl https://<your-app>/api/adobe/health` — it reports
-`"checks": { "adobe": true }` when the credentials are readable.
+Check it arrived with `curl https://<your-app>/api/convert/health` — it reports
+`"checks": { "cloudconvert": true }` when the key is readable. That only means
+the variable is set; a live convert still needs a key CloudConvert accepts.
 
 If the service is down, the in-browser engines in `src/lib/pdf-to-word/`
 and `src/lib/word-to-pdf/` are used as a fallback.
@@ -138,7 +138,8 @@ has to be fetched and rendered outside the browser.
 
 ## Vercel
 
-In the project **Build and Deployment** settings, set Framework to **Services**. New Vercel projects reject `experimentalServices`; this repo uses the `services` key in `vercel.json` instead.
+The project is a single Vite app. Set `CLOUDCONVERT_API_KEY` on the Vercel
+project (Production and Preview). Do not prefix it with `VITE_`.
 
 ---
 

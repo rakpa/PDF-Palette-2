@@ -1,12 +1,12 @@
 {
   "/pdf-to-word": {
     "name": "PDF to Word",
-    "title": "PDF to Word Converter — Adobe PDF Services | PDF Palette",
-    "description": "Convert PDF to an editable Word (.docx) document free. Adobe PDF Services preserves layout, fonts and tables.",
-    "intro": "Turn a PDF back into an editable Word document. PDF Palette sends the file to Adobe PDF Services, which rebuilds it as a .docx you can open and edit in Word, Google Docs or LibreOffice. The file is used for conversion only and is not stored by PDF Palette.",
+    "title": "PDF to Word Converter — CloudConvert | PDF Palette",
+    "description": "Convert PDF to an editable Word (.docx) document free. CloudConvert preserves layout, fonts and tables.",
+    "intro": "Turn a PDF back into an editable Word document. PDF Palette sends the file to CloudConvert, which rebuilds it as a .docx you can open and edit in Word, Google Docs or LibreOffice. The file is used for conversion only and is not stored by PDF Palette.",
     "steps": [
       "Drop your PDF onto the upload area, or click to pick a file.",
-      "Wait while Adobe PDF Services converts the document.",
+      "Wait while CloudConvert converts the document.",
       "Download the .docx file and open it in Word, Google Docs or LibreOffice."
     ],
     "faqs": [
@@ -20,28 +20,28 @@
       },
       {
         "q": "Is my file uploaded anywhere?",
-        "a": "Yes — this tool sends the PDF to Adobe PDF Services for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
+        "a": "Yes — this tool sends the PDF to CloudConvert for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
       },
       {
         "q": "Is there a file size or page limit?",
-        "a": "Adobe PDF Services accepts typical document sizes. Very large scanned PDFs may take longer to convert."
+        "a": "CloudConvert accepts typical document sizes. Very large scanned PDFs may take longer to convert."
       }
     ]
   },
   "/word-to-pdf": {
     "name": "Word to PDF",
-    "title": "Word to PDF Converter — Adobe PDF Services | PDF Palette",
-    "description": "Convert Word documents to PDF free. Adobe PDF Services preserves fonts, tables, images and page layout.",
-    "intro": "Convert a .docx or .doc file into a PDF that looks the way your document does. PDF Palette sends the file to Adobe PDF Services, which keeps fonts, colours, tables, images, headers and page breaks. The file is used for conversion only and is not stored by PDF Palette.",
+    "title": "Word to PDF Converter — CloudConvert | PDF Palette",
+    "description": "Convert Word documents to PDF free. CloudConvert preserves fonts, tables, images and page layout.",
+    "intro": "Convert a .docx or .doc file into a PDF that looks the way your document does. PDF Palette sends the file to CloudConvert, which keeps fonts, colours, tables, images, headers and page breaks. The file is used for conversion only and is not stored by PDF Palette.",
     "steps": [
       "Select the Word document you want to convert.",
-      "Wait while Adobe PDF Services converts the document.",
+      "Wait while CloudConvert converts the document.",
       "Download the finished PDF."
     ],
     "faqs": [
       {
         "q": "Do I need Microsoft Word installed?",
-        "a": "No. Nothing is installed and no PDF Palette account is needed. Adobe PDF Services performs the conversion."
+        "a": "No. Nothing is installed and no PDF Palette account is needed. CloudConvert performs the conversion."
       },
       {
         "q": "Are fonts embedded in the PDF?",

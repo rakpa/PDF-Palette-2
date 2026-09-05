@@ -1,24 +1,16 @@
-import { DOCX_TYPE, PDF_TYPE, startJob } from "../_lib/adobe.js";
+import { DOCX_TYPE, PDF_TYPE, assertJobId } from "../_lib/cloudconvert.js";
 import { guardMethod, readJson, sendError, sendJson } from "../_lib/http.js";
 
 export default async function handler(req, res) {
   if (guardMethod(req, res, "POST")) return;
   try {
     const body = await readJson(req);
-    const assetID = typeof body.assetID === "string" ? body.assetID.trim() : "";
-    if (!assetID) {
-      sendJson(res, 400, { error: "assetID is required." });
-      return;
-    }
+    const jobId = assertJobId(body.jobId);
     const toWord = body.kind !== "word-to-pdf";
     const filename = String(body.filename || (toWord ? "document.pdf" : "document.docx"));
 
-    const statusUrl = toWord
-      ? await startJob("exportpdf", { assetID, targetFormat: "docx" })
-      : await startJob("createpdf", { assetID });
-
     sendJson(res, 200, {
-      statusUrl,
+      jobId,
       filename: toWord
         ? `${filename.replace(/\.pdf$/i, "") || "document"}.docx`
         : `${filename.replace(/\.docx?$/i, "") || "document"}.pdf`,

@@ -6,17 +6,17 @@ export function getConversionServicePrefix(): string {
   // Vercel services rewrite prefix (prod). In dev, Vite proxy handles /api/*.
   const prefix =
     (import.meta.env as Record<string, string | undefined>).VITE_CONVERSION_PREFIX ??
-    "/api/adobe";
+    "/api/convert";
   return trimSlash(prefix);
 }
 
 /**
- * Adobe PDF Services runs as plain Vercel serverless functions under
- * /api/adobe/*, and the Vite dev server mounts the same handlers, so the path
+ * CloudConvert runs as plain Vercel serverless functions under
+ * /api/convert/*, and the Vite dev server mounts the same handlers, so the path
  * is identical in every environment.
  */
-export function adobeApiUrl(name: "health" | "asset" | "job" | "status"): string {
-  return `/api/adobe/${name}`;
+export function convertApiUrl(name: "health" | "asset" | "job" | "status"): string {
+  return `/api/convert/${name}`;
 }
 
 export function conversionServiceUrl(devPath: string, prodPath: string): string {
@@ -26,8 +26,7 @@ export function conversionServiceUrl(devPath: string, prodPath: string): string 
   return `${getConversionServicePrefix()}${cleanProd}`;
 }
 
-/** Word ↔ PDF now go through Adobe on the conversion service in every environment. */
+/** Word ↔ PDF now go through CloudConvert in every environment. */
 export function useBrowserOfficeConversion(): boolean {
   return false;
 }
-

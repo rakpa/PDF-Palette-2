@@ -1,5 +1,4 @@
-import { convertFileViaAdobe } from "./adobe-direct";
-
+import { convertFileViaCloudConvert } from "./cloudconvert-direct";
 
 function mediaTypeForWord(name: string): string {
   return /\.doc$/i.test(name) && !/\.docx$/i.test(name)
@@ -11,12 +10,12 @@ export async function convertWordToPdfLocal(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<{ blob: Blob; filename: string }> {
-  return convertFileViaAdobe({
+  return convertFileViaCloudConvert({
     file,
     mediaType: mediaTypeForWord(file.name),
     kind: "word-to-pdf",
     onProgress,
-    uploadingMessage: "Uploading document to Adobe…",
-    convertingMessage: "Converting with Adobe PDF Services…",
+    uploadingMessage: "Uploading document to CloudConvert…",
+    convertingMessage: "Converting with CloudConvert…",
   });
 }

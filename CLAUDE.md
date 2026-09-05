@@ -60,26 +60,23 @@ the check. But verify cheaply, and be careful that the test itself is sound:
 
 ## Architecture
 
-Most tools run in the browser. PDF → Word and Word → PDF call Adobe PDF
-Services over REST (`POST /token`, `/assets`, `/operation/exportpdf` or
-`/operation/createpdf`). They live in `api/adobe/*.js` — ordinary Vercel
-serverless functions, with the REST client in `api/_lib/adobe.js` — and
-`vite.adobeApi.ts` mounts the same handlers on the dev server, so `/api/adobe/*`
-means the same thing everywhere. Keep the client secret on the server — never a
-`VITE_` env var.
+Most tools run in the browser. PDF → Word and Word → PDF call CloudConvert
+over REST (`POST /v2/jobs` with `import/upload` + `convert` + `export/url`).
+They live in `api/convert/*.js` — ordinary Vercel serverless functions, with
+the REST client in `api/_lib/cloudconvert.js` — and `vite.convertApi.ts` mounts
+the same handlers on the dev server, so `/api/convert/*` means the same thing
+everywhere. Keep `CLOUDCONVERT_API_KEY` on the server — never a `VITE_` env var.
 
-Adobe's DOCX gets one repair on the way out (`adobe-docx-rules.ts`): a rule
-under a chapter title comes back as a floating shape at a fixed offset, and the
+Converted DOCX gets one repair on the way out (`docx-rules.ts`): a rule under a
+chapter title comes back as a floating shape at a fixed offset, and the
 `wrapNone` variant floats over the text once Word re-breaks the lines — a struck-
-through table of contents. They are switched to the `wrapTopAndBottom` Adobe
-already uses for the rules that come out right. Hairlines only, and it returns
-the file untouched on any error.
+through table of contents. They are switched to `wrapTopAndBottom`. Hairlines
+only, and it returns the file untouched on any error.
 
-The browser drives the job: it asks for a presigned `uploadUri`, PUTs the file
-straight to Adobe (past the 4.5 MB request-body limit), starts the job, then
-polls `/api/adobe/status` itself. Never poll Adobe *inside* a function — the
-wait outlives the platform's execution limit and surfaces as an opaque HTTP 500,
-which is exactly the bug this replaced.
+The browser drives the job: it asks for an upload form, POSTs the file
+straight to CloudConvert (past the 4.5 MB request-body limit), then polls
+`/api/convert/status` itself. Never poll CloudConvert *inside* a function — the
+wait outlives the platform's execution limit and surfaces as an opaque HTTP 500.
 HTML → PDF from a URL still needs the same service. Do not reintroduce further
 service dependencies.
 

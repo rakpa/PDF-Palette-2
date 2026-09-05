@@ -1,9 +1,9 @@
-import { adobeApiUrl, conversionServiceUrl } from "./runtime-config";
+import { convertApiUrl } from "./runtime-config";
 
 export type ConversionHealth = {
   status: "ok" | "degraded" | "unavailable";
   checks?: {
-    adobe?: boolean;
+    cloudconvert?: boolean;
     libreOffice?: boolean;
   };
   message?: string;
@@ -70,7 +70,7 @@ export function parseConversionFetchError(error: unknown): string {
 
 export async function checkConversionHealth(): Promise<ConversionHealth> {
   try {
-    const res = await fetch(adobeApiUrl("health"), {
+    const res = await fetch(convertApiUrl("health"), {
       method: "GET",
       signal: AbortSignal.timeout(5000),
     });
@@ -127,8 +127,8 @@ export function conversionBlockedMessage(
 function buildHealthMessage(checks?: ConversionHealth["checks"]): string | undefined {
   if (!checks) return undefined;
   const issues: string[] = [];
-  if (checks.adobe === false) {
-    issues.push("Adobe PDF Services is not configured");
+  if (checks.cloudconvert === false) {
+    issues.push("CloudConvert is not configured");
   }
   if (checks.libreOffice === false) {
     issues.push("LibreOffice is not installed");

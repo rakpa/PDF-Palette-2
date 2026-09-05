@@ -377,8 +377,8 @@ function shouldFallbackToBrowser(error: unknown): boolean {
   return error instanceof ConversionServiceError && error.kind === "unavailable";
 }
 
-// Convert Word to PDF via Adobe PDF Services. If the conversion service is
-// down or Adobe is not configured, fall back to the in-browser engine.
+// Convert Word to PDF via CloudConvert. If the conversion service is
+// down or CloudConvert is not configured, fall back to the in-browser engine.
 export async function wordToPDF(
   file: File,
   onProgress?: (progress: number, message?: string) => void

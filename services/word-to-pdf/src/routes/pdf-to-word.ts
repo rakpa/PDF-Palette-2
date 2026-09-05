@@ -5,43 +5,47 @@ import type { AppConfig } from "../config.js";
 import type { Logger } from "../logger.js";
 import { TempWorkspace } from "../lib/temp-workspace.js";
 import { streamPdfUpload, UploadError } from "../lib/streaming-upload.js";
-import { AdobeConversionError } from "../lib/adobe-pdf-services.js";
-import { beginAdobeUpload, convertPdfToWordAdobe, finishAdobeJob } from "../lib/adobe-convert.js";
-import { ADOBE_MEDIA } from "../lib/adobe-pdf-services.js";
+import {
+  CloudConvertError,
+  beginCloudConvertUpload,
+  convertPathWithCloudConvert,
+  finishCloudConvertJob,
+} from "../lib/cloudconvert.js";
 
 export function createPdfToWordRouter(config: AppConfig, log: Logger): Router {
   const router = Router();
 
   router.post("/asset", async (req, res) => {
     try {
-      const created = await beginAdobeUpload(config, ADOBE_MEDIA.pdf);
-      res.json(created);
+      const created = await beginCloudConvertUpload(config, "pdf", "docx");
+      res.json({ ...created, mediaType: "application/pdf" });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not start upload";
-      const status = error instanceof AdobeConversionError ? error.statusCode : 500;
+      const status = error instanceof CloudConvertError ? error.statusCode : 500;
       log.error({ error: message }, "pdf-to-word asset create failed");
       res.status(status).json({ error: message });
     }
   });
 
   router.post("/jobs", async (req, res) => {
-    const assetID = typeof req.body?.assetID === "string" ? req.body.assetID.trim() : "";
+    const jobId = typeof req.body?.jobId === "string" ? req.body.jobId.trim() : "";
     const filename = typeof req.body?.filename === "string" ? req.body.filename : "document.pdf";
-    if (!assetID) {
-      res.status(400).json({ error: "assetID is required." });
+    if (!jobId) {
+      res.status(400).json({ error: "jobId is required." });
       return;
     }
     try {
-      const result = await finishAdobeJob(config, log, {
-        assetID,
-        filename,
-        operation: "exportpdf",
+      const result = await finishCloudConvertJob(config, jobId);
+      const base = filename.replace(/\.pdf$/i, "") || "document";
+      res.setHeader("X-Conversion-Engine", "cloudconvert");
+      res.json({
+        downloadUri: result.downloadUri,
+        filename: `${base}.docx`,
+        contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       });
-      res.setHeader("X-Conversion-Engine", "adobe-pdf-services");
-      res.json(result);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Conversion failed";
-      const status = error instanceof AdobeConversionError ? error.statusCode : 500;
+      const status = error instanceof CloudConvertError ? error.statusCode : 500;
       log.error({ error: message, status }, "pdf-to-word job failed");
       res.status(status).json({ error: message });
     }
@@ -62,20 +66,21 @@ export function createPdfToWordRouter(config: AppConfig, log: Logger): Router {
       );
 
       const outputPath = path.join(workspace.outputDir, "converted.docx");
-      const result = await convertPdfToWordAdobe(
+      const result = await convertPathWithCloudConvert(
+        config,
         upload.filePath,
         outputPath,
-        upload.originalName,
-        config,
-        requestLog
+        "pdf",
+        "docx"
       );
+      const docxFilename = (upload.originalName.replace(/\.pdf$/i, "") || "document") + ".docx";
 
       res.setHeader(
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       );
-      res.setHeader("Content-Disposition", `attachment; filename="${result.docxFilename}"`);
-      res.setHeader("X-Conversion-Engine", "adobe-pdf-services");
+      res.setHeader("Content-Disposition", `attachment; filename="${docxFilename}"`);
+      res.setHeader("X-Conversion-Engine", "cloudconvert");
 
       const stream = fs.createReadStream(outputPath);
 
@@ -101,7 +106,7 @@ export function createPdfToWordRouter(config: AppConfig, log: Logger): Router {
       const status =
         error instanceof UploadError
           ? error.statusCode
-          : error instanceof AdobeConversionError
+          : error instanceof CloudConvertError
             ? error.statusCode
             : /password|encrypt/i.test(message)
               ? 422

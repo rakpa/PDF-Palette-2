@@ -8,7 +8,7 @@ export function crossOriginIsolationPlugin(): Plugin {
     configureServer(server) {
       prependMiddleware(server, (req, res, next) => {
         const url = req.url?.split("?")[0] ?? "";
-        if (url === "/adobe-bridge.html") {
+        if (url === "/convert-bridge.html") {
           const writeHead = res.writeHead.bind(res);
           res.writeHead = ((...args: Parameters<typeof res.writeHead>) => {
             res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");

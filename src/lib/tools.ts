@@ -98,7 +98,7 @@ export const pdfTools: PDFTool[] = [
   {
     id: "word-to-pdf",
     name: "Word to PDF",
-    description: "Convert Word documents to PDF with Adobe",
+    description: "Convert Word documents to PDF with CloudConvert",
     icon: FileText,
     color: "blue",
     category: ["convert-to"],

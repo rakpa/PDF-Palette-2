@@ -1,6 +1,5 @@
-import { convertFileViaAdobe } from "./adobe-direct";
-import { repairAdobeDocxRules } from "./adobe-docx-rules";
-
+import { convertFileViaCloudConvert } from "./cloudconvert-direct";
+import { repairDocxRules } from "./docx-rules";
 
 const PDF_MEDIA = "application/pdf";
 
@@ -8,13 +7,13 @@ export async function convertPdfToWordLocal(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<{ blob: Blob; filename: string }> {
-  const result = await convertFileViaAdobe({
+  const result = await convertFileViaCloudConvert({
     file,
     mediaType: PDF_MEDIA,
     kind: "pdf-to-word",
     onProgress,
-    uploadingMessage: "Uploading PDF to Adobe…",
-    convertingMessage: "Converting with Adobe PDF Services…",
+    uploadingMessage: "Uploading PDF to CloudConvert…",
+    convertingMessage: "Converting with CloudConvert…",
   });
-  return { ...result, blob: await repairAdobeDocxRules(result.blob) };
+  return { ...result, blob: await repairDocxRules(result.blob) };
 }

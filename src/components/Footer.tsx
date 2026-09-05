@@ -16,7 +16,7 @@ const Footer = () => {
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Free PDF tools that mostly run in your browser. PDF to Word and
-              Word to PDF use Adobe PDF Services — see our{" "}
+              Word to PDF use CloudConvert — see our{" "}
               <Link to="/privacy" className="underline hover:text-foreground transition-colors">
                 Privacy Policy
               </Link>

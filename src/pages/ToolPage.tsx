@@ -133,14 +133,14 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to PDF",
-    hint: "Upload a .doc or .docx file. Adobe PDF Services converts it to a PDF that keeps fonts, tables, images and page layout.",
+    hint: "Upload a .doc or .docx file. CloudConvert converts it to a PDF that keeps fonts, tables, images and page layout.",
   },
   "pdf-to-word": {
     accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Word",
-    hint: "Upload a PDF. Adobe PDF Services converts it to an editable Word (.docx) file, keeping fonts, tables, images and page layout.",
+    hint: "Upload a PDF. CloudConvert converts it to an editable Word (.docx) file, keeping fonts, tables, images and page layout.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -380,7 +380,7 @@ const ToolPage = () => {
   // fetching one still goes through the local conversion service.
   const fetchesUrl =
     tool.feature === "html-to-pdf" && files.length === 0 && htmlUrl.trim().length > 0;
-  const usesAdobe =
+  const usesCloudConvert =
     tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word";
   const needsConversionService = fetchesUrl;
 
@@ -770,7 +770,7 @@ const ToolPage = () => {
               )}
             </div>
 
-            <PrivacyNote feature={tool.feature} remote={fetchesUrl || usesAdobe} />
+            <PrivacyNote feature={tool.feature} remote={fetchesUrl || usesCloudConvert} />
           </div>
         )}
       </div>
@@ -1107,7 +1107,7 @@ const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: bool
       {inBrowser
         ? "Processed in your browser — your file never leaves this device."
         : remote && (feature === "word-to-pdf" || feature === "pdf-to-word")
-          ? "Converted with Adobe PDF Services. The file is sent for conversion and is not stored by PDF Palette."
+          ? "Converted with CloudConvert. The file is sent for conversion and is not stored by PDF Palette."
           : "The page is fetched and rendered on your machine, then deleted immediately after download."}
     </div>
   );

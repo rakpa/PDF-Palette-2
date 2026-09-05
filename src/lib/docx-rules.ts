@@ -2,12 +2,12 @@ import { openZip, decodeUtf8 } from "./office/zip";
 import { createZip, type ZipEntry } from "./zip-write";
 
 /**
- * Repairs the chapter rules in a DOCX produced by Adobe's Export PDF.
+ * Repairs chapter rules in a DOCX produced by PDF → Word conversion.
  *
  * A horizontal rule in the source PDF is a vector stroke at fixed coordinates,
- * so Adobe emits it as a floating shape anchored to a paragraph at a fixed
- * vertical offset. It emits two variants, and only one of them survives Word's
- * reflow:
+ * so the converter emits it as a floating shape anchored to a paragraph at a
+ * fixed vertical offset. It emits two variants, and only one of them survives
+ * Word's reflow:
  *
  *   <wp:wrapTopAndBottom/> — Word reserves space, text moves out of the way.
  *   <wp:wrapNone/>         — the shape floats over the text with no wrapping.
@@ -15,11 +15,10 @@ import { createZip, type ZipEntry } from "./zip-write";
  * Once Word re-breaks the lines the offset no longer points below the heading,
  * and every `wrapNone` rule ends up drawn straight through whatever text has
  * moved under it — a whole line of a table of contents struck out. Switching
- * those to the wrapping Adobe already uses for the rules that come out right
- * keeps the rule and stops the overlap.
+ * those to `wrapTopAndBottom` keeps the rule and stops the overlap.
  *
  * Deliberately narrow: only hairlines (a rule is ~0.1pt tall) that are set to
- * `wrapNone`. Images and every other shape are left exactly as Adobe wrote them.
+ * `wrapNone`. Images and every other shape are left untouched.
  */
 
 /** 1pt in EMU. A rule is 1270 EMU tall; anything taller is a real shape. */
@@ -52,7 +51,7 @@ function repairDocumentXml(xml: string): { xml: string; fixed: number } {
  * to fix. Never throws: a document this cannot parse is passed through
  * untouched, since a slightly ugly rule beats a failed conversion.
  */
-export async function repairAdobeDocxRules(blob: Blob): Promise<Blob> {
+export async function repairDocxRules(blob: Blob): Promise<Blob> {
   try {
     const zip = await openZip(await blob.arrayBuffer());
     const names = zip.list();

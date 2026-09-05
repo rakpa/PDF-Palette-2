@@ -6,7 +6,7 @@ import { ghostscriptAssetsPlugin } from "./vite.ghostscript";
 import { pdfjsWorkerPlugin } from "./vite.pdfjs";
 import { tesseractAssetsPlugin } from "./vite.tesseract";
 import { crossOriginIsolationPlugin } from "./vite.crossOriginIsolation";
-import { adobeApiPlugin } from "./vite.adobeApi";
+import { convertApiPlugin } from "./vite.convertApi";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     crossOriginIsolationPlugin(),
-    adobeApiPlugin(mode),
+    convertApiPlugin(mode),
     ghostscriptAssetsPlugin(),
     pdfjsWorkerPlugin(),
     tesseractAssetsPlugin(),

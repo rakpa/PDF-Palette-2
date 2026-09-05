@@ -1,0 +1,41 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>CloudConvert transfer</title>
+<script>
+  window.addEventListener("message", async (event) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (!data || data.type !== "convert-transfer" || !event.source) return;
+    const reply = (payload) => {
+      event.source.postMessage({ type: "convert-transfer-result", id: data.id, ...payload }, event.origin);
+    };
+    try {
+      if (data.action === "post") {
+        const form = new FormData();
+        const parameters = data.parameters || {};
+        for (const key of Object.keys(parameters)) {
+          form.append(key, String(parameters[key]));
+        }
+        form.append("file", data.body);
+        const res = await fetch(data.url, { method: "POST", body: form });
+        if (!res.ok) throw new Error("CloudConvert upload failed (HTTP " + res.status + ")");
+        reply({ ok: true });
+        return;
+      }
+      if (data.action === "get") {
+        const res = await fetch(data.url);
+        if (!res.ok) throw new Error("CloudConvert download failed (HTTP " + res.status + ")");
+        const body = await res.arrayBuffer();
+        event.source.postMessage(
+          { type: "convert-transfer-result", id: data.id, ok: true, body },
+          event.origin,
+          [body]
+        );
+        return;
+      }
+      throw new Error("Unknown CloudConvert transfer action");
+    } catch (error) {
+      reply({ ok: false, error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+</script>
