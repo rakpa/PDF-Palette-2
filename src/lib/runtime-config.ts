@@ -6,7 +6,7 @@ export function getConversionServicePrefix(): string {
   // Vercel services rewrite prefix (prod). In dev, Vite proxy handles /api/*.
   const prefix =
     (import.meta as any).env?.VITE_CONVERSION_PREFIX ??
-    "/_/word-to-pdf";
+    "/api/adobe";
   return trimSlash(prefix);
 }
 
