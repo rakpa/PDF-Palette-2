@@ -1,4 +1,4 @@
-import { createServer } from "node:http";
+const express = require("express");
 
 const ADOBE_BASE = "https://pdf-services.adobe.io";
 const PDF_TYPE = "application/pdf";
@@ -298,7 +298,8 @@ async function handler(req, res) {
   }
 }
 
-const server = createServer((req, res) => {
+const app = express();
+app.use((req, res) => {
   handler(req, res).catch((error) => {
     if (!res.headersSent) {
       send(res, 500, { error: error.message || "Conversion service failed" });
@@ -306,4 +307,8 @@ const server = createServer((req, res) => {
   });
 });
 
-server.listen(Number(process.env.PORT) || 3002);
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(Number(process.env.PORT) || 3002);
+}

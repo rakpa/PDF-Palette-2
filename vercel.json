@@ -51,6 +51,8 @@
     },
     "adobe": {
       "root": "services/adobe",
+      "framework": "express",
+      "entrypoint": "server.js",
       "functions": {
         "server.js": {
           "maxDuration": 300
