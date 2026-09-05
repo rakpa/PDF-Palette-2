@@ -68,6 +68,13 @@ serverless functions, with the REST client in `api/_lib/adobe.js` — and
 means the same thing everywhere. Keep the client secret on the server — never a
 `VITE_` env var.
 
+Adobe's DOCX gets one repair on the way out (`adobe-docx-rules.ts`): a rule
+under a chapter title comes back as a floating shape at a fixed offset, and the
+`wrapNone` variant floats over the text once Word re-breaks the lines — a struck-
+through table of contents. They are switched to the `wrapTopAndBottom` Adobe
+already uses for the rules that come out right. Hairlines only, and it returns
+the file untouched on any error.
+
 The browser drives the job: it asks for a presigned `uploadUri`, PUTs the file
 straight to Adobe (past the 4.5 MB request-body limit), starts the job, then
 polls `/api/adobe/status` itself. Never poll Adobe *inside* a function — the
