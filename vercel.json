@@ -57,12 +57,15 @@
         "server.js": {
           "maxDuration": 300
         }
-      }
+      },
+      "rewrites": [
+        { "source": "/(.*)", "destination": "/" }
+      ]
     }
   },
   "rewrites": [
-    { "source": "/api/adobe", "destination": { "service": "adobe" } },
-    { "source": "/api/adobe/(.*)", "destination": { "service": "adobe" } },
+    { "source": "/api/adobe", "destination": { "service": "adobe", "path": "/" } },
+    { "source": "/api/adobe/(.*)", "destination": { "service": "adobe", "path": "/" } },
     { "source": "/(.*)", "destination": { "service": "frontend" } }
   ]
 }
