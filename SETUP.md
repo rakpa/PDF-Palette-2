@@ -54,10 +54,10 @@ ILOVEPDF_PUBLIC_KEY=<your iLovePDF public key>
 ILOVEPDF_SECRET_KEY=<your iLovePDF secret key>
 ```
 
-**PDF to Word** (`/pdf-to-word`) sends the PDF to iLovePDF’s
-PDF → Word engine (`pdfoffice` + `convert_to=docx`). Project keys are tried
-first; if that start route is not on the developer API, the public website
-session is used so the conversion still runs on iLovePDF.
+**PDF to Word** (`/pdf-to-word`) and **Word to PDF New** (`/word-to-pdf-new`)
+send the file to iLovePDF the same way ilovepdf.com does — a public website
+session, no project keys. PDF → Word uses `pdfoffice` + `convert_to=docx`.
+Word → PDF uses `officepdf`.
 
 Check it arrived with `curl https://<your-app>/api/convert/health` — it reports
 `"checks": { "cloudconvert": true }` when the key is readable. That only means

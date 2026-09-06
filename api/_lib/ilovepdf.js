@@ -186,37 +186,25 @@ export async function websiteSessionToken(pagePath = "/pdf_to_word") {
   return cfg.token;
 }
 
-async function startWithFallback(tool, pagePath, label) {
-  const attempts = [];
-
-  if (configured()) {
-    try {
-      const token = await authToken();
-      const started = await startTool(tool, token);
-      if (started.ok) return { ...started, token, tool };
-      attempts.push(`project:${started.status}:${started.message || ""}`);
-    } catch (error) {
-      attempts.push(`project:${error instanceof Error ? error.message : "fail"}`);
-    }
-  }
-
+/** Same path as ilovepdf.com — public page session, no project keys. */
+async function startWithWebsiteSession(tool, pagePath, label) {
   const token = await websiteSessionToken(pagePath);
   const started = await startTool(tool, token);
   if (started.ok) return { ...started, token, tool };
   throw new ILovePdfError(
-    started.message || `iLovePDF could not start ${label} (${attempts.join(", ") || "no session"}).`,
+    started.message || `iLovePDF could not start ${label}.`,
     started.status === 401 || started.status === 403 ? 503 : 502
   );
 }
 
 export async function startWordToPdf() {
   const tool = strip(process.env.ILOVEPDF_WORD_TOOL) || WORD_PDF_TOOL;
-  return startWithFallback(tool, "/word_to_pdf", "Word to PDF");
+  return startWithWebsiteSession(tool, "/word_to_pdf", "Word to PDF");
 }
 
 export async function startPdfToWord() {
   const tool = strip(process.env.ILOVEPDF_TOOL) || PDF_WORD_TOOL;
-  return startWithFallback(tool, "/pdf_to_word", "PDF to Word");
+  return startWithWebsiteSession(tool, "/pdf_to_word", "PDF to Word");
 }
 
 export function assertWorkerHost(server) {
