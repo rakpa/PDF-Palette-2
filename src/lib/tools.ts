@@ -4,6 +4,7 @@ import {
   RotateCw,
   Minimize2,
   FileText,
+  FileType2,
   FileSpreadsheet,
   Presentation,
   Image,
@@ -44,6 +45,7 @@ export type ToolFeature =
   | "jpg-to-pdf"
   | "word-to-pdf"
   | "pdf-to-word"
+  | "pdf-to-word-new"
   | "unlock-pdf"
   | "protect-pdf"
   | "html-to-pdf"
@@ -94,6 +96,17 @@ export const pdfTools: PDFTool[] = [
     popular: true,
     route: "/pdf-to-word",
     feature: "pdf-to-word",
+  },
+  {
+    id: "pdf-to-word-new",
+    name: "PDF to Word New",
+    description: "Rebuild a PDF in Word page for page, in your browser",
+    icon: FileType2,
+    color: "teal",
+    category: ["convert-from"],
+    isNew: true,
+    route: "/pdf-to-word-new",
+    feature: "pdf-to-word-new",
   },
   {
     id: "word-to-pdf",

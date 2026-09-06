@@ -29,6 +29,7 @@ import {
   pdfToImageFiles,
   pdfToPpt,
   pdfToWord,
+  pdfToWordNew,
   pptToPDF,
   protectPDFWithPassword,
   rotatePDF,
@@ -141,6 +142,13 @@ const featureConfig: Record<
     minFiles: 1,
     cta: "Convert to Word",
     hint: "Upload a PDF. CloudConvert converts it to an editable Word (.docx) file, keeping fonts, tables, images and page layout.",
+  },
+  "pdf-to-word-new": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Rebuild as Word",
+    hint: "Upload a PDF. Every page is rebuilt in Word at its own size, with the text, tables, pictures, rules and colours kept where the PDF put them. Nothing is uploaded.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -475,6 +483,12 @@ const ToolPage = () => {
             if (message) setConvertStatus(message);
           });
           break;
+        case "pdf-to-word-new":
+          res = await pdfToWordNew(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
         case "unlock-pdf":
           res = await unlockPDF(inputFiles[0], password, (p, message) => {
             onProgress(p);
@@ -689,7 +703,9 @@ const ToolPage = () => {
                 label={
                   tool.feature === "ocr"
                     ? convertStatus || "Recognising…"
-                    : tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word"
+                    : tool.feature === "word-to-pdf" ||
+                        tool.feature === "pdf-to-word" ||
+                        tool.feature === "pdf-to-word-new"
                       ? convertStatus || "Converting…"
                       : tool.feature === "compress"
                         ? convertStatus || "Compressing…"

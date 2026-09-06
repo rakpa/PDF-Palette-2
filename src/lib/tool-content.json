@@ -28,6 +28,39 @@
       }
     ]
   },
+  "/pdf-to-word-new": {
+    "name": "PDF to Word New",
+    "title": "PDF to Word New — Page-Perfect DOCX in Your Browser | PDF Palette",
+    "description": "Rebuild a PDF as a Word document page for page — same page size, fonts, colours, tables, pictures and rules, in the same places. Runs entirely in your browser.",
+    "intro": "The usual PDF to Word conversion hands Word the text and lets it decide where everything lands. This one decides first. Each page is read as geometry — every run of text with its font, size, weight and colour, every painted panel, rule, picture and table — and then written into Word pinned to the coordinates it was read at. The page keeps its own size and orientation, the cover keeps its artwork, and a scanned page is reproduced as its own picture with the recognised words placed over it as hidden text. Nothing is uploaded: the whole conversion happens in the tab.",
+    "steps": [
+      "Upload the PDF you want rebuilt as a Word document.",
+      "Each page is read into text, tables, pictures, rules and painted areas, and written back at its own coordinates.",
+      "Download the .docx and open it in Word, LibreOffice or Google Docs."
+    ],
+    "faqs": [
+      {
+        "q": "How is this different from PDF to Word?",
+        "a": "PDF to Word converts the document and lets Word reflow it, which reads well but moves things. This one reproduces the page: paragraphs, tables and pictures are anchored where the PDF drew them, so the result overlays the original closely."
+      },
+      {
+        "q": "Is the result still editable?",
+        "a": "Yes. The page is made of real Word paragraphs, runs and table cells — only their position is pinned. Text can be edited, restyled and searched as usual."
+      },
+      {
+        "q": "Does the file leave my device?",
+        "a": "No. The PDF is read and the Word file is written in your browser. Nothing is sent to a server."
+      },
+      {
+        "q": "What happens with a scanned PDF?",
+        "a": "A page with no text layer is reproduced as its own picture so it still looks right, and the words are recognised and written over it as hidden text so the document can be searched and copied."
+      },
+      {
+        "q": "Will the fonts be the same?",
+        "a": "The original font family, size, weight, style and colour are carried through. If a font is not installed where you open the document, Word substitutes the closest match — run widths are corrected so the lines still break in the same places."
+      }
+    ]
+  },
   "/word-to-pdf": {
     "name": "Word to PDF",
     "title": "Word to PDF Converter — CloudConvert | PDF Palette",
