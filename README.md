@@ -16,6 +16,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **PDF to Word** – convert a PDF to an editable `.docx` with iLovePDF
   (`api/ilove`, Solid Documents PDF → Word)
 - **Word to PDF** – convert `.doc` / `.docx` to PDF with CloudConvert
+- **Word to PDF New** – convert `.doc` / `.docx` to PDF with iLovePDF
+  (`api/ilove`, `officepdf`)
 - **Edit PDF** – add text, images, shapes, freehand ink, highlights and
   whiteout; rotate, duplicate, reorder and delete pages
 - **Sign PDF** – draw, type or upload a signature and place it on the page

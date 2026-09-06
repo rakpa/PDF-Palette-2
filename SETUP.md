@@ -29,6 +29,7 @@ npm run dev
 ```
 
 - **Word → PDF:** http://localhost:8080/word-to-pdf (CloudConvert)
+- **Word → PDF New:** http://localhost:8080/word-to-pdf-new (iLovePDF)
 - **PDF → Word:** http://localhost:8080/pdf-to-word (iLovePDF)
 - **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)

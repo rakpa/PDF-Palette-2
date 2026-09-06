@@ -30,7 +30,12 @@ function iloveApiUrl(name: "health" | "start" | "process"): string {
   return `/api/ilove/${name}`;
 }
 
-function outputFilename(name: string): string {
+type ConvertKind = "pdf-to-word" | "word-to-pdf";
+
+function outputFilename(name: string, kind: ConvertKind): string {
+  if (kind === "word-to-pdf") {
+    return `${name.replace(/\.docx?$/i, "") || "document"}.pdf`;
+  }
   return `${name.replace(/\.pdf$/i, "") || "document"}.docx`;
 }
 
@@ -147,28 +152,41 @@ async function downloadFile(downloadUrl: string, token: string): Promise<Blob> {
   return new Blob([result.body]);
 }
 
-export async function convertPdfToWordIlove(
+async function convertViaIlove(
   file: File,
+  kind: ConvertKind,
   onProgress?: Progress
-): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" | "browser" }> {
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  const uploading =
+    kind === "word-to-pdf" ? "Uploading Word file to iLovePDF…" : "Uploading PDF to iLovePDF…";
+  const missing =
+    kind === "word-to-pdf"
+      ? "iLovePDF did not start a Word to PDF task."
+      : "iLovePDF did not start a PDF to Word task.";
+  const empty =
+    kind === "word-to-pdf"
+      ? "iLovePDF did not return a PDF."
+      : "iLovePDF did not return a Word file.";
+
   onProgress?.(8, "Starting iLovePDF…");
   const start = await postJson<StartResponse>(
     iloveApiUrl("start"),
-    { filename: file.name },
+    { filename: file.name, kind },
     "Could not start iLovePDF conversion"
   );
 
   if (start.engine !== "ilovepdf" || !start.uploadUrl || !start.task || !start.token) {
-    throw new Error(start.reason || "iLovePDF did not start a PDF to Word task.");
+    throw new Error(start.reason || missing);
   }
 
-  onProgress?.(22, "Uploading PDF to iLovePDF…");
+  onProgress?.(22, uploading);
   const serverFilename = await uploadFile(start.uploadUrl, file, start.task, start.token);
 
   onProgress?.(48, "Converting with iLovePDF…");
   const processed = await postJson<ProcessResponse>(
     iloveApiUrl("process"),
     {
+      kind,
       server: start.server,
       task: start.task,
       tool: start.tool,
@@ -180,16 +198,30 @@ export async function convertPdfToWordIlove(
   );
 
   if (processed.engine !== "ilovepdf" || !processed.downloadUrl) {
-    throw new Error(processed.reason || "iLovePDF did not return a Word file.");
+    throw new Error(processed.reason || empty);
   }
   const downloadToken = processed.token || start.token;
 
-  onProgress?.(88, "Downloading Word file…");
+  onProgress?.(88, "Downloading…");
   const blob = await downloadFile(processed.downloadUrl, downloadToken);
   onProgress?.(100, "Done");
   return {
     blob,
-    filename: start.filename || outputFilename(file.name),
+    filename: start.filename || outputFilename(file.name, kind),
     engine: "ilovepdf",
   };
+}
+
+export async function convertPdfToWordIlove(
+  file: File,
+  onProgress?: Progress
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  return convertViaIlove(file, "pdf-to-word", onProgress);
+}
+
+export async function convertWordToPdfIlove(
+  file: File,
+  onProgress?: Progress
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  return convertViaIlove(file, "word-to-pdf", onProgress);
 }

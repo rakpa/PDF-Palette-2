@@ -43,6 +43,7 @@ export type ToolFeature =
   | "watermark"
   | "jpg-to-pdf"
   | "word-to-pdf"
+  | "word-to-pdf-ilove"
   | "pdf-to-word"
   | "pdf-to-word-new"
   | "pdf-to-word-ilove"
@@ -107,6 +108,17 @@ export const pdfTools: PDFTool[] = [
     popular: true,
     route: "/word-to-pdf",
     feature: "word-to-pdf",
+  },
+  {
+    id: "word-to-pdf-new",
+    name: "Word to PDF New",
+    description: "Convert Word to PDF with iLovePDF",
+    icon: FileText,
+    color: "teal",
+    category: ["convert-to"],
+    isNew: true,
+    route: "/word-to-pdf-new",
+    feature: "word-to-pdf-ilove",
   },
   {
     id: "compress",

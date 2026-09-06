@@ -11,8 +11,8 @@ const Privacy = () => (
       <h2>The short version</h2>
       <p>
         We do not ask you to sign up. We do not take your documents as customer data. Most tools process
-        files in your browser. PDF to Word sends the file to iLovePDF. Word to PDF sends the file
-        to CloudConvert. PDF Palette does not keep a copy. We do not sell personal information, because
+        files in your browser. PDF to Word and Word to PDF New send the file to iLovePDF. Word to
+        PDF sends the file to CloudConvert. PDF Palette does not keep a copy. We do not sell personal information, because
         we do not run a customer database of people or files.
       </p>
     </section>
@@ -52,6 +52,11 @@ const Privacy = () => (
         <strong>PDF to Word</strong> uploads the selected file to iLovePDF so their PDF to Word
         engine can convert it. PDF Palette does not keep the upload or the result after the
         download is ready. iLovePDF processes the file under iLovePDF’s own terms.
+      </p>
+      <p>
+        <strong>Word to PDF New</strong> uploads the selected Word file to iLovePDF so their
+        Office → PDF engine can convert it. PDF Palette does not keep the upload or the result
+        after the download is ready. iLovePDF processes the file under iLovePDF’s own terms.
       </p>
       <p>
         <strong>Word to PDF</strong> sends the selected file to CloudConvert so it can convert it.
@@ -101,8 +106,8 @@ const Privacy = () => (
       <h2>Third parties</h2>
       <p>
         Script libraries (PDF, Office, OCR, and similar) load as part of the web app so processing can happen
-        in your browser. PDF to Word shares the file with iLovePDF. Word to PDF shares the file
-        with CloudConvert for conversion.
+        in your browser. PDF to Word and Word to PDF New share the file with iLovePDF. Word to PDF
+        shares the file with CloudConvert for conversion.
         The HTML to PDF URL path uses the conversion service only to fetch and render that page.
       </p>
     </section>

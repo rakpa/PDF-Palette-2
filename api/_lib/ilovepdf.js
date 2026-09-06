@@ -17,6 +17,7 @@ import { createHmac } from "node:crypto";
 
 const API_HOST = "api.ilovepdf.com";
 const PDF_WORD_TOOL = "pdfoffice";
+const WORD_PDF_TOOL = "officepdf";
 
 export class ILovePdfError extends Error {
   constructor(message, statusCode) {
@@ -188,6 +189,26 @@ function pdfWordTool() {
   return strip(process.env.ILOVEPDF_TOOL) || PDF_WORD_TOOL;
 }
 
+/** Start Word → PDF via the developer `officepdf` tool. */
+export async function startWordToPdf() {
+  const tool = strip(process.env.ILOVEPDF_WORD_TOOL) || WORD_PDF_TOOL;
+  if (!configured()) {
+    throw new ILovePdfError(
+      "iLovePDF is not configured. Set ILOVEPDF_PUBLIC_KEY on the deployment.",
+      503
+    );
+  }
+  const token = await authToken();
+  const started = await startTool(tool, token);
+  if (!started.ok) {
+    throw new ILovePdfError(
+      started.message || "iLovePDF could not start Word to PDF.",
+      started.status === 401 || started.status === 403 ? 503 : 502
+    );
+  }
+  return { ...started, token, tool };
+}
+
 /** Start PDF → Word. Returns { token, tool, server, task }. */
 export async function startPdfToWord() {
   const tool = pdfWordTool();
@@ -248,11 +269,18 @@ export function assertServerFilename(name) {
   return value;
 }
 
-export async function processTask({ token, server, task, tool, serverFilename, filename }) {
+export async function processTask({ token, server, task, tool, serverFilename, filename, convertTo }) {
   const host = assertWorkerHost(server);
   const taskId = assertTaskId(task);
   const uploaded = assertServerFilename(serverFilename);
   const original = String(filename || "document.pdf").slice(0, 200) || "document.pdf";
+  const payload = {
+    task: taskId,
+    tool,
+    output_filename: "{filename}",
+    files: [{ server_filename: uploaded, filename: original }],
+  };
+  if (convertTo) payload.convert_to = convertTo;
   const res = await fetch(`https://${host}/v1/process`, {
     method: "POST",
     headers: {
@@ -260,13 +288,7 @@ export async function processTask({ token, server, task, tool, serverFilename, f
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      task: taskId,
-      tool,
-      convert_to: "docx",
-      output_filename: "{filename}",
-      files: [{ server_filename: uploaded, filename: original }],
-    }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) {
     throw new ILovePdfError(
@@ -287,4 +309,10 @@ export function looksLikeWord(processResult) {
   const ext = String(processResult.outputExtensions || "").toLowerCase();
   const name = String(processResult.downloadFilename || "").toLowerCase();
   return ext.includes("docx") || ext.includes("doc") || /\.docx?$/.test(name);
+}
+
+export function looksLikePdf(processResult) {
+  const ext = String(processResult.outputExtensions || "").toLowerCase();
+  const name = String(processResult.downloadFilename || "").toLowerCase();
+  return ext.includes("pdf") || /\.pdf$/.test(name);
 }

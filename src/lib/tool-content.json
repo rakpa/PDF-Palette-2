@@ -28,6 +28,35 @@
       }
     ]
   },
+  "/word-to-pdf-new": {
+    "name": "Word to PDF New",
+    "title": "Word to PDF New — iLovePDF | PDF Palette",
+    "description": "Convert Word documents to PDF free with iLovePDF. Keeps fonts, tables, images and page layout.",
+    "intro": "Convert a .docx or .doc file into a PDF with iLovePDF’s Office → PDF engine. The file is sent to iLovePDF for conversion only. PDF Palette does not keep a copy.",
+    "steps": [
+      "Select the Word document you want to convert.",
+      "Wait while iLovePDF converts the document.",
+      "Download the finished PDF."
+    ],
+    "faqs": [
+      {
+        "q": "How is this different from Word to PDF?",
+        "a": "Word to PDF uses CloudConvert. This card sends the file to iLovePDF and downloads their PDF."
+      },
+      {
+        "q": "Do I need Microsoft Word installed?",
+        "a": "No. Nothing is installed and no PDF Palette account is needed. iLovePDF performs the conversion."
+      },
+      {
+        "q": "Can I convert .doc as well as .docx?",
+        "a": "Both are accepted. Modern .docx files give the most faithful result."
+      },
+      {
+        "q": "Is my file uploaded anywhere?",
+        "a": "Yes. The Word file is uploaded to iLovePDF for this conversion only. PDF Palette does not keep a copy."
+      }
+    ]
+  },
   "/word-to-pdf": {
     "name": "Word to PDF",
     "title": "Word to PDF Converter — CloudConvert | PDF Palette",
