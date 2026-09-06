@@ -392,23 +392,18 @@ export function createTableSplitter(
       const rowsHere = segmented.slice(i, j);
       const cellText = (row: (typeof segmented)[number], k: number) =>
         row[k].spans.map((s) => s.text).join("").trim();
+      const PAGE_REF =
+        /^(?:\d{1,4}|[ivxlcdm]{1,9})(?:\s*[,–—-]\s*(?:\d{1,4}|[ivxlcdm]{1,9}))*$/i;
       const isContents = (() => {
         let numeric = 0;
         for (let k = 0; k < columnCount; k++) {
           const values = rowsHere.map((row) => cellText(row, k));
-          if (!values.every((v) => /^\d{1,4}$/.test(v))) continue;
-          const numbers = values.map(Number);
-          const climbs = numbers.every((n, at) => at === 0 || n >= numbers[at - 1]);
-          // The column beside the numbers has to read as titles: never a bare
-          // number itself, and mostly long enough to be a heading. Short
-          // entries — "Scans", "Joins" — are normal in a contents list, so
-          // this asks for a majority rather than every row.
+          if (!values.every((v) => PAGE_REF.test(v))) continue;
           const titles = k > 0 ? rowsHere.map((row) => cellText(row, k - 1)) : [];
           const prose =
             titles.length > 0 &&
-            titles.every((t) => t.length > 0 && !/^\d{1,4}$/.test(t)) &&
-            titles.filter((t) => t.length >= 8).length * 2 >= titles.length;
-          if (climbs && prose) numeric += 1;
+            titles.every((t) => t.length > 0 && !PAGE_REF.test(t));
+          if (prose) numeric += 1;
         }
         return numeric > 0;
       })();

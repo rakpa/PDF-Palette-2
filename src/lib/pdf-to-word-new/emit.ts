@@ -548,7 +548,7 @@ function textBoxXml(
     `<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></wps:spPr>` +
     `<wps:txbx><w:txbxContent>${inner}</w:txbxContent></wps:txbx>` +
     `<wps:bodyPr rot="0" vert="horz" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" ` +
-    `anchor="t" anchorCtr="0"><a:spAutoFit/></wps:bodyPr>` +
+    `anchor="t" anchorCtr="0"><a:noAutofit/></wps:bodyPr>` +
     `</wps:wsp></a:graphicData></a:graphic>` +
     `</wp:anchor></w:drawing></w:r>`
   );
@@ -817,85 +817,22 @@ function hiddenLineXml(media: Media, line: HiddenTextLine, z: number): string {
   );
 }
 
-const ROMAN: Array<[string, number]> = [
-  ["m", 1000], ["cm", 900], ["d", 500], ["cd", 400], ["c", 100], ["xc", 90],
-  ["l", 50], ["xl", 40], ["x", 10], ["ix", 9], ["v", 5], ["iv", 4], ["i", 1],
-];
-
-function romanToInt(value: string): number {
-  let rest = value.toLowerCase();
-  let total = 0;
-  for (const [token, amount] of ROMAN) {
-    while (rest.startsWith(token)) {
-      total += amount;
-      rest = rest.slice(token.length);
-    }
-  }
-  return rest.length === 0 ? total : 0;
-}
-
-function boxText(boxes: Box[]): string[] {
-  const out: string[] = [];
-  for (const box of boxes) {
-    if (box.kind === "paragraph") {
-      out.push(
-        box.lines
-          .map((line) => line.spans.map((span) => span.text).join(""))
-          .join(" ")
-          .trim()
-      );
-    } else if (box.kind === "columns") {
-      for (const column of box.columns) out.push(...boxText(column));
-    }
-  }
-  return out.filter(Boolean);
-}
-
-/**
- * The number the page shows for itself. A document that opens on roman
- * front matter, or that starts numbering at something other than 1, keeps
- * that scheme instead of being renumbered from the top.
- */
-function pageNumbering(layout: PageLayout): { start: number; fmt: string } | null {
-  for (const text of [...boxText(layout.footer), ...boxText(layout.header)]) {
-    const token = text.replace(/^[\s|[\]()<>—–-]+|[\s|[\]()<>—–-]+$/g, "");
-    const bare = token.replace(/^(?:page|p\.?)\s+/i, "").trim();
-    if (/^\d{1,4}$/.test(bare)) {
-      const value = Number(bare);
-      if (value > 0) return { start: value, fmt: "decimal" };
-    }
-    if (/^[ivxlcdm]{1,9}$/i.test(bare)) {
-      const value = romanToInt(bare);
-      if (value > 0) {
-        return { start: value, fmt: bare === bare.toLowerCase() ? "lowerRoman" : "upperRoman" };
-      }
-    }
-  }
-  return null;
-}
-
-function sectPrXml(
-  layout: PageLayout,
-  numbering: { start: number; fmt: string } | null,
-  headerId?: string,
-  footerId?: string
-): string {
+function sectPrXml(layout: PageLayout, headerId: string, footerId: string): string {
   const margins = layout.scanned
     ? { top: 0, right: 0, bottom: 0, left: 0 }
     : layout.margins;
   const landscape = layout.width > layout.height;
   return (
     `<w:sectPr>` +
-    `${headerId ? `<w:headerReference w:type="default" r:id="${headerId}"/>` : ""}` +
-    `${footerId ? `<w:footerReference w:type="default" r:id="${footerId}"/>` : ""}` +
+    `<w:headerReference w:type="default" r:id="${headerId}"/>` +
+    `<w:footerReference w:type="default" r:id="${footerId}"/>` +
     `<w:type w:val="nextPage"/>` +
+    `<w:titlePg w:val="0"/>` +
     `<w:pgSz w:w="${twip(layout.width)}" w:h="${twip(layout.height)}"` +
     `${landscape ? ' w:orient="landscape"' : ""}/>` +
     `<w:pgMar w:top="${twip(margins.top)}" w:right="${twip(margins.right)}" ` +
     `w:bottom="${twip(margins.bottom)}" w:left="${twip(margins.left)}" ` +
-    `w:header="${twip(layout.scanned ? 0 : layout.headerDistance)}" ` +
-    `w:footer="${twip(layout.scanned ? 0 : layout.footerDistance)}" w:gutter="0"/>` +
-    `${numbering ? `<w:pgNumType w:start="${numbering.start}" w:fmt="${numbering.fmt}"/>` : ""}` +
+    `w:header="0" w:footer="0" w:gutter="0"/>` +
     `<w:cols w:space="0"/>` +
     `</w:sectPr>`
   );
@@ -922,9 +859,14 @@ const STYLES =
 
 const SETTINGS =
   `${XML_HEADER}<w:settings xmlns:w="${W}">` +
+  `<w:evenAndOddHeaders w:val="0"/>` +
   `<w:compat><w:compatSetting w:name="compatibilityMode" ` +
   `w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>` +
   `</w:settings>`;
+
+const EMPTY_BAND =
+  `${XML_HEADER}<w:hdr xmlns:w="${W}"><w:p><w:pPr>` +
+  `<w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr></w:p></w:hdr>`;
 
 /** An empty paragraph that takes no room but can carry anchored objects. */
 const ANCHOR_PPR =
@@ -935,8 +877,17 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
   const doc = new Bag(media, (name) => `media/${name}`);
   const parts: Part[] = [];
   let body = "";
-  let headerCount = 0;
-  let footerCount = 0;
+  // One empty header and footer, referenced from every section. Word inherits
+  // the previous section's running head when a page omits its own, which is
+  // how an ISBN or a chapter title leaks onto a blank page.
+  parts.push({ path: "word/header1.xml", data: EMPTY_BAND, contentType: CT.header });
+  parts.push({
+    path: "word/footer1.xml",
+    data: EMPTY_BAND.replace("<w:hdr", "<w:ftr").replace("</w:hdr>", "</w:ftr>"),
+    contentType: CT.footer,
+  });
+  const emptyHeaderId = doc.rel(`${REL}/header`, "header1.xml");
+  const emptyFooterId = doc.rel(`${REL}/footer`, "footer1.xml");
 
   for (let i = 0; i < pages.length; i++) {
     const { layout, content, pageImage, hidden } = pages[i];
@@ -972,44 +923,18 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
         background += ruleShapeXml(media, rule, nextZ());
       }
 
-      const placed = placedBoxes(layout.body, doc, nextFront, (image) => {
+      // Headers and footers are page-specific in the PDF. Pin them to this
+      // page as ordinary frames so a blank page stays blank and a chapter
+      // running head does not travel with Word's section.
+      const pageBoxes = [...layout.header, ...layout.body, ...layout.footer];
+      const placed = placedBoxes(pageBoxes, doc, nextFront, (image) => {
         background += anchoredPictureXml(doc, image, -nextZ());
       });
       anchors += placed.anchors;
       tables += placed.tables;
     }
 
-    let headerId: string | undefined;
-    let footerId: string | undefined;
-    const band = (boxes: Box[], kind: "hdr" | "ftr") => {
-      const count = kind === "hdr" ? (headerCount += 1) : (footerCount += 1);
-      const file = `${kind === "hdr" ? "header" : "footer"}${count}.xml`;
-      const bag = new Bag(media, (name) => `media/${name}`);
-      // Anchored to the page, exactly as in the body: a running head sits
-      // where the page drew it, not at an indent from the text margin.
-      let pictures = "";
-      let bandZ = 0;
-      const placed = placedBoxes(boxes, bag, () => -Z_BASE + 1000 + bandZ++, (image) => {
-        pictures += anchoredPictureXml(bag, image, 251658240);
-      });
-      const xml = partRoot(
-        kind === "hdr" ? "w:hdr" : "w:ftr",
-        `<w:p>${ANCHOR_PPR}${pictures}${placed.anchors}</w:p>${placed.tables}`
-      );
-      parts.push({
-        path: `word/${file}`,
-        data: xml,
-        contentType: kind === "hdr" ? CT.header : CT.footer,
-      });
-      if (bag.rels.length > 0) {
-        parts.push({ path: `word/_rels/${file}.rels`, data: relsXml(bag.rels) });
-      }
-      return doc.rel(`${REL}/${kind === "hdr" ? "header" : "footer"}`, file);
-    };
-    if (!layout.scanned && layout.header.length > 0) headerId = band(layout.header, "hdr");
-    if (!layout.scanned && layout.footer.length > 0) footerId = band(layout.footer, "ftr");
-
-    const sect = sectPrXml(layout, layout.scanned ? null : pageNumbering(layout), headerId, footerId);
+    const sect = sectPrXml(layout, emptyHeaderId, emptyFooterId);
     const pageXml = `<w:p>${ANCHOR_PPR}${background}${anchors}</w:p>${tables}`;
     // A section per page: the break lives in the last paragraph of the section,
     // except on the final page where it closes the body.

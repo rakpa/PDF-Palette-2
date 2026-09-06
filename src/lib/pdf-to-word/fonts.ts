@@ -23,7 +23,7 @@ const TRAILING_TAGS = /(?:MT|PS|PSMT|LT|W\d{2}|SC)$/;
 const FAMILY_ALIASES: ReadonlyArray<[RegExp, string]> = [
   [/^(?:helvetica|arial|liberationsans|nimbussans|freesans|arimo)/i, "Arial"],
   [/^(?:times|liberationserif|nimbusroman|freeserif|tinos|thorndale)/i, "Times New Roman"],
-  [/^(?:courier|liberationmono|nimbusmono|freemono|cousine)/i, "Courier New"],
+  [/^(?:courier(?:new)?|liberationmono|nimbusmono|freemono|cousine)$/i, "Courier New"],
   [/^(?:zapfdingbats|dingbats)/i, "Wingdings"],
   [/^symbol/i, "Symbol"],
   [/^(?:cmr|cmbx|cmti|computermodernroman|nimbusromno9l)/i, "Times New Roman"],
@@ -37,6 +37,9 @@ const FAMILY_ALIASES: ReadonlyArray<[RegExp, string]> = [
 const SPACED_NAMES: ReadonlyArray<[RegExp, string]> = [
   [/^timesnewroman/i, "Times New Roman"],
   [/^couriernew/i, "Courier New"],
+  [/^courierstd/i, "Courier Std"],
+  [/^myriadpro/i, "Myriad Pro"],
+  [/^minionpro/i, "Minion Pro"],
   [/^comicsans(?:ms)?/i, "Comic Sans MS"],
   [/^trebuchet(?:ms)?/i, "Trebuchet MS"],
   [/^segoeui/i, "Segoe UI"],
@@ -45,7 +48,6 @@ const SPACED_NAMES: ReadonlyArray<[RegExp, string]> = [
   [/^dejavuserif/i, "DejaVu Serif"],
   [/^lucidaconsole/i, "Lucida Console"],
   [/^lucidasans/i, "Lucida Sans"],
-  [/^couriernew/i, "Courier New"],
   [/^bookantiqua/i, "Book Antiqua"],
   [/^centurygothic/i, "Century Gothic"],
   [/^franklingothic/i, "Franklin Gothic"],
