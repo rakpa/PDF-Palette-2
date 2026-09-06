@@ -22,6 +22,7 @@ import {
   EyeOff,
   Scale,
   ScanText,
+  FileSearch,
   LucideIcon,
 } from "lucide-react";
 
@@ -44,6 +45,7 @@ export type ToolFeature =
   | "jpg-to-pdf"
   | "word-to-pdf"
   | "pdf-to-word"
+  | "pdf-to-word-2"
   | "unlock-pdf"
   | "protect-pdf"
   | "html-to-pdf"
@@ -94,6 +96,17 @@ export const pdfTools: PDFTool[] = [
     popular: true,
     route: "/pdf-to-word",
     feature: "pdf-to-word",
+  },
+  {
+    id: "pdf-to-word-2",
+    name: "PDF to Word 2",
+    description: "Convert, then compare the result against the source in Apryse WebViewer",
+    icon: FileSearch,
+    color: "purple",
+    category: ["convert-from"],
+    isNew: true,
+    route: "/pdf-to-word-2",
+    feature: "pdf-to-word-2",
   },
   {
     id: "word-to-pdf",

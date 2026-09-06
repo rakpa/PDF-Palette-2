@@ -38,6 +38,7 @@ import {
 } from "@/lib/pdf-utils";
 import ToolPageLayout from "@/components/ToolPageLayout";
 import PdfEditor from "@/components/pdf-editor/PdfEditor";
+import PdfToWordApryse from "@/components/pdf-to-word-2/PdfToWordApryse";
 import PageOrganizer from "@/components/pdf-pages/PageOrganizer";
 import PdfSplitter from "@/components/pdf-pages/PdfSplitter";
 import PdfCropper from "@/components/pdf-pages/PdfCropper";
@@ -78,6 +79,7 @@ type InteractiveFeature =
   | "fill-forms"
   | "redact"
   | "compare"
+  | "pdf-to-word-2"
   | "split";
 
 const featureConfig: Record<
@@ -363,6 +365,17 @@ const ToolPage = () => {
     return (
       <ToolPageLayout tool={tool}>
         <PdfRedactor />
+      </ToolPageLayout>
+    );
+  }
+
+  // Converting then previewing is one flow: the viewer needs the result blob,
+  // so this tool owns its upload, conversion and download rather than sharing
+  // the generic process-and-download path below.
+  if (tool.feature === "pdf-to-word-2") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfToWordApryse />
       </ToolPageLayout>
     );
   }

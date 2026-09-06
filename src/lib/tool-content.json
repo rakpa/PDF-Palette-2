@@ -28,6 +28,32 @@
       }
     ]
   },
+  "/pdf-to-word-2": {
+    "name": "PDF to Word 2",
+    "title": "PDF to Word 2 — Convert and Compare in Apryse WebViewer | PDF Palette",
+    "description": "Convert a PDF to Word, then flip between the .docx and the original in an embedded Apryse WebViewer before you download.",
+    "intro": "The same conversion as PDF to Word, with a check step on the end. Once the .docx comes back, this tool opens it in an embedded Apryse WebViewer and lets you flip between the converted document and the original PDF in the same pane, so layout drift is easy to spot before you download anything. Useful when fidelity matters more than speed.",
+    "steps": [
+      "Drop your PDF onto the upload area, or click to pick a file.",
+      "Wait while the document is converted to .docx.",
+      "Flip between the converted document and the original PDF in the viewer.",
+      "Download the .docx if it looks right."
+    ],
+    "faqs": [
+      {
+        "q": "How is this different from PDF to Word?",
+        "a": "The conversion is identical. This tool adds a preview: it renders the resulting Word document and the source PDF in the browser and lets you switch between them, so you can spot layout problems before downloading instead of opening the file in Word to find out."
+      },
+      {
+        "q": "Why does the viewer say Demo?",
+        "a": "Apryse WebViewer stamps a demo watermark on documents when no license key is configured. The watermark is added by the viewer only — it is never written into the .docx you download."
+      },
+      {
+        "q": "Is my file uploaded anywhere new?",
+        "a": "No. The preview is rendered entirely in your browser by WebViewer. Conversion uses the same service as the standard PDF to Word tool, and nothing extra leaves your machine for the preview step."
+      }
+    ]
+  },
   "/word-to-pdf": {
     "name": "Word to PDF",
     "title": "Word to PDF Converter — CloudConvert | PDF Palette",
