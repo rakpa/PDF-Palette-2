@@ -202,6 +202,29 @@ function runsFor(spans: PdfSpan[], lineFontSize: number, bag: Bag, hidden = fals
   return out;
 }
 
+const PAGE_REFERENCE =
+  /^(?:\d{1,4}|[ivxlcdm]{1,9})(?:\s*[,–—-]\s*(?:\d{1,4}|[ivxlcdm]{1,9}))*$/i;
+const LEADER_ONLY = /^[\s.\u00b7\u2024\u2026]+$/;
+const TRAILING_LEADER = /[\s.\u00b7\u2024\u2026]{3,}$/;
+
+function segmentText(segment: ParagraphBox["segments"][number][number]): string {
+  return segment.spans.map((span) => span.text).join("").trim();
+}
+
+function isIndexLine(segments: ParagraphBox["segments"][number]): boolean {
+  return segments.length >= 2 && PAGE_REFERENCE.test(segmentText(segments[segments.length - 1]));
+}
+
+function withoutTrailingLeader(spans: PdfSpan[]): PdfSpan[] {
+  const copy = spans.map((span) => ({ ...span }));
+  for (let i = copy.length - 1; i >= 0; i--) {
+    if (!copy[i].text) continue;
+    copy[i].text = copy[i].text.replace(TRAILING_LEADER, "");
+    break;
+  }
+  return copy;
+}
+
 /**
  * A paragraph whose lines cannot be re-wrapped without moving text: anything
  * with an internal gap (tab stops), a centred or right-aligned block, or lines
@@ -242,28 +265,52 @@ function paragraphChildren(
   hidden: boolean
 ): { inner: string; tabs: string } {
   let inner = "";
-  const stops = new Map<number, "left" | "right">();
+  const stops = new Map<number, { type: "left" | "right"; leader: boolean }>();
   const measure = Math.max(1, box.blockRight - leftEdge);
 
   box.segments.forEach((segments, lineIndex) => {
     if (lineIndex > 0) inner += "<w:r><w:br/></w:r>";
+    const indexLine = isIndexLine(segments);
+    const pageIndex = segments.length - 1;
+    const leaderIndexes = new Set<number>();
+    if (indexLine) {
+      for (let i = 1; i < pageIndex; i++) {
+        if (LEADER_ONLY.test(segmentText(segments[i]))) leaderIndexes.add(i);
+      }
+    }
+    const attachedLeader =
+      indexLine && TRAILING_LEADER.test(segmentText(segments[Math.max(0, pageIndex - 1)]));
+
     segments.forEach((segment, segmentIndex) => {
+      if (leaderIndexes.has(segmentIndex)) return;
       if (segmentIndex > 0) {
-        const atRightEdge =
+        const pageReference = indexLine && segmentIndex === pageIndex;
+        const atRightEdge = pageReference ||
           segmentIndex === segments.length - 1 && box.blockRight - segment.xEnd <= 4;
         const position = atRightEdge
-          ? signedTwip(measure)
+          ? signedTwip(pageReference ? segment.xEnd - leftEdge : measure)
           : Math.max(0, signedTwip(segment.x - leftEdge));
-        stops.set(Math.min(Math.max(0, position), TAB_MAX), atRightEdge ? "right" : "left");
+        const leader = pageReference && (leaderIndexes.size > 0 || attachedLeader);
+        stops.set(Math.min(Math.max(0, position), TAB_MAX), {
+          type: atRightEdge ? "right" : "left",
+          leader,
+        });
         inner += "<w:r><w:tab/></w:r>";
       }
-      inner += runsFor(segment.spans, box.fontSize, bag, hidden);
+      const spans =
+        attachedLeader && segmentIndex === pageIndex - 1
+          ? withoutTrailingLeader(segment.spans)
+          : segment.spans;
+      inner += runsFor(spans, box.fontSize, bag, hidden);
     });
   });
 
   const tabs = [...stops.entries()]
     .sort((a, b) => a[0] - b[0])
-    .map(([position, type]) => `<w:tab w:val="${type}" w:pos="${position}"/>`)
+    .map(
+      ([position, stop]) =>
+        `<w:tab w:val="${stop.type}"${stop.leader ? ' w:leader="dot"' : ""} w:pos="${position}"/>`
+    )
     .join("");
   return { inner, tabs };
 }
@@ -671,9 +718,36 @@ function isDrawnTable(box: TableBox): boolean {
   return box.bordered || box.rows.some((row) => row.some((cell) => cell.shading));
 }
 
+/**
+ * Contents and index entries are independent rows in the PDF. Grouping them
+ * into one multiline paragraph replaces their measured baseline gaps with one
+ * uniform Word line height. Keep one frame per row so both vertical spacing
+ * and indentation remain at the source coordinates.
+ */
+function splitIndexParagraph(box: ParagraphBox): ParagraphBox[] {
+  if (box.lines.length < 2 || !box.segments.every(isIndexLine)) return [box];
+  return box.lines.map((line, index) => ({
+    ...box,
+    lines: [line],
+    segments: [box.segments[index]],
+    rect: { x0: line.x, y0: line.yTop, x1: line.xEnd, y1: line.yBottom },
+    blockLeft: line.x,
+    blockRight: line.xEnd,
+    align: "left",
+    firstLineIndent: 0,
+    hangingIndent: 0,
+    leading: Math.max(line.yBottom - line.yTop, line.fontSize * 1.15),
+    fontSize: line.fontSize,
+    spaceBefore: 0,
+    listMarker: undefined,
+  }));
+}
+
 function flatten(boxes: Box[], out: Placed[] = []): Placed[] {
   for (const box of boxes) {
-    if (box.kind === "paragraph") out.push({ kind: "paragraph", box });
+    if (box.kind === "paragraph") {
+      for (const row of splitIndexParagraph(box)) out.push({ kind: "paragraph", box: row });
+    }
     else if (box.kind === "image") out.push({ kind: "image", image: box.image });
     else if (box.kind === "columns") for (const column of box.columns) flatten(column, out);
     else if (box.kind === "table") {
