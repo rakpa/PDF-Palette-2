@@ -3,7 +3,7 @@
 ## What you need
 
 1. **Node.js**
-2. **CloudConvert API key** — for PDF → Word and Word → PDF.
+2. **CloudConvert API key** — for Word → PDF.
    Copy `.env.example` to `.env.local` and set `CLOUDCONVERT_API_KEY`.
    On Vercel, set the same variable on the project.
 
@@ -29,7 +29,7 @@ npm run dev
 ```
 
 - **Word → PDF:** http://localhost:8080/word-to-pdf (CloudConvert)
-- **PDF → Word:** http://localhost:8080/pdf-to-word (CloudConvert)
+- **PDF → Word:** http://localhost:8080/pdf-to-word (iLovePDF)
 - **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
 - **Protect / Unlock PDF:** http://localhost:8080/protect-pdf, `/unlock-pdf`
@@ -41,10 +41,8 @@ npm run dev
 
 ## PDF → Word and Word → PDF
 
-Both tools call CloudConvert through the serverless functions in
-`api/convert/` (`/api/convert/asset`, `/job`, `/status`, `/health`) — the same
-handlers in production and under `npm run dev`. The browser never sees the
-API key; it only receives the short-lived CloudConvert upload form.
+Word → PDF calls CloudConvert through `api/convert/`. PDF → Word calls
+iLovePDF through `api/ilove/`. The browser never sees the keys.
 
 Set this on the deployment (Vercel → Settings → Environment Variables) or in a
 local `.env.local`:
@@ -55,7 +53,7 @@ ILOVEPDF_PUBLIC_KEY=<your iLovePDF public key>
 ILOVEPDF_SECRET_KEY=<your iLovePDF secret key>
 ```
 
-**PDF to Word iLove** (`/pdf-to-word-ilove`) sends the PDF to iLovePDF’s
+**PDF to Word** (`/pdf-to-word`) sends the PDF to iLovePDF’s
 PDF → Word engine (`pdfoffice` + `convert_to=docx`). Project keys are tried
 first; if that start route is not on the developer API, the public website
 session is used so the conversion still runs on iLovePDF.

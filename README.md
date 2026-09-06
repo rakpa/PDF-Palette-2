@@ -1,7 +1,7 @@
 # PDF Palette
 
 Free, privacy-first PDF tools. Most run **entirely in your browser**. PDF to
-Word and Word to PDF use CloudConvert. No sign-up, no watermarks.
+Word uses iLovePDF. Word to PDF uses CloudConvert. No sign-up, no watermarks.
 
 ## Features
 
@@ -13,9 +13,7 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **Compress PDF** – strip metadata and re-pack object streams
 - **Add Watermark** – stamp custom diagonal text on every page
 - **JPG to PDF** – turn JPG/PNG images into a PDF
-- **PDF to Word** – convert a PDF to an editable `.docx` with CloudConvert
-  (`api/convert`, with an in-browser fallback in `src/lib/pdf-to-word/`)
-- **PDF to Word iLove** – convert a PDF to `.docx` with iLovePDF
+- **PDF to Word** – convert a PDF to an editable `.docx` with iLovePDF
   (`api/ilove`, Solid Documents PDF → Word)
 - **Word to PDF** – convert `.doc` / `.docx` to PDF with CloudConvert
 - **Edit PDF** – add text, images, shapes, freehand ink, highlights and

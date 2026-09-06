@@ -1,12 +1,12 @@
 {
   "/pdf-to-word": {
     "name": "PDF to Word",
-    "title": "PDF to Word Converter — CloudConvert | PDF Palette",
-    "description": "Convert PDF to an editable Word (.docx) document free. CloudConvert preserves layout, fonts and tables.",
-    "intro": "Turn a PDF back into an editable Word document. PDF Palette sends the file to CloudConvert, which rebuilds it as a .docx you can open and edit in Word, Google Docs or LibreOffice. The file is used for conversion only and is not stored by PDF Palette.",
+    "title": "PDF to Word Converter — iLovePDF | PDF Palette",
+    "description": "Convert PDF to an editable Word (.docx) document free. iLovePDF preserves layout, fonts and tables.",
+    "intro": "Turn a PDF into an editable Word document with iLovePDF’s PDF → Word engine (Solid Documents). The file is sent to iLovePDF for conversion only. PDF Palette does not keep a copy.",
     "steps": [
       "Drop your PDF onto the upload area, or click to pick a file.",
-      "Wait while CloudConvert converts the document.",
+      "Wait while iLovePDF converts the document.",
       "Download the .docx file and open it in Word, Google Docs or LibreOffice."
     ],
     "faqs": [
@@ -20,73 +20,11 @@
       },
       {
         "q": "Is my file uploaded anywhere?",
-        "a": "Yes — this tool sends the PDF to CloudConvert for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
+        "a": "Yes — this tool sends the PDF to iLovePDF for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
       },
       {
         "q": "Is there a file size or page limit?",
-        "a": "CloudConvert accepts typical document sizes. Very large scanned PDFs may take longer to convert."
-      }
-    ]
-  },
-  "/pdf-to-word-new": {
-    "name": "PDF to Word New",
-    "title": "PDF to Word New — Page-Perfect DOCX in Your Browser | PDF Palette",
-    "description": "Rebuild a PDF as a Word document page for page — same page size, fonts, colours, tables, pictures and rules, in the same places. Runs entirely in your browser.",
-    "intro": "The usual PDF to Word conversion hands Word the text and lets it decide where everything lands. This one decides first. Each page is read as geometry — every run of text with its font, size, weight and colour, every painted panel, rule, picture and table — and then written into Word pinned to the coordinates it was read at. The page keeps its own size and orientation, the cover keeps its artwork, and a scanned page is reproduced as its own picture with the recognised words placed over it as hidden text. Nothing is uploaded: the whole conversion happens in the tab.",
-    "steps": [
-      "Upload the PDF you want rebuilt as a Word document.",
-      "Each page is read into text, tables, pictures, rules and painted areas, and written back at its own coordinates.",
-      "Download the .docx and open it in Word, LibreOffice or Google Docs."
-    ],
-    "faqs": [
-      {
-        "q": "How is this different from PDF to Word?",
-        "a": "PDF to Word converts the document and lets Word reflow it, which reads well but moves things. This one reproduces the page: paragraphs, tables and pictures are anchored where the PDF drew them, so the result overlays the original closely."
-      },
-      {
-        "q": "Is the result still editable?",
-        "a": "Yes. The page is made of real Word paragraphs, runs and table cells — only their position is pinned. Text can be edited, restyled and searched as usual."
-      },
-      {
-        "q": "Does the file leave my device?",
-        "a": "No. The PDF is read and the Word file is written in your browser. Nothing is sent to a server."
-      },
-      {
-        "q": "What happens with a scanned PDF?",
-        "a": "A page with no text layer is reproduced as its own picture so it still looks right, and the words are recognised and written over it as hidden text so the document can be searched and copied."
-      },
-      {
-        "q": "Will the fonts be the same?",
-        "a": "The original font family, size, weight, style and colour are carried through. If a font is not installed where you open the document, Word substitutes the closest match — run widths are corrected so the lines still break in the same places."
-      }
-    ]
-  },
-  "/pdf-to-word-ilove": {
-    "name": "PDF to Word iLove",
-    "title": "PDF to Word iLove — iLovePDF | PDF Palette",
-    "description": "Convert PDF to an editable Word (.docx) document with iLovePDF’s Solid Documents engine.",
-    "intro": "Turn a PDF into an editable Word document with the same iLovePDF PDF → Word engine as ilovepdf.com (Solid Documents). The file is sent to iLovePDF for conversion only. PDF Palette does not keep a copy.",
-    "steps": [
-      "Drop your PDF onto the upload area, or click to pick a file.",
-      "Wait while iLovePDF converts the document.",
-      "Download the .docx file and open it in Word, Google Docs or LibreOffice."
-    ],
-    "faqs": [
-      {
-        "q": "Is this the same as PDF to Word?",
-        "a": "No. PDF to Word uses CloudConvert. This card sends the file to iLovePDF and downloads their Word file."
-      },
-      {
-        "q": "Is my file uploaded anywhere?",
-        "a": "Yes. The PDF is uploaded to iLovePDF for this conversion only. PDF Palette does not keep a copy."
-      },
-      {
-        "q": "Does it work on scanned PDFs?",
-        "a": "A scanned page is an image, so there is no text to extract. Run it through the OCR PDF tool first, then convert it to Word."
-      },
-      {
-        "q": "Where do I put the iLovePDF keys?",
-        "a": "Set ILOVEPDF_PUBLIC_KEY and ILOVEPDF_SECRET_KEY on the server (or in .env locally). Never prefix them with VITE_ — that would ship the secret in the browser bundle."
+        "a": "iLovePDF accepts typical document sizes. Very large scanned PDFs may take longer to convert."
       }
     ]
   },
