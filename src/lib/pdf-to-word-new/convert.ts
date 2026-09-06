@@ -4,32 +4,9 @@ import { createImageRasterCache, extractPage, renderPageBitmap } from "../pdf-to
 import { layoutForPage, openPdf, pdfjsLib } from "../pdf-to-word/read";
 import { PdfToWordError } from "../pdf-to-word-browser";
 import type { PageContent } from "../pdf-to-word/types";
-import { writeFidelityDocument, type FidelityPage, type HiddenTextLine } from "./emit";
+import { writeFidelityDocument, type FidelityPage } from "./emit";
 import { recogniseScannedPage } from "./ocr-layer";
 import { createSampler, type PaintedFill } from "./sample";
-
-/** A painted cover is reproduced as the page itself, not reconstructed. */
-const COVER_SPARSE_CHARS = 40;
-const COVER_MAX_CHARS = 800;
-
-function looksLikeCover(content: PageContent): boolean {
-  if (content.pageNumber !== 1) return false;
-  const pictures = content.images.length + content.artwork.length;
-  if (content.textChars <= COVER_SPARSE_CHARS) return true;
-  return pictures >= 1 && content.textChars <= COVER_MAX_CHARS;
-}
-
-function hiddenFromContent(content: PageContent): HiddenTextLine[] {
-  return content.lines
-    .map((line) => ({
-      text: line.spans.map((span) => span.text).join(""),
-      x: line.x,
-      y: line.yTop,
-      width: Math.max(6, line.xEnd - line.x),
-      height: Math.max(6, line.yBottom - line.yTop),
-    }))
-    .filter((line) => line.text.trim().length > 0);
-}
 
 /**
  * PDF → Word, reproduced rather than reflowed.
@@ -108,24 +85,6 @@ export async function convertPdfToWordFidelity(
       try {
         const content = await extractPage(page, pdfjsLib, pageNumber, rasterCache);
         const layout = layoutForPage(content);
-        if (looksLikeCover(content)) {
-          const pageImage = await renderPageBitmap(page, content.width, content.height);
-          if (pageImage) {
-            pages.push({
-              layout: {
-                ...layout,
-                scanned: true,
-                body: [],
-                header: [],
-                footer: [],
-              },
-              content,
-              pageImage,
-              hidden: hiddenFromContent(content),
-            });
-            continue;
-          }
-        }
         if (layout.scanned) {
           onProgress?.(
             5 + (pageNumber / pdf.numPages) * 78,

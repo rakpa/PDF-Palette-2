@@ -91,15 +91,6 @@ export type PageLayout = {
 };
 
 const MIN_GUTTER = 16;
-const PAGE_REFERENCE =
-  /^(?:\d{1,4}|[ivxlcdm]{1,9})(?:\s*[,–—-]\s*(?:\d{1,4}|[ivxlcdm]{1,9}))*$/i;
-
-function lineHasPageReference(line: PdfLine): boolean {
-  const segments = splitSegments(line);
-  if (segments.length < 2) return false;
-  const last = segments[segments.length - 1].spans.map((span) => span.text).join("").trim();
-  return PAGE_REFERENCE.test(last);
-}
 const MAX_MARGIN = 200;
 export const LIST_MARKER =
   /^(?:[•▪◦‣∙·●○■□–—*-]|\(?\d{1,3}[.)]|\(?[a-zA-Z][.)]|\(?[ivxlcdmIVXLCDM]{1,6}[.)])$/;
@@ -276,25 +267,7 @@ function splitAtGutters(lines: PdfLine[], pageWidth: number, bands: PdfFill[]): 
       const measure = Math.max(...widths);
       return widths.reduce((a, b) => a + b, 0) / widths.length / Math.max(1, measure);
     };
-    if (fill(leftLines, left, centre) >= 0.75 && fill(rightLines, centre, right) >= 0.75) {
-      return true;
-    }
-
-    // A contents or index column is short and ragged, so the body-copy fill
-    // test rejects it and the two sides come out as one interleaved line.
-    // What gives it away is a page-number on most rows of both sides.
-    const pageRefs = (rows: typeof segmented) =>
-      rows.filter((row) => {
-        const last = row.segments[row.segments.length - 1];
-        const text = last?.spans.map((span) => span.text).join("").trim() ?? "";
-        return row.segments.length >= 2 && PAGE_REFERENCE.test(text);
-      }).length;
-    return (
-      leftLines.length >= 6 &&
-      rightLines.length >= 6 &&
-      pageRefs(leftLines) * 2 >= leftLines.length &&
-      pageRefs(rightLines) * 2 >= rightLines.length
-    );
+    return fill(leftLines, left, centre) >= 0.75 && fill(rightLines, centre, right) >= 0.75;
   });
 
   if (accepted.length === 0) return lines;
@@ -548,9 +521,8 @@ function buildParagraphs(
     const prevWrapped = blockRight - prev.xEnd <= Math.max(4, prev.fontSize * 0.9);
 
     const continues = sameLeft || prevWrapped || sameRight || sameCentre;
-    const indexRow = lineHasPageReference(prev) || lineHasPageReference(line);
 
-    if (tight && sameSize && sameShading && !detectListMarker(line) && continues && !indexRow) {
+    if (tight && sameSize && sameShading && !detectListMarker(line) && continues) {
       current.push(line);
     } else {
       groups.push(current);
