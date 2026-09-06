@@ -91,6 +91,21 @@ export type PageLayout = {
 };
 
 const MIN_GUTTER = 16;
+const PAGE_REFERENCE =
+  /^(?:\d{1,4}|[ivxlcdm]{1,9})(?:\s*[,–—-]\s*(?:\d{1,4}|[ivxlcdm]{1,9}))*$/i;
+const TOC_TAB = String.fromCharCode(8);
+
+function lineHasPageReference(line: PdfLine): boolean {
+  const segments = splitSegments(line);
+  if (segments.length < 2) return false;
+  const last = segments[segments.length - 1].spans
+    .map((span) => span.text)
+    .join("")
+    .split(TOC_TAB)
+    .join("")
+    .trim();
+  return PAGE_REFERENCE.test(last);
+}
 const MAX_MARGIN = 200;
 export const LIST_MARKER =
   /^(?:[•▪◦‣∙·●○■□–—*-]|\(?\d{1,3}[.)]|\(?[a-zA-Z][.)]|\(?[ivxlcdmIVXLCDM]{1,6}[.)])$/;
@@ -186,8 +201,13 @@ export function mergeSpans(spans: PdfSpan[]): PdfSpan[] {
 
     if (sameStyle) {
       const gap = span.x - prev.xEnd;
+      // Tracked display headings arrive as one glyph per run. A 25pt title
+      // with 4pt tracking is wider than 0.55 of a space, and inserting a
+      // space there is what turns "Contributors" into "C o n t r i b u t o r s".
+      const trackedLetters = prev.text.trim().length <= 1 && text.trim().length <= 1;
       const needsSpace =
-        gap > Math.max(prev.spaceWidth, span.spaceWidth) * 0.55 &&
+        !trackedLetters &&
+        gap > Math.max(prev.spaceWidth, span.spaceWidth) * 0.85 &&
         !/\s$/.test(prev.text) &&
         !/^\s/.test(text);
       prev.text += (needsSpace ? " " : "") + text;
@@ -267,7 +287,31 @@ function splitAtGutters(lines: PdfLine[], pageWidth: number, bands: PdfFill[]): 
       const measure = Math.max(...widths);
       return widths.reduce((a, b) => a + b, 0) / widths.length / Math.max(1, measure);
     };
-    return fill(leftLines, left, centre) >= 0.75 && fill(rightLines, centre, right) >= 0.75;
+    if (fill(leftLines, left, centre) >= 0.75 && fill(rightLines, centre, right) >= 0.75) {
+      return true;
+    }
+    // A contents column is a title plus a page number. The gap between those
+    // two is a leader, not a column; only a gutter that leaves a title+page
+    // pair on both sides is a real two-column contents page.
+    const contentsSide = (rows: typeof segmented, from: number, to: number) => {
+      const sides = rows
+        .map((row) =>
+          row.segments.filter((seg) => seg.x >= from - 1 && seg.xEnd <= to + 1)
+        )
+        .filter((segs) => segs.length > 0);
+      if (sides.length < 6) return false;
+      const numbered = sides.filter((segs) => {
+        const last = segs[segs.length - 1].spans
+          .map((span) => span.text)
+          .join("")
+          .split(TOC_TAB)
+          .join("")
+          .trim();
+        return segs.length >= 2 && PAGE_REFERENCE.test(last);
+      }).length;
+      return numbered * 2 >= sides.length;
+    };
+    return contentsSide(leftLines, left, centre) && contentsSide(rightLines, centre, right);
   });
 
   if (accepted.length === 0) return lines;
@@ -521,8 +565,9 @@ function buildParagraphs(
     const prevWrapped = blockRight - prev.xEnd <= Math.max(4, prev.fontSize * 0.9);
 
     const continues = sameLeft || prevWrapped || sameRight || sameCentre;
+    const indexRow = lineHasPageReference(prev) || lineHasPageReference(line);
 
-    if (tight && sameSize && sameShading && !detectListMarker(line) && continues) {
+    if (tight && sameSize && sameShading && !detectListMarker(line) && continues && !indexRow) {
       current.push(line);
     } else {
       groups.push(current);

@@ -1030,6 +1030,10 @@ function findArtworkRegions(
         (m) => (m.rect.x1 - m.rect.x0) * (m.rect.y1 - m.rect.y0) >= area * 0.6
       );
       if (dominated && (h >= pageHeight * 0.7 || w >= pageWidth * 0.7)) return false;
+      // A tips/code callout is a wide, short panel — often with a small icon
+      // that would otherwise pull the whole box into artwork and delete the
+      // paragraph sitting in it.
+      if (w >= pageWidth * 0.5 && h <= pageHeight * 0.28) return false;
       // Curves or diagonals mean a drawing: a pie, a diagram, a gradient.
       const curved = cluster.members.some((m) => m.kind === "complex");
       if (curved && cluster.members.length >= 2) return true;
@@ -1066,6 +1070,7 @@ function absorbLabels(rect: Rect, spans: PdfSpan[]): Rect {
       if (!rectsOverlap(padded, box)) continue;
       // Only short labels are absorbed; a paragraph beside a figure is not.
       if (span.xEnd - span.x > (current.x1 - current.x0) * 0.9) continue;
+      if (span.text.trim().length > 40) continue;
       grown = unionRect(grown, box);
     }
     if (
