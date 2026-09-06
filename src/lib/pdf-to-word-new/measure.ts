@@ -56,6 +56,31 @@ export function hasFamily(family: string): boolean {
 }
 
 /**
+ * The ascent and descent, in points, of the face this text will actually be
+ * set in. Word places an exactly-spaced line by its descent, so guessing that
+ * number wrong shifts every line on the page by the same fraction of an em.
+ * The browser's own metrics for the resolved family — the real face when it is
+ * installed, its substitute when it is not — beat the PDF's nominal figure.
+ */
+export function fontMetrics(
+  family: string,
+  bold: boolean,
+  italic: boolean,
+  fontSize: number
+): { ascent: number; descent: number } | null {
+  const c = context();
+  if (!c || fontSize <= 0) return null;
+  c.font = `${italic ? "italic " : ""}${bold ? "700 " : ""}${fontSize}px ${JSON.stringify(
+    family || "Arial"
+  )}, serif`;
+  const m = c.measureText("Hxdp");
+  const ascent = m.fontBoundingBoxAscent;
+  const descent = m.fontBoundingBoxDescent;
+  if (!Number.isFinite(ascent) || !Number.isFinite(descent) || ascent <= 0) return null;
+  return { ascent, descent };
+}
+
+/**
  * Extra spacing, in points per character, that makes `text` occupy
  * `targetWidth` when Word sets it. Returns 0 when the measurement cannot be
  * trusted or the run already fits.

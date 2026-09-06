@@ -29,7 +29,7 @@ let workerPromise: Promise<Worker> | null = null;
 function getWorker(): Promise<Worker> {
   if (!workerPromise) {
     workerPromise = (async () => {
-      const { createWorker } = await import("tesseract.js");
+      const { createWorker, PSM } = await import("tesseract.js");
       const worker = await createWorker("eng", 1, {
         workerPath: `${TESSERACT_BASE}worker.min.js`,
         corePath: `${TESSERACT_BASE}core/`,
@@ -37,7 +37,13 @@ function getWorker(): Promise<Worker> {
         workerBlobURL: false,
         gzip: true,
       });
-      await worker.setParameters({ user_defined_dpi: String(OCR_DPI) });
+      // The engine defaults to reading the image as a single block of text,
+      // which drops a display heading and a ruled table on a page that has
+      // both. A full page needs full segmentation.
+      await worker.setParameters({
+        user_defined_dpi: String(OCR_DPI),
+        tessedit_pageseg_mode: PSM.AUTO,
+      });
       return worker;
     })().catch((error) => {
       workerPromise = null;

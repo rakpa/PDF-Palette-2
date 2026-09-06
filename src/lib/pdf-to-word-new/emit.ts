@@ -7,7 +7,7 @@ import {
   type TableBox,
 } from "../pdf-to-word/layout";
 import type { PageContent, PdfFill, PdfImage, PdfRule, PdfSpan } from "../pdf-to-word/types";
-import { fitLetterSpacing } from "./measure";
+import { fitLetterSpacing, fontMetrics } from "./measure";
 
 /**
  * Writing a Word package that reproduces the page rather than reflows it.
@@ -34,6 +34,7 @@ const R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 const WP = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
 const A = "http://schemas.openxmlformats.org/drawingml/2006/main";
 const PIC = "http://schemas.openxmlformats.org/drawingml/2006/picture";
+const WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
 const V = "urn:schemas-microsoft-com:vml";
 const O = "urn:schemas-microsoft-com:office:office";
 const W10 = "urn:schemas-microsoft-com:office:word";
@@ -267,7 +268,12 @@ function metrics(box: ParagraphBox): { line: number; descent: number } {
   const size = Math.max(1, box.fontSize);
   const firstLine = box.lines[0];
   const span = firstLine?.spans.find((s) => s.text.trim()) ?? firstLine?.spans[0];
-  const descent = Math.abs(span?.font.descent ?? -0.22) * size;
+  const measured = span
+    ? fontMetrics(span.font.family, span.font.bold, span.font.italic, size)
+    : null;
+  const descent = measured
+    ? measured.descent
+    : Math.abs(span?.font.descent ?? -0.22) * size;
   const line =
     box.lines.length > 1
       ? Math.max(box.leading, size * 1.0)
@@ -286,6 +292,35 @@ function frameTop(box: ParagraphBox, line: number, descent: number): number {
   return Math.max(0, baseline - line + descent);
 }
 
+/**
+ * A block of one line and one run cannot wrap, so its box can be the text
+ * itself. That reproduces its position exactly, whatever alignment was
+ * inferred for it — a centred line in a box a few points too wide lands a few
+ * points off, and a running head or a page number is usually exactly that.
+ */
+function isSingleRun(box: ParagraphBox): boolean {
+  return box.lines.length === 1 && box.segments.length === 1 && box.segments[0].length === 1;
+}
+
+/** Where a paragraph's own box sits on the page, and how wide it is. */
+export function paragraphPlacement(
+  box: ParagraphBox
+): { x: number; y: number; width: number; height: number } {
+  const { line, descent } = metrics(box);
+  // A little slack absorbs the metric difference between the embedded face and
+  // Word's, so the last word of a line is not pushed out of the box.
+  const slack = box.align === "left" || isSingleRun(box) ? 2 : box.align === "justify" ? 1 : 0;
+  const line0 = box.lines[0];
+  const left = isSingleRun(box) && line0 ? line0.x : box.blockLeft;
+  const right = isSingleRun(box) && line0 ? line0.xEnd : box.blockRight;
+  return {
+    x: Math.max(0, left),
+    y: frameTop(box, line, descent),
+    width: Math.max(6, right - left) + slack,
+    height: Math.max(6, Math.max(1, box.lines.length) * line + descent),
+  };
+}
+
 function paragraphXml(
   box: ParagraphBox,
   leftEdge: number,
@@ -294,7 +329,10 @@ function paragraphXml(
   framed: boolean,
   hidden = false
 ): string {
-  const hardBreaks = needsHardBreaks(box);
+  // A frame is placed to the point, so its lines have to break where the PDF
+  // broke them: a substituted face is a little narrower or wider, and letting
+  // Word re-wrap inside the frame loses or gains a line.
+  const hardBreaks = framed || needsHardBreaks(box);
   const source: ParagraphBox = hardBreaks
     ? box
     : {
@@ -304,20 +342,9 @@ function paragraphXml(
   const { inner, tabs } = paragraphChildren(source, framed ? box.blockLeft : leftEdge, bag, hidden);
   const { line, descent } = metrics(box);
 
-  let frame = "";
   let indentLeft = 0;
   let indentRight = 0;
-  if (framed) {
-    // A little slack absorbs the metric difference between the embedded face
-    // and Word's, so a re-wrapped line does not drop a word onto the next one.
-    const slack = box.align === "left" ? 2 : box.align === "justify" ? 1 : 0;
-    const width = Math.max(6, box.blockRight - box.blockLeft) + slack;
-    frame =
-      `<w:framePr w:w="${twip(width)}" w:hRule="auto" w:wrap="none" ` +
-      `w:vAnchor="page" w:hAnchor="page" ` +
-      `w:x="${twip(Math.max(0, box.blockLeft))}" w:y="${twip(frameTop(box, line, descent))}" ` +
-      `w:hSpace="0" w:vSpace="0" w:anchorLock="1"/>`;
-  } else {
+  if (!framed) {
     const available = Math.max(1, rightEdge - leftEdge);
     indentLeft =
       box.align === "center" || box.align === "right" ? 0 : Math.max(0, box.blockLeft - leftEdge);
@@ -338,14 +365,13 @@ function paragraphXml(
 
   const pPr =
     `<w:pPr>` +
-    frame +
     `<w:widowControl w:val="0"/>` +
     `${box.shading && !framed ? `<w:shd w:val="clear" w:color="auto" w:fill="${box.shading}"/>` : ""}` +
     `${tabs ? `<w:tabs>${tabs}</w:tabs>` : ""}` +
     `<w:spacing w:before="${framed ? 0 : twip(box.spaceBefore)}" w:after="0" ` +
     `w:line="${twip(line)}" w:lineRule="exact"/>` +
     `${indents.length ? `<w:ind ${indents.join(" ")}/>` : ""}` +
-    `<w:jc w:val="${jc(box.align)}"/>` +
+    `<w:jc w:val="${framed && isSingleRun(box) ? "left" : jc(box.align)}"/>` +
     `</w:pPr>`;
   return `<w:p>${pPr}${inner || "<w:r><w:t></w:t></w:r>"}</w:p>`;
 }
@@ -424,6 +450,48 @@ function anchoredPictureXml(bag: Bag, image: PdfImage, z: number): string {
     `<wp:docPr id="${id}" name="Picture ${id}"/>` +
     `<wp:cNvGraphicFramePr><a:graphicFrameLocks xmlns:a="${A}" noChangeAspect="1"/></wp:cNvGraphicFramePr>` +
     graphicXml(rId, id, cx, cy) +
+    `</wp:anchor></w:drawing></w:r>`
+  );
+}
+
+/**
+ * A block pinned to the page as a text box.
+ *
+ * `w:framePr` says the same thing in a quarter of the XML, but readers treat
+ * frames unevenly — LibreOffice ignores them outright inside a header or
+ * footer — while a `wps` text box is what Word itself writes for placed text
+ * and is honoured everywhere. The box has no fill, no outline and no internal
+ * padding, so only its contents show, and it grows down from a fixed top.
+ */
+function textBoxXml(
+  media: Media,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  z: number,
+  inner: string
+): string {
+  const id = media.shapeId++;
+  const cx = emu(Math.max(6, width));
+  const cy = emu(Math.max(6, height));
+  return (
+    `<w:r><w:drawing>` +
+    `<wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="${z}" ` +
+    `behindDoc="0" locked="0" layoutInCell="0" allowOverlap="1">` +
+    `<wp:simplePos x="0" y="0"/>` +
+    `<wp:positionH relativeFrom="page"><wp:posOffset>${emu(Math.max(0, x))}</wp:posOffset></wp:positionH>` +
+    `<wp:positionV relativeFrom="page"><wp:posOffset>${emu(Math.max(0, y))}</wp:posOffset></wp:positionV>` +
+    `<wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>` +
+    `<wp:docPr id="${id}" name="Text ${id}"/><wp:cNvGraphicFramePr/>` +
+    `<a:graphic xmlns:a="${A}"><a:graphicData uri="${WPS}">` +
+    `<wps:wsp xmlns:wps="${WPS}"><wps:cNvSpPr txBox="1"/>` +
+    `<wps:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm>` +
+    `<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></wps:spPr>` +
+    `<wps:txbx><w:txbxContent>${inner}</w:txbxContent></wps:txbx>` +
+    `<wps:bodyPr rot="0" vert="horz" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" ` +
+    `anchor="t" anchorCtr="0"><a:spAutoFit/></wps:bodyPr>` +
+    `</wps:wsp></a:graphicData></a:graphic>` +
     `</wp:anchor></w:drawing></w:r>`
   );
 }
@@ -581,33 +649,86 @@ type Placed =
  * box already carries page coordinates, so the tree is flattened and each
  * survivor is placed on its own.
  */
+/**
+ * A table is worth keeping as a table when the page draws it as one — its
+ * rules and cell shading are part of the design and Word should own them.
+ * A block the detector merely inferred from alignment (side-by-side columns,
+ * a label list) carries no such marks, and its cells place more accurately as
+ * ordinary frames than as rows with their own heights and vertical alignment.
+ */
+function isDrawnTable(box: TableBox): boolean {
+  return box.bordered || box.rows.some((row) => row.some((cell) => cell.shading));
+}
+
 function flatten(boxes: Box[], out: Placed[] = []): Placed[] {
   for (const box of boxes) {
     if (box.kind === "paragraph") out.push({ kind: "paragraph", box });
-    else if (box.kind === "table") out.push({ kind: "table", box });
     else if (box.kind === "image") out.push({ kind: "image", image: box.image });
     else if (box.kind === "columns") for (const column of box.columns) flatten(column, out);
+    else if (box.kind === "table") {
+      if (isDrawnTable(box)) out.push({ kind: "table", box });
+      else for (const row of box.rows) for (const cell of row) flatten(cell.content, out);
+    }
   }
   return out;
 }
 
+/**
+ * Everything on a band, each piece pinned to where it was read: paragraphs as
+ * page-anchored text boxes, drawn tables as positioned tables, pictures handed
+ * to the caller so they can go behind the text.
+ */
+function placedBoxes(
+  boxes: Box[],
+  bag: Bag,
+  z: () => number,
+  picture: (image: PdfImage) => void
+): { anchors: string; tables: string } {
+  let anchors = "";
+  let tables = "";
+  for (const placed of flatten(boxes)) {
+    if (placed.kind === "image") {
+      picture(placed.image);
+    } else if (placed.kind === "paragraph") {
+      const { x, y, width, height } = paragraphPlacement(placed.box);
+      anchors += textBoxXml(
+        bag.media,
+        x,
+        y,
+        width,
+        height,
+        z(),
+        paragraphXml(placed.box, placed.box.blockLeft, placed.box.blockRight, bag, true)
+      );
+    } else {
+      tables += tableXml(placed.box, bag, true, 0);
+    }
+  }
+  return { anchors, tables };
+}
+
 /** Recognised text, written over the scan as hidden runs. */
-function hiddenLineXml(line: HiddenTextLine): string {
+function hiddenLineXml(media: Media, line: HiddenTextLine, z: number): string {
   const size = Math.max(4, Math.min(72, line.height * 0.86));
   const spacing = fitLetterSpacing(line.text, "Arial", false, false, size, line.width);
   const half = halfPoints(size);
-  return (
+  const paragraph =
     `<w:p><w:pPr>` +
-    `<w:framePr w:w="${twip(Math.max(6, line.width) + 4)}" w:hRule="auto" w:wrap="none" ` +
-    `w:vAnchor="page" w:hAnchor="page" w:x="${twip(Math.max(0, line.x))}" ` +
-    `w:y="${twip(Math.max(0, line.y))}" w:hSpace="0" w:vSpace="0" w:anchorLock="1"/>` +
     `<w:widowControl w:val="0"/>` +
     `<w:spacing w:before="0" w:after="0" w:line="${twip(size * 1.2)}" w:lineRule="exact"/>` +
     `</w:pPr><w:r><w:rPr>` +
     `<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:vanish/>` +
     `${spacing ? `<w:spacing w:val="${signedTwip(spacing)}"/>` : ""}` +
     `<w:sz w:val="${half}"/><w:szCs w:val="${half}"/>` +
-    `</w:rPr>${textNode(line.text)}</w:r></w:p>`
+    `</w:rPr>${textNode(line.text)}</w:r></w:p>`;
+  return textBoxXml(
+    media,
+    line.x,
+    line.y,
+    Math.max(6, line.width) + 4,
+    Math.max(6, size * 1.2),
+    z,
+    paragraph
   );
 }
 
@@ -736,9 +857,13 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
     const { layout, content, pageImage, hidden } = pages[i];
     const last = i === pages.length - 1;
     let z = 0;
+    let front = 0;
     const nextZ = () => Z_BASE + z++;
+    // Placed text sits in front of every painted area and picture.
+    const nextFront = () => -Z_BASE + 1000 + front++;
     let background = "";
-    let flow = "";
+    let anchors = "";
+    let tables = "";
 
     if (layout.scanned) {
       if (pageImage) {
@@ -748,7 +873,7 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
           -nextZ()
         );
       }
-      for (const line of hidden ?? []) flow += hiddenLineXml(line);
+      for (const line of hidden ?? []) anchors += hiddenLineXml(media, line, nextFront());
     } else {
       // Painted areas first, widest first, so a page-wide ground sits behind
       // the panels drawn on top of it and both sit behind the text.
@@ -760,12 +885,11 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
       for (const fill of fills) background += fillShapeXml(media, fill, nextZ());
       for (const rule of content.rules) background += ruleShapeXml(media, rule, nextZ());
 
-      for (const placed of flatten(layout.body)) {
-        if (placed.kind === "image") background += anchoredPictureXml(doc, placed.image, -nextZ());
-        else if (placed.kind === "paragraph")
-          flow += paragraphXml(placed.box, placed.box.blockLeft, placed.box.blockRight, doc, true);
-        else flow += tableXml(placed.box, doc, true, 0);
-      }
+      const placed = placedBoxes(layout.body, doc, nextFront, (image) => {
+        background += anchoredPictureXml(doc, image, -nextZ());
+      });
+      anchors += placed.anchors;
+      tables += placed.tables;
     }
 
     let headerId: string | undefined;
@@ -774,9 +898,16 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
       const count = kind === "hdr" ? (headerCount += 1) : (footerCount += 1);
       const file = `${kind === "hdr" ? "header" : "footer"}${count}.xml`;
       const bag = new Bag(media, (name) => `media/${name}`);
+      // Anchored to the page, exactly as in the body: a running head sits
+      // where the page drew it, not at an indent from the text margin.
+      let pictures = "";
+      let bandZ = 0;
+      const placed = placedBoxes(boxes, bag, () => -Z_BASE + 1000 + bandZ++, (image) => {
+        pictures += anchoredPictureXml(bag, image, 251658240);
+      });
       const xml = partRoot(
         kind === "hdr" ? "w:hdr" : "w:ftr",
-        flowBoxes(boxes, layout.margins.left, layout.width - layout.margins.right, bag) || "<w:p/>"
+        `<w:p>${ANCHOR_PPR}${pictures}${placed.anchors}</w:p>${placed.tables}`
       );
       parts.push({
         path: `word/${file}`,
@@ -792,7 +923,7 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
     if (!layout.scanned && layout.footer.length > 0) footerId = band(layout.footer, "ftr");
 
     const sect = sectPrXml(layout, layout.scanned ? null : pageNumbering(layout), headerId, footerId);
-    const pageXml = `<w:p>${ANCHOR_PPR}${background}</w:p>${flow}`;
+    const pageXml = `<w:p>${ANCHOR_PPR}${background}${anchors}</w:p>${tables}`;
     // A section per page: the break lives in the last paragraph of the section,
     // except on the final page where it closes the body.
     body += last ? `${pageXml}${sect}` : `${pageXml}<w:p><w:pPr>${sect}</w:pPr></w:p>`;
