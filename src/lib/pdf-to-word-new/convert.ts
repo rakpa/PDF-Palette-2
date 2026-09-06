@@ -6,6 +6,7 @@ import { PdfToWordError } from "../pdf-to-word-browser";
 import type { PageContent } from "../pdf-to-word/types";
 import { writeFidelityDocument, type FidelityPage } from "./emit";
 import { recogniseScannedPage } from "./ocr-layer";
+import { createSampler, type PaintedFill } from "./sample";
 
 /**
  * PDF → Word, reproduced rather than reflowed.
@@ -35,6 +36,7 @@ async function pageAsPicture(
     images: [],
     rules: [],
     fills: [],
+    shadings: [],
     artwork: [],
     textChars: 0,
   };
@@ -95,7 +97,49 @@ export async function convertPdfToWordFidelity(
             hidden: await recogniseScannedPage(page).catch(() => []),
           });
         } else {
-          pages.push({ layout, content, pageImage: null });
+          // A pattern or a shading is named in the content stream, not
+          // coloured, so its colour has to be read off the rendered page.
+          const painted = [...content.fills, ...content.shadings];
+          // Every page is sampled, not only the ones the scanner found paint
+          // on: a panel it missed entirely is exactly what the sweep is for.
+          const sample = await createSampler(page, content.width, content.height);
+          let fills: PaintedFill[] | undefined;
+          if (sample) {
+            fills = painted.map((fill) => sample.read(fill.rect, fill.color));
+            // Anything else already accounted for on the page, so the sweep
+            // only reports paint that would otherwise be lost.
+            const covered = [
+              ...fills.map((f) => f.rect),
+              ...content.images.map((i) => i.rect),
+              ...content.artwork.map((a) => a.rect),
+            ];
+            fills = [...sample.sweep(covered), ...fills];
+          }
+          const rules = sample
+            ? content.rules.map((rule) => {
+                const thickness = Math.max(0.4, rule.thickness);
+                const rect = rule.horizontal
+                  ? {
+                      x0: rule.start,
+                      y0: rule.pos - thickness / 2,
+                      x1: rule.end,
+                      y1: rule.pos + thickness / 2,
+                    }
+                  : {
+                      x0: rule.pos - thickness / 2,
+                      y0: rule.start,
+                      x1: rule.pos + thickness / 2,
+                      y1: rule.end,
+                    };
+                const read = sample.read(rect, rule.color ?? "000000");
+                // A hairline can fall between sample points and read as the
+                // paper behind it; the scanner's own colour is better then.
+                return /^F[0-9A-F]F[0-9A-F]F[0-9A-F]$/.test(read.color)
+                  ? rule
+                  : { ...rule, color: read.color };
+              })
+            : undefined;
+          pages.push({ layout, content, pageImage: null, fills, rules });
         }
       } catch (error) {
         console.warn(`pdf-to-word: page ${pageNumber} could not be rebuilt`, error);

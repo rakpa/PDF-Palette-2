@@ -53,8 +53,16 @@ the check. But verify cheaply, and be careful that the test itself is sound:
 - Playwright is not a saved dependency: `npm i -D playwright --no-save` when
   needed, and run driver scripts from the repo root (not `/tmp`) so the import
   resolves. Chromium is at `/opt/pw-browsers/chromium`.
-- LibreOffice here has **Writer only** — no Calc or Impress, so it cannot open
-  `.xlsx` or `.pptx`. Verify those against the fixture source instead.
+- LibreOffice here ships without the OOXML import filter, so `soffice` cannot
+  open a `.docx` until you install it:
+  `apt-get update -qq && apt-get install -y --no-install-recommends libreoffice-writer`.
+  With it, `soffice --headless -env:UserInstallation=file:///tmp/lo --convert-to pdf`
+  renders a generated DOCX and the result can be compared numerically against
+  the source PDF with PyMuPDF — page sizes, `span["origin"]` baselines, and a
+  low-resolution colour sweep that catches a panel coming back the wrong
+  colour. That round-trip is how PDF → Word is checked; do not eyeball pages.
+  Still no Calc or Impress, so `.xlsx` and `.pptx` cannot be opened — verify
+  those against the fixture source instead.
 - `ilovepdf.com` and `jsdelivr` are blocked by the egress proxy. npm is not, so
   fetch assets as packages rather than over HTTP.
 

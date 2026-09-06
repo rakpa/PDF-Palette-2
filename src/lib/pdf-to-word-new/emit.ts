@@ -6,8 +6,9 @@ import {
   type ParagraphBox,
   type TableBox,
 } from "../pdf-to-word/layout";
-import type { PageContent, PdfFill, PdfImage, PdfRule, PdfSpan } from "../pdf-to-word/types";
+import type { PageContent, PdfImage, PdfRule, PdfSpan } from "../pdf-to-word/types";
 import { fitLetterSpacing, fontMetrics } from "./measure";
+import type { PaintedFill } from "./sample";
 
 /**
  * Writing a Word package that reproduces the page rather than reflows it.
@@ -65,6 +66,10 @@ export type FidelityPage = {
   pageImage: PdfImage | null;
   /** OCR result for a scanned page, written as hidden text over the bitmap. */
   hidden?: HiddenTextLine[];
+  /** Painted areas with their colour read off the rendered page. */
+  fills?: PaintedFill[];
+  /** Rules with their colour read off the rendered page. */
+  rules?: PdfRule[];
 };
 
 function twip(pt: number): number {
@@ -384,22 +389,27 @@ function rectShapeXml(
   width: number,
   height: number,
   color: string,
-  z: number
+  z: number,
+  gradient?: { color2: string; angle: number }
 ): string {
   const id = media.shapeId++;
   const style =
     `position:absolute;margin-left:${vpt(x)};margin-top:${vpt(y)};` +
     `width:${vpt(Math.max(0.25, width))};height:${vpt(Math.max(0.25, height))};` +
     `z-index:${z};mso-position-horizontal-relative:page;mso-position-vertical-relative:page`;
+  const body = gradient
+    ? `><v:fill type="gradient" color="#${color}" color2="#${gradient.color2}" ` +
+      `angle="${gradient.angle}"/></v:rect>`
+    : `/>`;
   return (
     `<w:r><w:pict>` +
     `<v:rect id="shape${id}" o:spid="_x0000_s${id}" style="${escapeXml(style)}" ` +
-    `fillcolor="#${color}" stroked="f" o:allowincell="f"/>` +
+    `fillcolor="#${color}" stroked="f" o:allowincell="f"${body}` +
     `</w:pict></w:r>`
   );
 }
 
-function fillShapeXml(media: Media, fill: PdfFill, z: number): string {
+function fillShapeXml(media: Media, fill: PaintedFill, z: number): string {
   return rectShapeXml(
     media,
     fill.rect.x0,
@@ -407,7 +417,8 @@ function fillShapeXml(media: Media, fill: PdfFill, z: number): string {
     fill.rect.x1 - fill.rect.x0,
     fill.rect.y1 - fill.rect.y0,
     fill.color,
-    z
+    z,
+    fill.color2 ? { color2: fill.color2, angle: fill.angle ?? 0 } : undefined
   );
 }
 
@@ -877,13 +888,15 @@ export async function writeFidelityDocument(pages: FidelityPage[]): Promise<Uint
     } else {
       // Painted areas first, widest first, so a page-wide ground sits behind
       // the panels drawn on top of it and both sit behind the text.
-      const fills = [...content.fills].sort(
+      const fills = [...(pages[i].fills ?? content.fills)].sort(
         (a, b) =>
           (b.rect.x1 - b.rect.x0) * (b.rect.y1 - b.rect.y0) -
           (a.rect.x1 - a.rect.x0) * (a.rect.y1 - a.rect.y0)
       );
       for (const fill of fills) background += fillShapeXml(media, fill, nextZ());
-      for (const rule of content.rules) background += ruleShapeXml(media, rule, nextZ());
+      for (const rule of pages[i].rules ?? content.rules) {
+        background += ruleShapeXml(media, rule, nextZ());
+      }
 
       const placed = placedBoxes(layout.body, doc, nextFront, (image) => {
         background += anchoredPictureXml(doc, image, -nextZ());

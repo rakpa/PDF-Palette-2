@@ -122,6 +122,8 @@ type GraphicsState = {
   fill: string;
   stroke: string;
   lineWidth: number;
+  /** Current clip in device points, as far as rectangles describe it. */
+  clip: Rect | null;
 };
 
 type TextState = {
@@ -173,6 +175,7 @@ type PageScan = {
   fills: PdfFill[];
   images: ImageDraw[];
   vectors: VectorMark[];
+  shadings: PdfFill[];
 };
 
 function rectFromPoints(points: Array<[number, number]>): Rect {
@@ -328,6 +331,7 @@ async function scanOperators(
     fills: [],
     images: [],
     vectors: [],
+    shadings: [],
   };
   const OPS = pdfjsLib.OPS as unknown as Record<string, number>;
   const opList = await withTimeout(
@@ -338,7 +342,15 @@ async function scanOperators(
   if (!opList) return scan;
 
   const identity: Matrix = [1, 0, 0, 1, 0, 0];
-  let gs: GraphicsState = { ctm: identity, fill: "000000", stroke: "000000", lineWidth: 1 };
+  let gs: GraphicsState = {
+    ctm: identity,
+    fill: "000000",
+    stroke: "000000",
+    lineWidth: 1,
+    clip: null,
+  };
+  // The path most recently built but not painted — the candidate clip.
+  let pendingClip: Rect | null = null;
   const gsStack: GraphicsState[] = [];
   let ts: TextState = {
     tm: identity,
@@ -413,7 +425,13 @@ async function scanOperators(
       drawOp === OPS.eoFillStroke ||
       drawOp === OPS.closeFillStroke ||
       drawOp === OPS.closeEOFillStroke;
-    if (!stroked && !filled) return; // clipping / endPath
+    if (!stroked && !filled) {
+      // A path that is built but not painted is on its way to becoming the
+      // clip; `sh` paints the clip, so its bounds are worth keeping.
+      const all = subpaths.flat();
+      pendingClip = all.length > 0 ? rectFromPoints(all) : null;
+      return;
+    }
 
     const thickness = Math.max(0.4, gs.lineWidth * deviceScale(gs.ctm));
     let complexity = 0;
@@ -526,6 +544,13 @@ async function scanOperators(
         break;
       case OPS.restore:
         gs = gsStack.pop() ?? gs;
+        break;
+      case OPS.clip:
+      case OPS.eoClip:
+        // The innermost clip, not the intersection of the stack. Intersecting
+        // is what the spec says, but it only holds if every `Q` is seen, and a
+        // single missed restore then collapses every later clip to nothing.
+        if (pendingClip) gs = { ...gs, clip: pendingClip };
         break;
       case OPS.transform: {
         const m = toMatrix(args);
@@ -655,7 +680,15 @@ async function scanOperators(
           apply(m, 0, 1),
           apply(m, 1, 1),
         ];
-        scan.vectors.push({ rect: rectFromPoints(corners), kind: "complex" });
+        const own = rectFromPoints(corners);
+        scan.vectors.push({ rect: own, kind: "complex" });
+        // `sh` paints the clip, not the shading's own unit square, and its
+        // colour lives in a function no scanner can read — record the area so
+        // callers that can sample the rendered page are able to colour it.
+        const area = gs.clip ?? own;
+        if (area.x1 - area.x0 >= 2 && area.y1 - area.y0 >= 2) {
+          scan.shadings.push({ rect: area, color: gs.fill });
+        }
         break;
       }
       default:
@@ -1650,7 +1683,18 @@ export async function extractPage(
   applyScripts(lines);
   applyLinks(lines, await collectLinks(page, viewportTransform));
 
-  return { pageNumber, width, height, lines, images, rules, fills, artwork, textChars };
+  return {
+    pageNumber,
+    width,
+    height,
+    lines,
+    images,
+    rules,
+    fills,
+    shadings: scan.shadings,
+    artwork,
+    textChars,
+  };
 }
 
 function covers(outer: Rect, inner: Rect): boolean {

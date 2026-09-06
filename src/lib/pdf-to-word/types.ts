@@ -94,6 +94,12 @@ export type PageContent = {
   images: PdfImage[];
   rules: PdfRule[];
   fills: PdfFill[];
+  /**
+   * Areas painted by a shading (`sh`). Their colour lives in a PDF function,
+   * so it is not resolved here — a caller that can sample the rendered page
+   * reads it off that. The layout engine ignores them.
+   */
+  shadings: PdfFill[];
   /** Bounding boxes of dense vector artwork rendered as pictures. */
   artwork: PdfImage[];
   /** Total non-space characters recovered from the text layer. */
