@@ -69,7 +69,7 @@ function bridgeCall(payload: Record<string, unknown>): Promise<BridgeResult> {
     const id = `ilove-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const timer = window.setTimeout(() => {
       cleanup();
-      reject(new Error("iLovePDF transfer timed out."));
+      reject(new Error("Transfer timed out."));
     }, 5 * 60 * 1000);
 
     const onMessage = (event: MessageEvent) => {
@@ -78,7 +78,7 @@ function bridgeCall(payload: Record<string, unknown>): Promise<BridgeResult> {
       if (data?.type !== "convert-transfer-result" || data.id !== id) return;
       cleanup();
       if (!data.ok) {
-        reject(new Error(data.error || "iLovePDF transfer failed."));
+        reject(new Error(data.error || "Transfer failed."));
         return;
       }
       resolve(data);
@@ -99,7 +99,7 @@ function bridgeCall(payload: Record<string, unknown>): Promise<BridgeResult> {
     });
     iframe.addEventListener("error", () => {
       cleanup();
-      reject(new Error("Could not open the iLovePDF transfer bridge."));
+      reject(new Error("Could not open the transfer bridge."));
     });
     document.body.appendChild(iframe);
   });
@@ -134,7 +134,7 @@ async function uploadFile(
   });
   const body = JSON.parse(result.text || "{}") as { server_filename?: string };
   if (!body.server_filename) {
-    throw new Error("iLovePDF upload did not return a file name.");
+    throw new Error("Upload did not return a file name.");
   }
   return body.server_filename;
 }
@@ -148,7 +148,7 @@ async function downloadFile(downloadUrl: string, token: string): Promise<Blob> {
     // COEP / CORS: fall through to the convert-bridge iframe.
   }
   const result = await bridgeCall({ action: "get", url: downloadUrl, headers });
-  if (!result.body) throw new Error("iLovePDF download returned an empty file.");
+  if (!result.body) throw new Error("Download returned an empty file.");
   return new Blob([result.body]);
 }
 
@@ -157,32 +157,28 @@ async function convertViaIlove(
   kind: ConvertKind,
   onProgress?: Progress
 ): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
-  const uploading =
-    kind === "word-to-pdf" ? "Uploading Word file to iLovePDF…" : "Uploading PDF to iLovePDF…";
   const missing =
     kind === "word-to-pdf"
-      ? "iLovePDF did not start a Word to PDF task."
-      : "iLovePDF did not start a PDF to Word task.";
+      ? "Could not start a Word to PDF task."
+      : "Could not start a PDF to Word task.";
   const empty =
-    kind === "word-to-pdf"
-      ? "iLovePDF did not return a PDF."
-      : "iLovePDF did not return a Word file.";
+    kind === "word-to-pdf" ? "Conversion did not return a PDF." : "Conversion did not return a Word file.";
 
-  onProgress?.(8, "Starting iLovePDF…");
+  onProgress?.(8, "Converting…");
   const start = await postJson<StartResponse>(
     iloveApiUrl("start"),
     { filename: file.name, kind },
-    "Could not start iLovePDF conversion"
+    "Could not start conversion"
   );
 
   if (start.engine !== "ilovepdf" || !start.uploadUrl || !start.task || !start.token) {
     throw new Error(start.reason || missing);
   }
 
-  onProgress?.(22, uploading);
+  onProgress?.(22, "Converting…");
   const serverFilename = await uploadFile(start.uploadUrl, file, start.task, start.token);
 
-  onProgress?.(48, "Converting with iLovePDF…");
+  onProgress?.(48, "Converting…");
   const processed = await postJson<ProcessResponse>(
     iloveApiUrl("process"),
     {
@@ -194,7 +190,7 @@ async function convertViaIlove(
       filename: file.name,
       token: start.token,
     },
-    "iLovePDF conversion failed"
+    "Conversion failed"
   );
 
   if (processed.engine !== "ilovepdf" || !processed.downloadUrl) {
@@ -202,9 +198,9 @@ async function convertViaIlove(
   }
   const downloadToken = processed.token || start.token;
 
-  onProgress?.(88, "Downloading…");
+  onProgress?.(88, "Converting…");
   const blob = await downloadFile(processed.downloadUrl, downloadToken);
-  onProgress?.(100, "Done");
+  onProgress?.(100, "Converting…");
   return {
     blob,
     filename: start.filename || outputFilename(file.name, kind),

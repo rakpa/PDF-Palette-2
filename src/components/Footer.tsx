@@ -15,8 +15,8 @@ const Footer = () => {
               <span className="text-xl font-bold text-foreground">PDF Palette</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Free PDF tools that mostly run in your browser. PDF to Word uses
-              iLovePDF. Word to PDF uses CloudConvert — see our{" "}
+              Free PDF tools that mostly run in your browser. Word to PDF uses
+              CloudConvert — see our{" "}
               <Link to="/privacy" className="underline hover:text-foreground transition-colors">
                 Privacy Policy
               </Link>

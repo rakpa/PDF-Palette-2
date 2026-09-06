@@ -112,7 +112,7 @@ export const pdfTools: PDFTool[] = [
   {
     id: "word-to-pdf-new",
     name: "Word to PDF New",
-    description: "Convert Word to PDF with iLovePDF",
+    description: "Convert Word documents to PDF",
     icon: FileText,
     color: "teal",
     category: ["convert-to"],

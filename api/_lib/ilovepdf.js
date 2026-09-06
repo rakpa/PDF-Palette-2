@@ -176,11 +176,11 @@ export async function websiteSessionToken(pagePath = "/pdf_to_word") {
     },
   });
   if (!res.ok) {
-    throw new ILovePdfError("Could not open iLovePDF.", 502);
+    throw new ILovePdfError("Could not start conversion.", 502);
   }
   const cfg = parseIloveConfig(await res.text());
   if (!cfg?.token) {
-    throw new ILovePdfError("iLovePDF did not return a conversion session.", 502);
+    throw new ILovePdfError("Could not start a conversion session.", 502);
   }
   websiteTokens.set(path, cfg.token);
   return cfg.token;
@@ -192,7 +192,7 @@ async function startWithWebsiteSession(tool, pagePath, label) {
   const started = await startTool(tool, token);
   if (started.ok) return { ...started, token, tool };
   throw new ILovePdfError(
-    started.message || `iLovePDF could not start ${label}.`,
+    started.message || `Could not start ${label}.`,
     started.status === 401 || started.status === 403 ? 503 : 502
   );
 }
@@ -265,7 +265,7 @@ export async function processTask({ token, server, task, tool, serverFilename, f
   });
   if (!res.ok) {
     throw new ILovePdfError(
-      `iLovePDF could not convert this file: ${await readError(res)}`,
+      `Could not convert this file: ${await readError(res)}`,
       res.status >= 400 && res.status < 500 ? 422 : 502
     );
   }

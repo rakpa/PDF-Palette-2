@@ -146,7 +146,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to PDF",
-    hint: "Upload a .doc or .docx file. iLovePDF converts it to a PDF that keeps fonts, tables, images and page layout.",
+    hint: "Upload a .doc or .docx file. It is converted to a PDF that keeps fonts, tables, images and page layout.",
   },
   "pdf-to-word": {
     accept: { "application/pdf": [".pdf"] },
@@ -167,7 +167,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Word",
-    hint: "Upload a PDF. iLovePDF converts it to an editable Word (.docx) file with their Solid Documents engine.",
+    hint: "Upload a PDF. It is converted to an editable Word (.docx) file that keeps fonts, tables, images and page layout.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -572,7 +572,9 @@ const ToolPage = () => {
       setResult(res);
       if (res.success) {
         toast.success(res.message);
-        if (res.blob) downloadResult(res); // single-file tools auto-download
+        const waitForDownload =
+          tool.feature === "pdf-to-word-ilove" || tool.feature === "word-to-pdf-ilove";
+        if (res.blob && !waitForDownload) downloadResult(res);
       } else {
         toast.error(res.message);
       }
@@ -734,17 +736,17 @@ const ToolPage = () => {
               <ProgressBar
                 progress={progress}
                 label={
-                  tool.feature === "ocr"
-                    ? convertStatus || "Recognising…"
-                    : tool.feature === "word-to-pdf" ||
-                        tool.feature === "word-to-pdf-ilove" ||
-                        tool.feature === "pdf-to-word" ||
-                        tool.feature === "pdf-to-word-new" ||
-                        tool.feature === "pdf-to-word-ilove"
-                      ? convertStatus || "Converting…"
-                      : tool.feature === "compress"
-                        ? convertStatus || "Compressing…"
-                        : "Processing…"
+                  tool.feature === "pdf-to-word-ilove" || tool.feature === "word-to-pdf-ilove"
+                    ? "Converting…"
+                    : tool.feature === "ocr"
+                      ? convertStatus || "Recognising…"
+                      : tool.feature === "word-to-pdf" ||
+                          tool.feature === "pdf-to-word" ||
+                          tool.feature === "pdf-to-word-new"
+                        ? convertStatus || "Converting…"
+                        : tool.feature === "compress"
+                          ? convertStatus || "Compressing…"
+                          : "Processing…"
                 }
                 indeterminate={
                   (tool.feature === "word-to-pdf" ||
@@ -771,7 +773,21 @@ const ToolPage = () => {
                   <p className="text-sm text-muted-foreground">{result.message}</p>
                 </div>
                 {result.blob && (
-                  <Button size="sm" variant="outline" onClick={() => downloadResult(result)}>
+                  <Button
+                    size={
+                      tool.feature === "pdf-to-word-ilove" ||
+                      tool.feature === "word-to-pdf-ilove"
+                        ? "default"
+                        : "sm"
+                    }
+                    variant={
+                      tool.feature === "pdf-to-word-ilove" ||
+                      tool.feature === "word-to-pdf-ilove"
+                        ? "default"
+                        : "outline"
+                    }
+                    onClick={() => downloadResult(result)}
+                  >
                     <Download className="mr-1.5 h-4 w-4" />
                     Download
                   </Button>
@@ -1166,7 +1182,7 @@ const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: bool
           ? "Converted with CloudConvert. The file is sent for conversion and is not stored by PDF Palette."
           : remote &&
               (feature === "pdf-to-word-ilove" || feature === "word-to-pdf-ilove")
-            ? "Converted with iLovePDF. The file is sent for conversion and is not stored by PDF Palette."
+            ? "The file is sent for conversion and is not stored by PDF Palette."
             : "The page is fetched and rendered on your machine, then deleted immediately after download."}
     </div>
   );

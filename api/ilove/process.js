@@ -26,8 +26,8 @@ export default async function handler(req, res) {
       throw Object.assign(
         new Error(
           kind === "word-to-pdf"
-            ? "iLovePDF finished but did not return a PDF."
-            : "iLovePDF finished but did not return a Word file."
+            ? "Conversion finished but did not return a PDF."
+            : "Conversion finished but did not return a Word file."
         ),
         { statusCode: 502 }
       );
