@@ -1,5 +1,3 @@
-import { convertPdfToWordFidelity } from "./pdf-to-word-new/convert";
-
 type Progress = (progress: number, message?: string) => void;
 
 type StartResponse = {
@@ -161,9 +159,7 @@ export async function convertPdfToWordIlove(
   );
 
   if (start.engine !== "ilovepdf" || !start.uploadUrl || !start.task || !start.token) {
-    onProgress?.(20, "iLovePDF has no PDF to Word API tool — rebuilding in your browser…");
-    const local = await convertPdfToWordFidelity(file, onProgress);
-    return { ...local, engine: "browser" };
+    throw new Error(start.reason || "iLovePDF did not start a PDF to Word task.");
   }
 
   onProgress?.(22, "Uploading PDF to iLovePDF…");
@@ -178,18 +174,18 @@ export async function convertPdfToWordIlove(
       tool: start.tool,
       serverFilename,
       filename: file.name,
+      token: start.token,
     },
     "iLovePDF conversion failed"
   );
 
-  if (processed.engine !== "ilovepdf" || !processed.downloadUrl || !processed.token) {
-    onProgress?.(55, "iLovePDF did not return Word — rebuilding in your browser…");
-    const local = await convertPdfToWordFidelity(file, onProgress);
-    return { ...local, engine: "browser" };
+  if (processed.engine !== "ilovepdf" || !processed.downloadUrl) {
+    throw new Error(processed.reason || "iLovePDF did not return a Word file.");
   }
+  const downloadToken = processed.token || start.token;
 
   onProgress?.(88, "Downloading Word file…");
-  const blob = await downloadFile(processed.downloadUrl, processed.token);
+  const blob = await downloadFile(processed.downloadUrl, downloadToken);
   onProgress?.(100, "Done");
   return {
     blob,

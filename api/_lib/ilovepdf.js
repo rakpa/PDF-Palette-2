@@ -7,14 +7,16 @@
 //   POST https://{server}/v1/process                { task, tool, files }
 //   GET  https://{server}/v1/download/{task}
 //
-// Their public REST catalogue has Office → PDF (`officepdf`) but not
-// PDF → Word. startPdfToWord() probes ILOVEPDF_TOOL plus a short list;
-// when none exist the card falls back to the in-browser rebuild.
+// The developer catalogue has Office → PDF (`officepdf`) but not PDF → Word.
+// The website tool is `pdfoffice` + convert_to=docx (Solid Documents workers
+// api*o.ilovepdf.com). Developer JWTs 404 that start route; the public
+// session token on /pdf_to_word can start it. We try the project keys first,
+// then that session.
 
 import { createHmac } from "node:crypto";
 
 const API_HOST = "api.ilovepdf.com";
-const DEFAULT_TOOLS = ["pdfdocx", "pdfword", "pdftoword", "pdf2word", "pdf_to_word"];
+const PDF_WORD_TOOL = "pdfoffice";
 
 export class ILovePdfError extends Error {
   constructor(message, statusCode) {
@@ -138,41 +140,77 @@ export async function startTool(tool, token) {
   return { ok: true, server: body.server, task: body.task, remaining: body.remaining_credits };
 }
 
-function toolList() {
-  const extra = strip(process.env.ILOVEPDF_TOOL);
-  const names = extra ? [extra, ...DEFAULT_TOOLS] : DEFAULT_TOOLS;
-  return [...new Set(names.map((n) => n.trim()).filter(Boolean))];
+let cachedWebsiteToken = "";
+
+function parseIloveConfig(html) {
+  const marker = "var ilovepdfConfig = ";
+  const idx = html.indexOf(marker);
+  if (idx < 0) return null;
+  const start = html.indexOf("{", idx);
+  let depth = 0;
+  for (let i = start; i < html.length; i++) {
+    const ch = html[i];
+    if (ch === "{") depth += 1;
+    else if (ch === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        try {
+          return JSON.parse(html.slice(start, i + 1));
+        } catch {
+          return null;
+        }
+      }
+    }
+  }
+  return null;
 }
 
-let cachedPdfWord = undefined;
+export async function websiteSessionToken() {
+  if (cachedWebsiteToken) return cachedWebsiteToken;
+  const res = await fetch("https://www.ilovepdf.com/pdf_to_word", {
+    headers: {
+      Accept: "text/html",
+      "User-Agent": "Mozilla/5.0 (compatible; PDFPalette/1.0)",
+    },
+  });
+  if (!res.ok) {
+    throw new ILovePdfError("Could not open iLovePDF PDF to Word.", 502);
+  }
+  const cfg = parseIloveConfig(await res.text());
+  if (!cfg?.token) {
+    throw new ILovePdfError("iLovePDF did not return a conversion session.", 502);
+  }
+  cachedWebsiteToken = cfg.token;
+  return cachedWebsiteToken;
+}
 
-export async function startPdfToWord(token) {
-  if (cachedPdfWord && cachedPdfWord.ok === false) return cachedPdfWord;
-  if (cachedPdfWord && cachedPdfWord.ok && cachedPdfWord.tool) {
-    const again = await startTool(cachedPdfWord.tool, token);
-    if (again.ok) return { ...again, tool: cachedPdfWord.tool };
-    cachedPdfWord = undefined;
+function pdfWordTool() {
+  return strip(process.env.ILOVEPDF_TOOL) || PDF_WORD_TOOL;
+}
+
+/** Start PDF → Word. Returns { token, tool, server, task }. */
+export async function startPdfToWord() {
+  const tool = pdfWordTool();
+  const attempts = [];
+
+  if (configured()) {
+    try {
+      const token = await authToken();
+      const started = await startTool(tool, token);
+      if (started.ok) return { ...started, token, tool };
+      attempts.push(`project:${started.status}`);
+    } catch (error) {
+      attempts.push(`project:${error instanceof Error ? error.message : "fail"}`);
+    }
   }
 
-  const tried = [];
-  for (const tool of toolList()) {
-    const result = await startTool(tool, token);
-    if (result.ok) {
-      cachedPdfWord = { ok: true, tool };
-      return { ...result, tool };
-    }
-    tried.push(`${tool}:${result.status}`);
-    // 401/403 on a named tool means it exists but this project cannot use it.
-    if (result.status === 401 || result.status === 403) {
-      cachedPdfWord = { ok: false, reason: result.message };
-      return cachedPdfWord;
-    }
-  }
-  cachedPdfWord = {
-    ok: false,
-    reason: `iLovePDF has no PDF to Word REST tool (${tried.join(", ")}).`,
-  };
-  return cachedPdfWord;
+  const token = await websiteSessionToken();
+  const started = await startTool(tool, token);
+  if (started.ok) return { ...started, token, tool };
+  throw new ILovePdfError(
+    started.message || `iLovePDF could not start PDF to Word (${attempts.join(", ")}).`,
+    started.status === 401 || started.status === 403 ? 503 : 502
+  );
 }
 
 export function assertWorkerHost(server) {
@@ -192,6 +230,14 @@ export function assertTaskId(task) {
     throw new ILovePdfError("Invalid iLovePDF task id.", 400);
   }
   return id;
+}
+
+export function assertSessionToken(value) {
+  const token = String(value || "").trim();
+  if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token)) {
+    throw new ILovePdfError("Invalid iLovePDF session.", 400);
+  }
+  return token;
 }
 
 export function assertServerFilename(name) {
@@ -217,6 +263,8 @@ export async function processTask({ token, server, task, tool, serverFilename, f
     body: JSON.stringify({
       task: taskId,
       tool,
+      convert_to: "docx",
+      output_filename: "{filename}",
       files: [{ server_filename: uploaded, filename: original }],
     }),
   });

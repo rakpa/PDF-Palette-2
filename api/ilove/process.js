@@ -1,11 +1,11 @@
-import { authToken, looksLikeWord, processTask } from "../_lib/ilovepdf.js";
+import { assertSessionToken, looksLikeWord, processTask } from "../_lib/ilovepdf.js";
 import { guardMethod, readJson, sendError, sendJson } from "../_lib/http.js";
 
 export default async function handler(req, res) {
   if (guardMethod(req, res, "POST")) return;
   try {
     const body = await readJson(req);
-    const token = await authToken();
+    const token = assertSessionToken(body.token);
     const processed = await processTask({
       token,
       server: body.server,
@@ -15,11 +15,9 @@ export default async function handler(req, res) {
       filename: body.filename,
     });
     if (!looksLikeWord(processed)) {
-      sendJson(res, 200, {
-        engine: "browser",
-        reason: "iLovePDF finished but did not return a Word file.",
+      throw Object.assign(new Error("iLovePDF finished but did not return a Word file."), {
+        statusCode: 502,
       });
-      return;
     }
     sendJson(res, 200, {
       engine: "ilovepdf",

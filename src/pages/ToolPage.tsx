@@ -156,7 +156,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Word",
-    hint: "Upload a PDF. iLovePDF converts it when their API has a PDF to Word tool; otherwise the page is rebuilt as Word in your browser.",
+    hint: "Upload a PDF. iLovePDF converts it to an editable Word (.docx) file with their Solid Documents engine.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -1145,7 +1145,7 @@ const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: bool
         : remote && (feature === "word-to-pdf" || feature === "pdf-to-word")
           ? "Converted with CloudConvert. The file is sent for conversion and is not stored by PDF Palette."
           : remote && feature === "pdf-to-word-ilove"
-            ? "Converted with iLovePDF when their API has a PDF to Word tool; otherwise rebuilt in your browser. PDF Palette does not store the file."
+            ? "Converted with iLovePDF. The file is sent for conversion and is not stored by PDF Palette."
             : "The page is fetched and rendered on your machine, then deleted immediately after download."}
     </div>
   );
