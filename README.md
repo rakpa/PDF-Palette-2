@@ -15,6 +15,8 @@ Tools that work fully client-side (powered by [`pdf-lib`](https://pdf-lib.js.org
 - **JPG to PDF** – turn JPG/PNG images into a PDF
 - **PDF to Word** – convert a PDF to an editable `.docx` with CloudConvert
   (`api/convert`, with an in-browser fallback in `src/lib/pdf-to-word/`)
+- **PDF to Word iLove** – same conversion via iLovePDF project keys
+  (`api/ilove`; rebuilds in the browser if their API has no PDF→Word tool)
 - **Word to PDF** – convert `.doc` / `.docx` to PDF with CloudConvert
 - **Edit PDF** – add text, images, shapes, freehand ink, highlights and
   whiteout; rotate, duplicate, reorder and delete pages

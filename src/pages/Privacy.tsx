@@ -5,14 +5,15 @@ const Privacy = () => (
   <LegalPage
     title="Privacy Policy"
     description="PDF Palette does not collect customer accounts or keep the files you process. This page explains what does and does not happen when you use the site."
-        updated="5 September 2026"
+        updated="6 September 2026"
   >
     <section>
       <h2>The short version</h2>
       <p>
         We do not ask you to sign up. We do not take your documents as customer data. Most tools process
         files in your browser. PDF to Word and Word to PDF send the file to CloudConvert for
-        conversion only — PDF Palette does not keep a copy. We do not sell personal information, because
+        conversion only. PDF to Word iLove sends the file to iLovePDF when their API can convert
+        it. PDF Palette does not keep a copy. We do not sell personal information, because
         we do not run a customer database of people or files.
       </p>
     </section>
@@ -53,6 +54,13 @@ const Privacy = () => (
         so it can convert it. We use that path only to return the converted file. PDF Palette
         does not keep the upload or the result after the download is ready. CloudConvert processes the file under
         CloudConvert’s own terms.
+      </p>
+      <p>
+        <strong>PDF to Word iLove</strong> uses iLovePDF project keys on the server. When iLovePDF’s
+        REST API accepts a PDF to Word task, the file is uploaded to iLovePDF for that conversion
+        only. Their public API currently lists Office → PDF, not PDF → Word; if the tool is missing
+        the file is rebuilt in your browser and is not uploaded. iLovePDF processes uploads under
+        iLovePDF’s own terms.
       </p>
       <p>
         If you use HTML to PDF and paste a <strong>web page URL</strong>, that URL is sent to a conversion
@@ -97,6 +105,7 @@ const Privacy = () => (
       <p>
         Script libraries (PDF, Office, OCR, and similar) load as part of the web app so processing can happen
         in your browser. PDF to Word and Word to PDF share the file with CloudConvert for conversion.
+        PDF to Word iLove shares the file with iLovePDF when that API can convert it.
         The HTML to PDF URL path uses the conversion service only to fetch and render that page.
       </p>
     </section>

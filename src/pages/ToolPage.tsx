@@ -29,6 +29,7 @@ import {
   pdfToImageFiles,
   pdfToPpt,
   pdfToWord,
+  pdfToWordIlove,
   pdfToWordNew,
   pptToPDF,
   protectPDFWithPassword,
@@ -149,6 +150,13 @@ const featureConfig: Record<
     minFiles: 1,
     cta: "Rebuild as Word",
     hint: "Upload a PDF. Every page is rebuilt in Word at its own size, with the text, tables, pictures, rules and colours kept where the PDF put them. Nothing is uploaded.",
+  },
+  "pdf-to-word-ilove": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to Word",
+    hint: "Upload a PDF. iLovePDF converts it when their API has a PDF to Word tool; otherwise the page is rebuilt as Word in your browser.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -390,6 +398,7 @@ const ToolPage = () => {
     tool.feature === "html-to-pdf" && files.length === 0 && htmlUrl.trim().length > 0;
   const usesCloudConvert =
     tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word";
+  const usesIlovePdf = tool.feature === "pdf-to-word-ilove";
   const needsConversionService = fetchesUrl;
 
   const canProcess =
@@ -485,6 +494,12 @@ const ToolPage = () => {
           break;
         case "pdf-to-word-new":
           res = await pdfToWordNew(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "pdf-to-word-ilove":
+          res = await pdfToWordIlove(inputFiles[0], (p, message) => {
             onProgress(p);
             if (message) setConvertStatus(message);
           });
@@ -705,7 +720,8 @@ const ToolPage = () => {
                     ? convertStatus || "Recognising…"
                     : tool.feature === "word-to-pdf" ||
                         tool.feature === "pdf-to-word" ||
-                        tool.feature === "pdf-to-word-new"
+                        tool.feature === "pdf-to-word-new" ||
+                        tool.feature === "pdf-to-word-ilove"
                       ? convertStatus || "Converting…"
                       : tool.feature === "compress"
                         ? convertStatus || "Compressing…"
@@ -714,6 +730,7 @@ const ToolPage = () => {
                 indeterminate={
                   (tool.feature === "word-to-pdf" ||
                     tool.feature === "pdf-to-word" ||
+                    tool.feature === "pdf-to-word-ilove" ||
                     tool.feature === "ocr") &&
                   progress === 0 &&
                   !convertStatus
@@ -786,7 +803,10 @@ const ToolPage = () => {
               )}
             </div>
 
-            <PrivacyNote feature={tool.feature} remote={fetchesUrl || usesCloudConvert} />
+            <PrivacyNote
+              feature={tool.feature}
+              remote={fetchesUrl || usesCloudConvert || usesIlovePdf}
+            />
           </div>
         )}
       </div>
@@ -1124,7 +1144,9 @@ const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: bool
         ? "Processed in your browser — your file never leaves this device."
         : remote && (feature === "word-to-pdf" || feature === "pdf-to-word")
           ? "Converted with CloudConvert. The file is sent for conversion and is not stored by PDF Palette."
-          : "The page is fetched and rendered on your machine, then deleted immediately after download."}
+          : remote && feature === "pdf-to-word-ilove"
+            ? "Converted with iLovePDF when their API has a PDF to Word tool; otherwise rebuilt in your browser. PDF Palette does not store the file."
+            : "The page is fetched and rendered on your machine, then deleted immediately after download."}
     </div>
   );
 };

@@ -11,6 +11,7 @@ import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { convertPdfToWordFidelity } from "./pdf-to-word-new/convert";
+import { convertPdfToWordViaIlove } from "./pdf-to-word-ilove-client";
 import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
 import { convertPdfToPptBrowser } from "./pdf-to-ppt-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
@@ -504,6 +505,31 @@ export async function pdfToWord(
     return {
       success: false,
       message: `Error converting PDF: ${detail}`,
+    };
+  }
+}
+
+/** PDF to Word via iLovePDF when their API has the tool, otherwise in-browser. */
+export async function pdfToWordIlove(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await convertPdfToWordViaIlove(file, onProgress);
+    return {
+      success: true,
+      message: "PDF converted to Word.",
+      blob,
+      filename,
+    };
+  } catch (error) {
+    if (error instanceof PdfToWordError) {
+      return { success: false, message: error.message };
+    }
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Could not convert this PDF to Word.",
     };
   }
 }

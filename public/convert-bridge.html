@@ -17,14 +17,19 @@
           form.append(key, String(parameters[key]));
         }
         form.append("file", data.body);
-        const res = await fetch(data.url, { method: "POST", body: form });
-        if (!res.ok) throw new Error("CloudConvert upload failed (HTTP " + res.status + ")");
-        reply({ ok: true });
+        const res = await fetch(data.url, {
+          method: "POST",
+          headers: data.headers || {},
+          body: form,
+        });
+        const text = await res.text();
+        if (!res.ok) throw new Error("Upload failed (HTTP " + res.status + ")");
+        reply({ ok: true, text });
         return;
       }
       if (data.action === "get") {
-        const res = await fetch(data.url);
-        if (!res.ok) throw new Error("CloudConvert download failed (HTTP " + res.status + ")");
+        const res = await fetch(data.url, { headers: data.headers || {} });
+        if (!res.ok) throw new Error("Download failed (HTTP " + res.status + ")");
         const body = await res.arrayBuffer();
         event.source.postMessage(
           { type: "convert-transfer-result", id: data.id, ok: true, body },

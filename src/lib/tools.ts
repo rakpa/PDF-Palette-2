@@ -46,6 +46,7 @@ export type ToolFeature =
   | "word-to-pdf"
   | "pdf-to-word"
   | "pdf-to-word-new"
+  | "pdf-to-word-ilove"
   | "unlock-pdf"
   | "protect-pdf"
   | "html-to-pdf"
@@ -107,6 +108,17 @@ export const pdfTools: PDFTool[] = [
     isNew: true,
     route: "/pdf-to-word-new",
     feature: "pdf-to-word-new",
+  },
+  {
+    id: "pdf-to-word-ilove",
+    name: "PDF to Word iLove",
+    description: "Convert PDF to Word with iLovePDF",
+    icon: FileText,
+    color: "pink",
+    category: ["convert-from"],
+    isNew: true,
+    route: "/pdf-to-word-ilove",
+    feature: "pdf-to-word-ilove",
   },
   {
     id: "word-to-pdf",

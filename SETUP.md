@@ -51,7 +51,14 @@ local `.env.local`:
 
 ```
 CLOUDCONVERT_API_KEY=<your CloudConvert API key>
+ILOVEPDF_PUBLIC_KEY=<your iLovePDF public key>
+ILOVEPDF_SECRET_KEY=<your iLovePDF secret key>
 ```
+
+**PDF to Word iLove** (`/pdf-to-word-ilove`) uses the iLovePDF keys. Their
+public REST API does not currently include a PDF → Word tool; the card then
+rebuilds the `.docx` in the browser. Optional `ILOVEPDF_TOOL` overrides the
+start-tool name if your project has one enabled.
 
 Check it arrived with `curl https://<your-app>/api/convert/health` — it reports
 `"checks": { "cloudconvert": true }` when the key is readable. That only means

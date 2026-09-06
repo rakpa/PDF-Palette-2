@@ -12,6 +12,9 @@
   "functions": {
     "api/convert/*.js": {
       "maxDuration": 60
+    },
+    "api/ilove/*.js": {
+      "maxDuration": 60
     }
   },
   "headers": [

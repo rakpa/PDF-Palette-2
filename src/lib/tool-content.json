@@ -61,6 +61,35 @@
       }
     ]
   },
+  "/pdf-to-word-ilove": {
+    "name": "PDF to Word iLove",
+    "title": "PDF to Word iLove — iLovePDF | PDF Palette",
+    "description": "Convert PDF to an editable Word (.docx) document with iLovePDF. Falls back to an in-browser rebuild if their API has no PDF to Word tool.",
+    "intro": "Turn a PDF into an editable Word document using your iLovePDF project keys. The file is sent to iLovePDF when their REST API can convert PDF to Word. That catalogue currently includes Office → PDF, not PDF → Word — if the tool is missing, the page is rebuilt as a .docx in your browser instead. PDF Palette does not keep a copy.",
+    "steps": [
+      "Drop your PDF onto the upload area, or click to pick a file.",
+      "Wait while iLovePDF converts the document, or while the browser rebuilds it if that API tool is unavailable.",
+      "Download the .docx file and open it in Word, Google Docs or LibreOffice."
+    ],
+    "faqs": [
+      {
+        "q": "Is this the same as PDF to Word?",
+        "a": "No. PDF to Word uses CloudConvert. This card uses the iLovePDF REST API with the project keys set on the server. If iLovePDF has no PDF to Word tool for those keys, the file is rebuilt in your browser instead."
+      },
+      {
+        "q": "Is my file uploaded anywhere?",
+        "a": "Yes, when iLovePDF accepts a PDF to Word task. The file goes to iLovePDF for that conversion only. PDF Palette does not keep a copy. If their API has no such tool, nothing is uploaded."
+      },
+      {
+        "q": "Does it work on scanned PDFs?",
+        "a": "A scanned page is an image, so there is no text to extract. Run it through the OCR PDF tool first, then convert it to Word."
+      },
+      {
+        "q": "Where do I put the iLovePDF keys?",
+        "a": "Set ILOVEPDF_PUBLIC_KEY and ILOVEPDF_SECRET_KEY on the server (or in .env locally). Never prefix them with VITE_ — that would ship the secret in the browser bundle."
+      }
+    ]
+  },
   "/word-to-pdf": {
     "name": "Word to PDF",
     "title": "Word to PDF Converter — CloudConvert | PDF Palette",
