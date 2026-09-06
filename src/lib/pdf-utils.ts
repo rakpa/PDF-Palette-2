@@ -10,6 +10,7 @@ import { convertWordToPdfBrowser, WordToPdfError } from "./word-to-pdf-browser";
 import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
+import { convertPdfToWordFidelity } from "./pdf-to-word-new/convert";
 import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
 import { convertPdfToPptBrowser } from "./pdf-to-ppt-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
@@ -503,6 +504,34 @@ export async function pdfToWord(
     return {
       success: false,
       message: `Error converting PDF: ${detail}`,
+    };
+  }
+}
+
+/**
+ * PDF to Word, reproduced rather than reflowed. Runs entirely in the tab: no
+ * upload, and every block keeps the coordinates it was read at.
+ */
+export async function pdfToWordNew(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await convertPdfToWordFidelity(file, onProgress);
+    return {
+      success: true,
+      message: "PDF rebuilt as a Word document.",
+      blob,
+      filename,
+    };
+  } catch (error) {
+    if (error instanceof PdfToWordError) {
+      return { success: false, message: error.message };
+    }
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Could not rebuild this PDF as a Word document.",
     };
   }
 }
