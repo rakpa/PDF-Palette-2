@@ -80,7 +80,7 @@ export function makeJwt() {
 }
 
 export async function authToken() {
-  const local = makeJwt();
+  const local = secretKey() ? makeJwt() : null;
   if (local) return local;
   const res = await fetch(`https://${API_HOST}/v1/auth`, {
     method: "POST",
@@ -141,7 +141,7 @@ export async function startTool(tool, token) {
   return { ok: true, server: body.server, task: body.task, remaining: body.remaining_credits };
 }
 
-let cachedWebsiteToken = "";
+const websiteTokens = new Map();
 
 function parseIloveConfig(html) {
   const marker = "var ilovepdfConfig = ";
@@ -166,52 +166,27 @@ function parseIloveConfig(html) {
   return null;
 }
 
-export async function websiteSessionToken() {
-  if (cachedWebsiteToken) return cachedWebsiteToken;
-  const res = await fetch("https://www.ilovepdf.com/pdf_to_word", {
+export async function websiteSessionToken(pagePath = "/pdf_to_word") {
+  const path = pagePath.startsWith("/") ? pagePath : `/${pagePath}`;
+  if (websiteTokens.has(path)) return websiteTokens.get(path);
+  const res = await fetch(`https://www.ilovepdf.com${path}`, {
     headers: {
       Accept: "text/html",
       "User-Agent": "Mozilla/5.0 (compatible; PDFPalette/1.0)",
     },
   });
   if (!res.ok) {
-    throw new ILovePdfError("Could not open iLovePDF PDF to Word.", 502);
+    throw new ILovePdfError("Could not open iLovePDF.", 502);
   }
   const cfg = parseIloveConfig(await res.text());
   if (!cfg?.token) {
     throw new ILovePdfError("iLovePDF did not return a conversion session.", 502);
   }
-  cachedWebsiteToken = cfg.token;
-  return cachedWebsiteToken;
+  websiteTokens.set(path, cfg.token);
+  return cfg.token;
 }
 
-function pdfWordTool() {
-  return strip(process.env.ILOVEPDF_TOOL) || PDF_WORD_TOOL;
-}
-
-/** Start Word → PDF via the developer `officepdf` tool. */
-export async function startWordToPdf() {
-  const tool = strip(process.env.ILOVEPDF_WORD_TOOL) || WORD_PDF_TOOL;
-  if (!configured()) {
-    throw new ILovePdfError(
-      "iLovePDF is not configured. Set ILOVEPDF_PUBLIC_KEY on the deployment.",
-      503
-    );
-  }
-  const token = await authToken();
-  const started = await startTool(tool, token);
-  if (!started.ok) {
-    throw new ILovePdfError(
-      started.message || "iLovePDF could not start Word to PDF.",
-      started.status === 401 || started.status === 403 ? 503 : 502
-    );
-  }
-  return { ...started, token, tool };
-}
-
-/** Start PDF → Word. Returns { token, tool, server, task }. */
-export async function startPdfToWord() {
-  const tool = pdfWordTool();
+async function startWithFallback(tool, pagePath, label) {
   const attempts = [];
 
   if (configured()) {
@@ -219,19 +194,29 @@ export async function startPdfToWord() {
       const token = await authToken();
       const started = await startTool(tool, token);
       if (started.ok) return { ...started, token, tool };
-      attempts.push(`project:${started.status}`);
+      attempts.push(`project:${started.status}:${started.message || ""}`);
     } catch (error) {
       attempts.push(`project:${error instanceof Error ? error.message : "fail"}`);
     }
   }
 
-  const token = await websiteSessionToken();
+  const token = await websiteSessionToken(pagePath);
   const started = await startTool(tool, token);
   if (started.ok) return { ...started, token, tool };
   throw new ILovePdfError(
-    started.message || `iLovePDF could not start PDF to Word (${attempts.join(", ")}).`,
+    started.message || `iLovePDF could not start ${label} (${attempts.join(", ") || "no session"}).`,
     started.status === 401 || started.status === 403 ? 503 : 502
   );
+}
+
+export async function startWordToPdf() {
+  const tool = strip(process.env.ILOVEPDF_WORD_TOOL) || WORD_PDF_TOOL;
+  return startWithFallback(tool, "/word_to_pdf", "Word to PDF");
+}
+
+export async function startPdfToWord() {
+  const tool = strip(process.env.ILOVEPDF_TOOL) || PDF_WORD_TOOL;
+  return startWithFallback(tool, "/pdf_to_word", "PDF to Word");
 }
 
 export function assertWorkerHost(server) {
