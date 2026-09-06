@@ -1175,6 +1175,18 @@ class RunIndex {
  * otherwise the split falls back to the operators' x positions, which still
  * separates a colour or underline change at roughly the right character.
  */
+/**
+ * pdf.js turns a tracked display heading into "C o n t r i b u t o r s".
+ * Those spaces are not in the PDF; collapsing them on large titles keeps
+ * "Contributors" and "Preface" as one word.
+ */
+function collapseTrackedHeading(text: string, fontSize: number): string {
+  if (fontSize < 14 || text.length < 7) return text;
+  const trimmed = text.trim();
+  if (!/^(?:\S )+\S$/.test(trimmed)) return text;
+  return text.replace(/ (?=\S)/g, "");
+}
+
 function splitItemRuns(
   text: string,
   x: number,
@@ -1553,7 +1565,10 @@ export async function extractPage(
   const spans: PdfSpan[] = [];
   for (const raw of content.items) {
     if (!isTextItem(raw) || !raw.str) continue;
-    const text = raw.str;
+    const text = collapseTrackedHeading(raw.str, Math.hypot(
+      (raw.transform?.[2] ?? 0),
+      (raw.transform?.[3] ?? 0)
+    ) || raw.height || 0);
     if (!text) continue;
 
     const m = mul(viewportTransform, raw.transform.slice(0, 6) as Matrix);
