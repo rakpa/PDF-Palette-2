@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const About = () => (
   <LegalPage
     title="About Us"
-    description="PDF Palette is a set of free PDF tools that run in your browser. Convert, merge, split, compress, OCR, and edit PDFs without creating an account."
+    description="PDF Palette is a set of free PDF tools. Most run in your browser. We do not keep the files you process."
   >
     <section>
       <h2>What we build</h2>
@@ -22,15 +22,15 @@ const About = () => (
     <section>
       <h2>How the tools work</h2>
       <p>
-        The site is a web application. After it loads, PDF, Word, Excel, PowerPoint, and image conversions run
-        locally in your tab using JavaScript libraries. That design is intentional: your files do not need to
-        sit on our servers for the tools to function.
+        The site is a web application. After it loads, most PDF, Office, and image tools run locally in your
+        tab using JavaScript libraries. That design is intentional: your files do not need to sit on our
+        servers for those tools to function.
       </p>
       <p>
-        One exception is documented on the HTML to PDF tool: if you convert a <em>web page URL</em>, the address
-        has to be fetched by a conversion service because a browser tab cannot load arbitrary third-party pages
-        on your behalf. Uploading an HTML file still stays in the browser. See our{" "}
-        <Link to="/privacy">Privacy Policy</Link> for the details.
+        A few tools send a file (or a page URL) to a conversion service so the work can finish, then return
+        the result for download. PDF Palette does not keep the upload or the result. Those exceptions —
+        PDF to Word, Word to PDF, and HTML to PDF from a URL — are described in our{" "}
+        <Link to="/privacy">Privacy Policy</Link>.
       </p>
     </section>
     <section>

@@ -17,9 +17,11 @@ const Terms = () => (
     <section>
       <h2>The service</h2>
       <p>
-        We provide tools such as convert, merge, split, compress, OCR, and related utilities. Except as
-        described in the <Link to="/privacy">Privacy Policy</Link> (HTML to PDF from a URL), processing happens
-        on your device. We do not offer document storage, user accounts, or a hosted filing system.
+        We provide tools such as convert, merge, split, compress, OCR, and related utilities. Most processing
+        happens on your device. As described in the <Link to="/privacy">Privacy Policy</Link>, a few tools
+        (PDF to Word, Word to PDF, and HTML to PDF from a URL) send a file or page address for conversion
+        only — PDF Palette does not store it. We do not offer document storage, user accounts, or a hosted
+        filing system.
       </p>
       <p>
         Output quality depends on the input file. Conversions, OCR, and layout reconstruction are best-effort.

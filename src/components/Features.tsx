@@ -13,7 +13,7 @@ const features = [
     icon: Zap,
     title: "Lightning fast",
     description:
-      "No uploads, no waiting in queues. Results are ready the moment processing finishes.",
+      "No waiting in queues. Results are ready the moment processing finishes.",
     color: "text-tool-yellow bg-tool-yellow/10",
   },
   {

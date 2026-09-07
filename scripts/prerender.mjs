@@ -23,9 +23,9 @@ const toolContent = JSON.parse(
 );
 
 const SITE_NAME = "PDF Palette";
-const DEFAULT_TITLE = "PDF Palette — 27 Free PDF Tools That Never Upload Your File";
+const DEFAULT_TITLE = "PDF Palette — 27 Free PDF Tools That Don’t Keep Your Files";
 const DEFAULT_DESCRIPTION =
-  "Merge, split, compress, convert, sign, OCR and edit PDFs free. Every tool runs inside your browser, so your documents are never uploaded to a server.";
+  "Merge, split, compress, convert, sign, OCR and edit PDFs free. Most tools run in your browser. A few send a file for conversion only — PDF Palette does not store it.";
 
 /** Production origin, no trailing slash. Vercel supplies the second form. */
 const siteUrl = (
