@@ -22,6 +22,7 @@ import {
   compressPDF,
   downloadResult,
   excelToPDF,
+  flattenPDF,
   htmlToPDF,
   imagesToPDF,
   mergePDFs,
@@ -34,6 +35,7 @@ import {
   pptToPDF,
   protectPDFWithPassword,
   rotatePDF,
+  txtToPDF,
   unlockPDF,
   wordToPDF,
   wordToPdfIlove,
@@ -221,7 +223,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to images",
-    hint: "Every page becomes an image. More than one page comes back as a ZIP.",
+    hint: "Every page becomes a JPG or PNG. More than one page comes back as a ZIP.",
   },
   "html-to-pdf": {
     accept: { "text/html": [".html", ".htm"] },
@@ -229,6 +231,20 @@ const featureConfig: Record<
     minFiles: 0,
     cta: "Convert to PDF",
     hint: "Provide an HTML file or a URL.",
+  },
+  "flatten-pdf": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Flatten PDF",
+    hint: "Make form fields and pages uneditable. Text becomes part of the page image.",
+  },
+  "txt-to-pdf": {
+    accept: { "text/plain": [".txt", ".text"], "text/markdown": [".md"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to PDF",
+    hint: "Upload a .txt file. It is laid out as a simple multi-page PDF.",
   },
   ocr: {
     accept: { "application/pdf": [".pdf"] },
@@ -535,6 +551,18 @@ const ToolPage = () => {
           break;
         case "ocr":
           res = await ocrPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "flatten-pdf":
+          res = await flattenPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "txt-to-pdf":
+          res = await txtToPDF(inputFiles[0], (p, message) => {
             onProgress(p);
             if (message) setConvertStatus(message);
           });

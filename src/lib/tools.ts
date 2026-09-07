@@ -22,6 +22,8 @@ import {
   EyeOff,
   Scale,
   ScanText,
+  Layers,
+  FileType,
   LucideIcon,
 } from "lucide-react";
 
@@ -65,7 +67,9 @@ export type ToolFeature =
   | "fill-forms"
   | "redact"
   | "compare"
-  | "ocr";
+  | "ocr"
+  | "flatten-pdf"
+  | "txt-to-pdf";
 
 export interface PDFTool {
   id: string;
@@ -144,8 +148,8 @@ export const pdfTools: PDFTool[] = [
   },
   {
     id: "pdf-to-jpg",
-    name: "PDF to JPG",
-    description: "Convert PDF pages to high-quality images",
+    name: "PDF to JPG/PNG",
+    description: "Convert PDF pages to JPG or PNG images",
     icon: Image,
     color: "yellow",
     category: ["convert-from"],
@@ -155,8 +159,8 @@ export const pdfTools: PDFTool[] = [
   },
   {
     id: "jpg-to-pdf",
-    name: "JPG to PDF",
-    description: "Convert images to PDF documents",
+    name: "JPG/PNG to PDF",
+    description: "Convert JPG or PNG images to a PDF",
     icon: Image,
     color: "yellow",
     category: ["convert-to"],
@@ -367,6 +371,28 @@ export const pdfTools: PDFTool[] = [
     isNew: true,
     route: "/compare-pdf",
     feature: "compare",
+  },
+  {
+    id: "flatten",
+    name: "Flatten PDF",
+    description: "Make forms and pages uneditable",
+    icon: Layers,
+    color: "purple",
+    category: ["security", "edit"],
+    isNew: true,
+    route: "/flatten-pdf",
+    feature: "flatten-pdf",
+  },
+  {
+    id: "txt-to-pdf",
+    name: "TXT to PDF",
+    description: "Convert a plain text file to PDF",
+    icon: FileType,
+    color: "blue",
+    category: ["convert-to"],
+    isNew: true,
+    route: "/txt-to-pdf",
+    feature: "txt-to-pdf",
   },
 ];
 

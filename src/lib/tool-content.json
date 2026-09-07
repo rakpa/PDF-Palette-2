@@ -145,8 +145,8 @@
     ]
   },
   "/pdf-to-jpg": {
-    "name": "PDF to JPG",
-    "title": "PDF to JPG — Convert PDF Pages to Images | PDF Palette",
+    "name": "PDF to JPG/PNG",
+    "title": "PDF to JPG/PNG — Convert PDF Pages to Images | PDF Palette",
     "description": "Convert every page of a PDF into a JPG or PNG image at up to 300 dpi. Free, no sign-up, and rendered entirely in your browser.",
     "intro": "Turn PDF pages into images you can drop into a slide, a post or a document. Choose JPG for smaller files or PNG for lossless edges, and pick a resolution from screen quality up to 300 dpi for print. Each page becomes one image file.",
     "steps": [
@@ -174,8 +174,8 @@
     ]
   },
   "/jpg-to-pdf": {
-    "name": "JPG to PDF",
-    "title": "JPG to PDF — Convert Images to PDF Free | PDF Palette",
+    "name": "JPG/PNG to PDF",
+    "title": "JPG/PNG to PDF — Convert Images to PDF Free | PDF Palette",
     "description": "Turn JPG and PNG images into a single PDF document. Add up to 30 images, set the order, and download — all in your browser.",
     "intro": "Combine photos or scans into one PDF. Add up to 30 JPG or PNG images and each becomes a page, in the order you arrange them. Useful for turning phone photos of a document, receipts or ID scans into something you can attach or print.",
     "steps": [
@@ -779,6 +779,64 @@
       {
         "q": "Does it work on scanned documents?",
         "a": "There must be text to compare, so run both files through OCR PDF first."
+      }
+    ]
+  },
+  "/flatten-pdf": {
+    "name": "Flatten PDF",
+    "title": "Flatten PDF — Make PDF Forms Uneditable | PDF Palette",
+    "description": "Flatten a PDF so form fields and page content can no longer be edited. Free, in your browser.",
+    "intro": "Lock a filled form or a finished layout. Flattening bakes interactive fields into the page and redraws each page as a static image, so recipients cannot change the content in a PDF reader.",
+    "steps": [
+      "Upload the PDF you want to lock down.",
+      "Wait while form fields and pages are flattened.",
+      "Download the uneditable PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Can I edit the PDF after flattening?",
+        "a": "No. That is the point — fields and page content become fixed. Keep a copy of the original if you may need to change it later."
+      },
+      {
+        "q": "Will the text stay searchable?",
+        "a": "Flattening redraws each page as an image, so text is no longer selectable. Run OCR afterward if you need search again."
+      },
+      {
+        "q": "Is my file uploaded?",
+        "a": "No. Flattening runs entirely in your browser."
+      },
+      {
+        "q": "What about password-protected PDFs?",
+        "a": "Unlock the file first with Unlock PDF, then flatten."
+      }
+    ]
+  },
+  "/txt-to-pdf": {
+    "name": "TXT to PDF",
+    "title": "TXT to PDF — Convert Text Files to PDF | PDF Palette",
+    "description": "Convert a plain .txt file into a multi-page PDF. Free, no sign-up, converted in your browser.",
+    "intro": "Turn notes, logs or plain text exports into a PDF you can share or print. The text is wrapped onto standard pages with readable spacing.",
+    "steps": [
+      "Upload a .txt file.",
+      "Wait while the text is laid out onto PDF pages.",
+      "Download the PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Does it keep my line breaks?",
+        "a": "Yes. Blank lines are preserved, and long lines wrap to the page width."
+      },
+      {
+        "q": "Can I convert Markdown?",
+        "a": ".md files are accepted as plain text. Formatting markers are not rendered as rich Markdown."
+      },
+      {
+        "q": "Is there a size limit?",
+        "a": "Very large files may take longer in the browser. Typical notes and logs convert quickly."
+      },
+      {
+        "q": "Is my file uploaded?",
+        "a": "No. Conversion runs in your browser."
       }
     ]
   }

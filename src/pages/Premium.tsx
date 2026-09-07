@@ -29,13 +29,13 @@ const premiumExtras = [
   "Unlimited use of every tool",
   "No ads",
   "Stronger OCR for scanned PDFs",
-  "Premium-only tools (Fill, Redact, Compare)",
+  "Premium-only tools (Fill, Redact, Compare, Flatten)",
   "Access to future paid tools",
   "Priority support",
 ];
 
 const freeExtras = [
-  "27 core PDF tools with limits",
+  "All core PDF tools with limits",
   "No account required",
   "Most tools run in your browser",
 ];
@@ -87,7 +87,7 @@ function Cell({ value }: { value: string | boolean }) {
 }
 
 /** Tools kept Premium-only in the comparison (advanced / newer capabilities). */
-const premiumOnlyToolIds = new Set(["fill-forms", "redact", "compare"]);
+const premiumOnlyToolIds = new Set(["fill-forms", "redact", "compare", "flatten-pdf"]);
 
 function toolAccess(toolId: string): { free: string | boolean; premium: boolean } {
   if (premiumOnlyToolIds.has(toolId)) {

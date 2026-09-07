@@ -20,6 +20,8 @@ import { convertPdfToPptBrowser } from "./pdf-to-ppt-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
+import { flattenPdfLocal } from "./flatten-pdf";
+import { txtToPdfLocal } from "./txt-to-pdf";
 import { addPageNumbers } from "./pdf-pages/page-numbers";
 import type { PageNumberOptions } from "./pdf-pages/page-numbers";
 import { pdfToImages } from "./pdf-to-image";
@@ -703,11 +705,12 @@ export async function imagesToPDF(
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const arrayBuffer = await file.arrayBuffer();
+      const name = file.name.toLowerCase();
       
       let image;
-      if (file.type === "image/jpeg" || file.type === "image/jpg") {
+      if (file.type === "image/jpeg" || file.type === "image/jpg" || /\.jpe?g$/i.test(name)) {
         image = await pdf.embedJpg(arrayBuffer);
-      } else if (file.type === "image/png") {
+      } else if (file.type === "image/png" || /\.png$/i.test(name)) {
         image = await pdf.embedPng(arrayBuffer);
       } else {
         continue; // Skip unsupported formats
@@ -723,6 +726,13 @@ export async function imagesToPDF(
       
       onProgress?.(((i + 1) / files.length) * 100);
     }
+
+    if (pdf.getPageCount() === 0) {
+      return {
+        success: false,
+        message: "Add at least one JPG or PNG image.",
+      };
+    }
     
     const pdfBytes = await pdf.save();
     const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
@@ -737,6 +747,46 @@ export async function imagesToPDF(
     return {
       success: false,
       message: `Error converting images: ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
+  }
+}
+
+export async function flattenPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await flattenPdfLocal(file, onProgress);
+    return {
+      success: true,
+      message: "PDF flattened — forms and pages are no longer editable.",
+      blob,
+      filename,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not flatten this PDF.",
+    };
+  }
+}
+
+export async function txtToPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await txtToPdfLocal(file, onProgress);
+    return {
+      success: true,
+      message: "Text converted to PDF successfully!",
+      blob,
+      filename,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not convert this text file.",
     };
   }
 }
