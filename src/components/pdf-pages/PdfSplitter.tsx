@@ -301,7 +301,7 @@ const PdfSplitter = () => {
 
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
-      <div className="min-w-0 flex-1 space-y-3">
+      <div className="order-2 min-w-0 flex-1 space-y-3 lg:order-1">
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card px-3 py-2 text-base text-muted-foreground">
           <span>
             {pageCount} page{pageCount === 1 ? "" : "s"}
@@ -348,7 +348,7 @@ const PdfSplitter = () => {
         </div>
       </div>
 
-      <aside className="w-full shrink-0 rounded-xl border border-border bg-card lg:sticky lg:top-16 lg:w-80">
+      <aside className="order-1 w-full shrink-0 rounded-xl border border-border bg-card lg:sticky lg:top-16 lg:order-2 lg:w-80">
         <div className="border-b border-border px-4 py-3">
           <h2 className="text-xl font-semibold text-foreground">Split</h2>
         </div>
