@@ -72,13 +72,6 @@ const staticRoutes = {
     priority: "0.3",
     changefreq: "yearly",
   },
-  "/premium": {
-    title: `Premium | ${SITE_NAME}`,
-    description:
-      "PDF Palette Premium — unlimited processing, no ads, stronger OCR, and access to future paid tools. Monthly $4.99 or yearly $29.99.",
-    priority: "0.6",
-    changefreq: "monthly",
-  },
 };
 
 const esc = (value) =>

@@ -3,6 +3,8 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsGrid from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
+import AffiliateOffers from "@/components/AffiliateOffers";
+import AdSenseUnit from "@/components/AdSenseUnit";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from "@/lib/seo";
 
 const Features = lazy(() => import("@/components/Features"));
@@ -27,6 +29,10 @@ const Index = () => {
         <Suspense fallback={<BelowFoldFallback />}>
           <HowItWorks />
         </Suspense>
+        <section className="container mx-auto space-y-8 px-4 py-10">
+          <AffiliateOffers />
+          <AdSenseUnit slot="inarticle" />
+        </section>
       </main>
       <Footer />
     </div>

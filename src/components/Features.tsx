@@ -20,7 +20,7 @@ const features = [
     icon: Gift,
     title: "Free forever",
     description:
-      "Every tool is 100% free with no sign-up, no watermarks, and no hidden limits.",
+      "Every tool is free to use with no sign-up and no watermark on your files. Ads may appear to keep the site free.",
     color: "text-tool-coral bg-tool-coral/10",
   },
   {

@@ -5,7 +5,7 @@ const Terms = () => (
   <LegalPage
     title="Terms of Service"
     description="These terms govern use of the PDF Palette website and its in-browser tools. By using the site, you agree to them."
-    updated="3 September 2026"
+    updated="7 September 2026"
   >
     <section>
       <h2>Agreement</h2>
@@ -83,6 +83,14 @@ const Terms = () => (
       <p>
         Because files are processed on your device and we do not store them, we cannot restore a document you
         closed without downloading.
+      </p>
+    </section>
+    <section>
+      <h2>Advertising and affiliate offers</h2>
+      <p>
+        The site may display ads (including Google AdSense) and affiliate partner links (such as hosting
+        offers). Ads help keep the tools free. Affiliate links may earn us a commission if you purchase —
+        at no extra cost to you. Third-party sites have their own terms.
       </p>
     </section>
     <section>

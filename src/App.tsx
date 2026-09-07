@@ -11,7 +11,6 @@ import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
-import Premium from "./pages/Premium";
 import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -29,7 +28,7 @@ const RoutedContent = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/premium" element={<Premium />} />
+        <Route path="/premium" element={<Navigate to="/" replace />} />
         <Route path="/pdf-to-word-ilove" element={<Navigate to="/pdf-to-word" replace />} />
         <Route path="/pdf-to-word-new" element={<Navigate to="/pdf-to-word" replace />} />
         <Route path="/word-to-pdf-new" element={<Navigate to="/word-to-pdf" replace />} />

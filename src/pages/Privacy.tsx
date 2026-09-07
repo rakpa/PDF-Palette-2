@@ -5,7 +5,7 @@ const Privacy = () => (
   <LegalPage
     title="Privacy Policy"
     description="PDF Palette does not collect customer accounts or keep the files you process. This page explains what does and does not happen when you use the site."
-        updated="6 September 2026"
+        updated="7 September 2026"
   >
     <section>
       <h2>The short version</h2>
@@ -88,12 +88,21 @@ const Privacy = () => (
       </p>
     </section>
     <section>
-      <h2>Cookies and analytics</h2>
+      <h2>Cookies, ads, and analytics</h2>
       <p>
-        PDF Palette does not set advertising cookies and does not run a third-party marketing pixel as part of
-        the application. We do not use an in-app analytics product that tracks which documents you open. Your
-        browser and hosting provider may still use strictly technical cookies or similar storage required to
-        deliver the site.
+        PDF Palette may show advertisements through Google AdSense (or a similar network) once approved.
+        Those partners can use cookies or similar technologies to serve and measure ads. We do not use an
+        in-app analytics product that tracks which documents you open. Your browser and hosting provider may
+        also use technical cookies required to deliver the site. You can control cookies in your browser
+        settings, and use Google’s ad settings tools where available.
+      </p>
+    </section>
+    <section>
+      <h2>Affiliate links</h2>
+      <p>
+        We may display partner offers (for example web hosting). If you click a link and buy something, we may
+        earn a commission at no extra cost to you. Affiliate partners process purchases on their own sites
+        under their privacy policies.
       </p>
     </section>
     <section>
@@ -102,6 +111,8 @@ const Privacy = () => (
         Script libraries (PDF, Office, OCR, and similar) load as part of the web app so processing can happen
         in your browser. PDF to Word and Word to PDF share the file with a conversion
         service. The HTML to PDF URL path uses the conversion service only to fetch and render that page.
+        Advertising and affiliate partners receive only what their own scripts or landing pages collect when
+        you interact with those offers — not the documents you process in PDF tools.
       </p>
     </section>
     <section>

@@ -6,6 +6,8 @@ import { getToolContent, useSeo } from "@/lib/seo";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ToolSeoContent from "./ToolSeoContent";
+import AffiliateOffers from "./AffiliateOffers";
+import AdSenseUnit from "./AdSenseUnit";
 import { cn } from "@/lib/utils";
 
 interface ToolPageLayoutProps {
@@ -74,7 +76,10 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
         <section className="py-5 md:py-6">
           <div className="container mx-auto px-4">
             {children}
+            <AdSenseUnit slot="inarticle" className="mx-auto mt-8 max-w-3xl" />
             {content && <ToolSeoContent tool={tool} content={content} />}
+            <AffiliateOffers className="mx-auto mt-10 max-w-3xl" />
+            <AdSenseUnit slot="sidebar" className="mx-auto mt-8 max-w-3xl" />
           </div>
         </section>
       </main>

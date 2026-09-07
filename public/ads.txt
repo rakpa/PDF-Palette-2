@@ -1,0 +1,4 @@
+# Replace pub-0000000000000000 with your AdSense publisher ID after approval.
+# Format: google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+# Until then this file is a placeholder so the path exists for crawlers.
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

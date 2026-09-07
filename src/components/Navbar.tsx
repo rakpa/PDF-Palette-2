@@ -101,11 +101,6 @@ const Navbar = () => {
           {/* Right side */}
           <div className="hidden items-center gap-2 md:flex">
             <ThemeToggle />
-            <Link to="/premium">
-              <Button variant="outline" size="sm">
-                Premium
-              </Button>
-            </Link>
             <Link to="/#tools">
               <Button size="sm">Explore tools</Button>
             </Link>
@@ -186,11 +181,6 @@ const Navbar = () => {
               <Link to="/#tools" onClick={() => setIsOpen(false)}>
                 <Button size="sm" className="mt-2 w-full">
                   Explore tools
-                </Button>
-              </Link>
-              <Link to="/premium" onClick={() => setIsOpen(false)}>
-                <Button size="sm" variant="outline" className="w-full">
-                  Premium
                 </Button>
               </Link>
             </div>

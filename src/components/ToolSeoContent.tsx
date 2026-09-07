@@ -35,6 +35,14 @@ const ToolSeoContent = ({ tool, content }: ToolSeoContentProps) => {
       <p className="mt-3 leading-relaxed text-muted-foreground">{content.intro}</p>
 
       <h2 className="mt-10 text-2xl font-bold text-foreground">
+        Free online {tool.name.toLowerCase()}
+      </h2>
+      <p className="mt-3 leading-relaxed text-muted-foreground">
+        PDF Palette’s {tool.name} tool is free to use in your browser with no account and no watermark
+        on your download. Upload your file on this page, run the tool, and save the result when it is ready.
+      </p>
+
+      <h2 className="mt-10 text-2xl font-bold text-foreground">
         How to {tool.name.toLowerCase()}
       </h2>
       <ol className="mt-4 space-y-3">
