@@ -567,7 +567,7 @@
       },
       {
         "q": "Does converting a URL upload anything of mine?",
-        "a": "No file of yours is uploaded. Only the public address you paste is fetched so its content can be rendered, and it is discarded straight after the download. Uploading an HTML file never leaves your browser."
+        "a": "No file of yours is uploaded. Only the public address you paste is sent so the page can be fetched and rendered, and it is discarded after the download. Uploading an HTML file never leaves your browser."
       },
       {
         "q": "Can it capture a page behind a login?",

@@ -34,8 +34,8 @@ npm run dev
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
 - **Protect / Unlock PDF:** http://localhost:8080/protect-pdf, `/unlock-pdf`
   (in-browser, no setup)
-- **HTML → PDF:** http://localhost:8080/html-to-pdf — uploading a file needs no
-  setup; the URL field asks the local service to fetch the page
+- **HTML → PDF:** http://localhost:8080/html-to-pdf — file uploads stay in the
+  browser; a page URL uses the same remote convert session as Word ↔ PDF
 
 ---
 

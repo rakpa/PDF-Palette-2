@@ -30,10 +30,18 @@ function iloveApiUrl(name: "health" | "start" | "process"): string {
   return `/api/ilove/${name}`;
 }
 
-type ConvertKind = "pdf-to-word" | "word-to-pdf";
+type ConvertKind = "pdf-to-word" | "word-to-pdf" | "html-to-pdf";
 
 function outputFilename(name: string, kind: ConvertKind): string {
-  if (kind === "word-to-pdf") {
+  if (kind === "word-to-pdf" || kind === "html-to-pdf") {
+    if (kind === "html-to-pdf") {
+      try {
+        const host = new URL(name).hostname.replace(/^www\./, "") || "page";
+        return `${host.replace(/[^a-z0-9._-]+/gi, "-") || "page"}.pdf`;
+      } catch {
+        return "page.pdf";
+      }
+    }
     return `${name.replace(/\.docx?$/i, "") || "document"}.pdf`;
   }
   return `${name.replace(/\.pdf$/i, "") || "document"}.docx`;
@@ -204,6 +212,63 @@ async function convertViaIlove(
   return {
     blob,
     filename: start.filename || outputFilename(file.name, kind),
+    engine: "ilovepdf",
+  };
+}
+
+type HtmlUrlStartResponse = StartResponse & { serverFilename?: string };
+
+/** Convert a public web page URL to PDF (server fetches the page; no HTML file upload). */
+export async function convertHtmlUrlToPdfIlove(
+  url: string,
+  onProgress?: Progress
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  const pageUrl = url.trim();
+  if (!pageUrl) throw new Error("Provide a page URL.");
+
+  onProgress?.(8, "Fetching page…");
+  const start = await postJson<HtmlUrlStartResponse>(
+    iloveApiUrl("start"),
+    { kind: "html-to-pdf", url: pageUrl },
+    "Could not start conversion"
+  );
+
+  if (
+    start.engine !== "ilovepdf" ||
+    !start.serverFilename ||
+    !start.task ||
+    !start.token ||
+    !start.server ||
+    !start.tool
+  ) {
+    throw new Error(start.reason || "Could not start an HTML to PDF task.");
+  }
+
+  onProgress?.(45, "Rendering page…");
+  const processed = await postJson<ProcessResponse>(
+    iloveApiUrl("process"),
+    {
+      kind: "html-to-pdf",
+      server: start.server,
+      task: start.task,
+      tool: start.tool,
+      serverFilename: start.serverFilename,
+      filename: "page.html",
+      token: start.token,
+    },
+    "Conversion failed"
+  );
+
+  if (processed.engine !== "ilovepdf" || !processed.downloadUrl) {
+    throw new Error(processed.reason || "Conversion did not return a PDF.");
+  }
+
+  onProgress?.(88, "Preparing download…");
+  const blob = await downloadFile(processed.downloadUrl, processed.token || start.token);
+  onProgress?.(100, "Done");
+  return {
+    blob,
+    filename: start.filename || outputFilename(pageUrl, "html-to-pdf"),
     engine: "ilovepdf",
   };
 }

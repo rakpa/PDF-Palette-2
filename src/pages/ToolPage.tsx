@@ -58,13 +58,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import {
-  checkConversionHealth,
-  conversionBlockedMessage,
-  isConversionReady,
-  type ConversionHealth,
-  type ConversionFeature,
-} from "@/lib/conversion-service-client";
 
 /**
  * Per-feature upload constraints for the one-shot tools. The editor features
@@ -275,7 +268,6 @@ const ToolPage = () => {
   const [compressionLevel, setCompressionLevel] =
     useState<CompressionLevel>("recommended");
   const [convertStatus, setConvertStatus] = useState("");
-  const [serviceHealth, setServiceHealth] = useState<ConversionHealth | null>(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [htmlUrl, setHtmlUrl] = useState("");
@@ -312,17 +304,6 @@ const ToolPage = () => {
       .catch(() => {
         // Warmup is best-effort; OCR will retry loading the engine.
       });
-    return () => {
-      cancelled = true;
-    };
-  }, [tool?.feature]);
-
-  useEffect(() => {
-    if (tool?.feature !== "html-to-pdf") return;
-    let cancelled = false;
-    checkConversionHealth().then((health) => {
-      if (!cancelled) setServiceHealth(health);
-    });
     return () => {
       cancelled = true;
     };
@@ -403,24 +384,23 @@ const ToolPage = () => {
   }
 
   // An uploaded HTML file is laid out and captured by this tab. A URL cannot
-  // be: the same-origin policy stops a page reading another site's HTML, so
-  // fetching one still goes through the local conversion service.
+  // be: same-origin policy stops a page reading another site's HTML, so that
+  // path uses the same remote convert session as Word ↔ PDF.
   const fetchesUrl =
     tool.feature === "html-to-pdf" && files.length === 0 && htmlUrl.trim().length > 0;
   const usesCloudConvert =
     tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word";
   const usesIlovePdf =
-    tool.feature === "pdf-to-word-ilove" || tool.feature === "word-to-pdf-ilove";
-  const needsConversionService = fetchesUrl;
+    tool.feature === "pdf-to-word-ilove" ||
+    tool.feature === "word-to-pdf-ilove" ||
+    fetchesUrl;
 
   const canProcess =
     !!config &&
     (tool.feature === "html-to-pdf"
       ? files.length >= 1 || htmlUrl.trim().length > 0
       : files.length >= config.minFiles) &&
-    !isProcessing &&
-    (!needsConversionService ||
-      isConversionReady(serviceHealth, tool!.feature as ConversionFeature));
+    !isProcessing;
 
   const reset = () => {
     setFiles([]);
@@ -573,7 +553,9 @@ const ToolPage = () => {
       if (res.success) {
         toast.success(res.message);
         const waitForDownload =
-          tool.feature === "pdf-to-word-ilove" || tool.feature === "word-to-pdf-ilove";
+          tool.feature === "pdf-to-word-ilove" ||
+          tool.feature === "word-to-pdf-ilove" ||
+          fetchesUrl;
         if (res.blob && !waitForDownload) downloadResult(res);
       } else {
         toast.error(res.message);
@@ -589,8 +571,6 @@ const ToolPage = () => {
     }
   };
 
-  const showConversionServiceStatus = needsConversionService;
-
   return (
     <ToolPageLayout tool={tool}>
       <div className="mx-auto max-w-2xl">
@@ -600,13 +580,6 @@ const ToolPage = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {showConversionServiceStatus && (
-              <ConversionServiceStatus
-                health={serviceHealth}
-                feature={tool.feature as ConversionFeature}
-              />
-            )}
-
             <FileUploader
               compact
               accept={config.accept}
@@ -695,9 +668,8 @@ const ToolPage = () => {
                       onChange={(e) => setHtmlUrl(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Upload an HTML file to convert it here in your browser, or give a
-                      URL to have the local conversion service fetch and render the page.
-                      If you provide both, the file wins.
+                      Upload an HTML file to convert it here in your browser, or paste a
+                      page URL to convert it remotely. If you provide both, the file wins.
                     </p>
                   </div>
                 ) : (
@@ -736,8 +708,10 @@ const ToolPage = () => {
               <ProgressBar
                 progress={progress}
                 label={
-                  tool.feature === "pdf-to-word-ilove" || tool.feature === "word-to-pdf-ilove"
-                    ? "Converting…"
+                  tool.feature === "pdf-to-word-ilove" ||
+                  tool.feature === "word-to-pdf-ilove" ||
+                  fetchesUrl
+                    ? convertStatus || "Converting…"
                     : tool.feature === "ocr"
                       ? convertStatus || "Recognising…"
                       : tool.feature === "word-to-pdf" ||
@@ -753,6 +727,7 @@ const ToolPage = () => {
                     tool.feature === "word-to-pdf-ilove" ||
                     tool.feature === "pdf-to-word" ||
                     tool.feature === "pdf-to-word-ilove" ||
+                    tool.feature === "html-to-pdf" ||
                     tool.feature === "ocr") &&
                   progress === 0 &&
                   !convertStatus
@@ -776,13 +751,15 @@ const ToolPage = () => {
                   <Button
                     size={
                       tool.feature === "pdf-to-word-ilove" ||
-                      tool.feature === "word-to-pdf-ilove"
+                      tool.feature === "word-to-pdf-ilove" ||
+                      fetchesUrl
                         ? "default"
                         : "sm"
                     }
                     variant={
                       tool.feature === "pdf-to-word-ilove" ||
-                      tool.feature === "word-to-pdf-ilove"
+                      tool.feature === "word-to-pdf-ilove" ||
+                      fetchesUrl
                         ? "default"
                         : "outline"
                     }
@@ -923,43 +900,6 @@ const CompressOptions = ({
         images. Low leaves image quality untouched; Extreme targets the smallest
         file. Scanned text is kept at 300 DPI at every level.
       </p>
-    </div>
-  );
-};
-
-const ConversionServiceStatus = ({
-  health,
-  feature,
-}: {
-  health: ConversionHealth | null;
-  feature: ConversionFeature;
-}) => {
-  if (!health) {
-    return (
-      <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Checking conversion service…
-      </div>
-    );
-  }
-
-  // Don't show a green "ready" banner; only show this area when there's an issue.
-  if (isConversionReady(health, feature)) return null;
-
-  const message = conversionBlockedMessage(health, feature);
-
-  return (
-    <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-foreground">
-      <div className="flex items-start gap-2">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-        <div className="space-y-1">
-          <p className="font-medium text-destructive">Conversion service unavailable</p>
-          <p className="text-muted-foreground">
-            {message ||
-              "Run npm run dev from the project root to start both the website and conversion service."}
-          </p>
-        </div>
-      </div>
     </div>
   );
 };
@@ -1170,7 +1110,6 @@ const ImageOptionsPanel = ({
 );
 
 const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: boolean }) => {
-  // Every tool now runs inside the tab, except fetching a URL for HTML → PDF.
   const inBrowser = Boolean(feature) && !remote;
 
   return (
@@ -1183,7 +1122,9 @@ const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: bool
           : remote &&
               (feature === "pdf-to-word-ilove" || feature === "word-to-pdf-ilove")
             ? "The file is sent for conversion and is not stored by PDF Palette."
-            : "The page is fetched and rendered on your machine, then deleted immediately after download."}
+            : remote && feature === "html-to-pdf"
+              ? "The page address is sent for conversion and is not stored by PDF Palette."
+              : "The page is fetched and rendered on your machine, then deleted immediately after download."}
     </div>
   );
 };

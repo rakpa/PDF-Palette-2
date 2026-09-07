@@ -18,6 +18,7 @@ import { createHmac } from "node:crypto";
 const API_HOST = "api.ilovepdf.com";
 const PDF_WORD_TOOL = "pdfoffice";
 const WORD_PDF_TOOL = "officepdf";
+const HTML_PDF_TOOL = "htmlpdf";
 
 export class ILovePdfError extends Error {
   constructor(message, statusCode) {
@@ -205,6 +206,68 @@ export async function startWordToPdf() {
 export async function startPdfToWord() {
   const tool = strip(process.env.ILOVEPDF_TOOL) || PDF_WORD_TOOL;
   return startWithWebsiteSession(tool, "/pdf_to_word", "PDF to Word");
+}
+
+export async function startHtmlToPdf() {
+  const tool = strip(process.env.ILOVEPDF_HTML_TOOL) || HTML_PDF_TOOL;
+  return startWithWebsiteSession(tool, "/html-to-pdf", "HTML to PDF");
+}
+
+/** Validate a public http(s) page address for HTML → PDF. */
+export function assertPublicPageUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw || raw.length > 2048) {
+    throw new ILovePdfError("Provide a valid page URL.", 400);
+  }
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new ILovePdfError("Provide a valid page URL.", 400);
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new ILovePdfError("Only http and https URLs are supported.", 400);
+  }
+  if (!parsed.hostname || parsed.hostname === "localhost" || parsed.hostname.endsWith(".local")) {
+    throw new ILovePdfError("That URL cannot be fetched.", 400);
+  }
+  return parsed.toString();
+}
+
+/**
+ * Ask the worker to fetch a public URL (same as ilovepdf.com's URL field:
+ * multipart upload with cloud_file + cloud_source=public).
+ */
+export async function uploadPublicUrl({ token, server, task, url }) {
+  const host = assertWorkerHost(server);
+  const taskId = assertTaskId(task);
+  const pageUrl = assertPublicPageUrl(url);
+  const form = new FormData();
+  form.append("task", taskId);
+  form.append("cloud_file", pageUrl);
+  form.append("cloud_source", "public");
+  const res = await fetch(`https://${host}/v1/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${assertSessionToken(token)}`,
+      Accept: "application/json",
+    },
+    body: form,
+  });
+  if (!res.ok) {
+    throw new ILovePdfError(
+      `Could not fetch that page: ${await readError(res)}`,
+      res.status >= 400 && res.status < 500 ? 422 : 502
+    );
+  }
+  const body = await res.json().catch(() => ({}));
+  if (!body.server_filename) {
+    throw new ILovePdfError("Upload did not return a file name.", 502);
+  }
+  return {
+    serverFilename: assertServerFilename(body.server_filename),
+    filename: body.filename || "page.html",
+  };
 }
 
 export function assertWorkerHost(server) {

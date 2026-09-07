@@ -1,11 +1,52 @@
-import { startPdfToWord, startWordToPdf } from "../_lib/ilovepdf.js";
+import {
+  assertPublicPageUrl,
+  startHtmlToPdf,
+  startPdfToWord,
+  startWordToPdf,
+  uploadPublicUrl,
+} from "../_lib/ilovepdf.js";
 import { guardMethod, readJson, sendError, sendJson } from "../_lib/http.js";
+
+function kindOf(body) {
+  if (body.kind === "word-to-pdf") return "word-to-pdf";
+  if (body.kind === "html-to-pdf") return "html-to-pdf";
+  return "pdf-to-word";
+}
 
 export default async function handler(req, res) {
   if (guardMethod(req, res, "POST")) return;
   try {
     const body = await readJson(req);
-    const kind = body.kind === "word-to-pdf" ? "word-to-pdf" : "pdf-to-word";
+    const kind = kindOf(body);
+
+    if (kind === "html-to-pdf") {
+      const pageUrl = assertPublicPageUrl(body.url);
+      const started = await startHtmlToPdf();
+      const uploaded = await uploadPublicUrl({
+        token: started.token,
+        server: started.server,
+        task: started.task,
+        url: pageUrl,
+      });
+      let hostLabel = "page";
+      try {
+        hostLabel = new URL(pageUrl).hostname.replace(/^www\./, "") || "page";
+      } catch {
+        /* keep default */
+      }
+      const safeName = hostLabel.replace(/[^a-z0-9._-]+/gi, "-").replace(/^-+|-+$/g, "") || "page";
+      sendJson(res, 200, {
+        engine: "ilovepdf",
+        token: started.token,
+        server: started.server,
+        task: started.task,
+        tool: started.tool,
+        serverFilename: uploaded.serverFilename,
+        filename: `${safeName}.pdf`,
+      });
+      return;
+    }
+
     const filename = String(body.filename || (kind === "word-to-pdf" ? "document.docx" : "document.pdf"));
     const started = kind === "word-to-pdf" ? await startWordToPdf() : await startPdfToWord();
     const base =
