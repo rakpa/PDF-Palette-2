@@ -160,7 +160,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Word",
-    hint: "Upload a PDF. It is converted to an editable Word (.docx) file that keeps fonts, tables, images and page layout.",
+    hint: "Upload a PDF. It is converted to an editable Word (.docx) file.",
   },
   "unlock-pdf": {
     accept: { "application/pdf": [".pdf"] },
@@ -388,12 +388,6 @@ const ToolPage = () => {
   // path uses the same remote convert session as Word ↔ PDF.
   const fetchesUrl =
     tool.feature === "html-to-pdf" && files.length === 0 && htmlUrl.trim().length > 0;
-  const usesCloudConvert =
-    tool.feature === "word-to-pdf" || tool.feature === "pdf-to-word";
-  const usesIlovePdf =
-    tool.feature === "pdf-to-word-ilove" ||
-    tool.feature === "word-to-pdf-ilove" ||
-    fetchesUrl;
 
   const canProcess =
     !!config &&
@@ -816,10 +810,7 @@ const ToolPage = () => {
               )}
             </div>
 
-            <PrivacyNote
-              feature={tool.feature}
-              remote={fetchesUrl || usesCloudConvert || usesIlovePdf}
-            />
+            <PrivacyNote />
           </div>
         )}
       </div>
@@ -1109,24 +1100,11 @@ const ImageOptionsPanel = ({
   </div>
 );
 
-const PrivacyNote = ({ feature, remote }: { feature?: ToolFeature; remote?: boolean }) => {
-  const inBrowser = Boolean(feature) && !remote;
-
-  return (
-    <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
-      <ShieldCheck className="h-4 w-4 text-tool-green" />
-      {inBrowser
-        ? "Processed in your browser — your file never leaves this device."
-        : remote && (feature === "word-to-pdf" || feature === "pdf-to-word")
-          ? "Converted with CloudConvert. The file is sent for conversion and is not stored by PDF Palette."
-          : remote &&
-              (feature === "pdf-to-word-ilove" || feature === "word-to-pdf-ilove")
-            ? "The file is sent for conversion and is not stored by PDF Palette."
-            : remote && feature === "html-to-pdf"
-              ? "The page address is sent for conversion and is not stored by PDF Palette."
-              : "The page is fetched and rendered on your machine, then deleted immediately after download."}
-    </div>
-  );
-};
+const PrivacyNote = () => (
+  <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
+    <ShieldCheck className="h-4 w-4 text-tool-green" />
+    Processed in your browser — your file never leaves this device.
+  </div>
+);
 
 export default ToolPage;
