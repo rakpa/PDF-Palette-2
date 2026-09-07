@@ -26,15 +26,16 @@ const billing = {
 } as const;
 
 const premiumExtras = [
-  "Unlimited document processing",
+  "Unlimited use of every tool",
   "No ads",
   "Stronger OCR for scanned PDFs",
+  "Premium-only tools (Fill, Redact, Compare)",
   "Access to future paid tools",
   "Priority support",
 ];
 
 const freeExtras = [
-  "27 core PDF tools",
+  "27 core PDF tools with limits",
   "No account required",
   "Most tools run in your browser",
 ];
@@ -71,7 +72,28 @@ function Cell({ value }: { value: string | boolean }) {
       </span>
     );
   }
-  return <span className="text-sm font-medium text-foreground">{value}</span>;
+  return (
+    <span
+      className={cn(
+        "text-sm font-medium",
+        value === "Limited" || value === "May show" || value === "Standard"
+          ? "text-muted-foreground"
+          : "text-foreground"
+      )}
+    >
+      {value}
+    </span>
+  );
+}
+
+/** Tools kept Premium-only in the comparison (advanced / newer capabilities). */
+const premiumOnlyToolIds = new Set(["fill-forms", "redact", "compare"]);
+
+function toolAccess(toolId: string): { free: string | boolean; premium: boolean } {
+  if (premiumOnlyToolIds.has(toolId)) {
+    return { free: false, premium: true };
+  }
+  return { free: "Limited", premium: true };
 }
 
 const Premium = () => {
@@ -325,7 +347,7 @@ const Premium = () => {
                     All {toolCount} core PDF tools
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    Available on Free and Premium
+                    Free is limited · Premium is unlimited · some tools are Premium-only
                   </p>
                 </div>
                 <ChevronDown
@@ -350,7 +372,9 @@ const Premium = () => {
                         <div className="border-b border-border bg-muted/20 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground md:px-6">
                           {group.label}
                         </div>
-                        {group.tools.map((tool) => (
+                        {group.tools.map((tool) => {
+                          const access = toolAccess(tool.id);
+                          return (
                           <div
                             key={`${group.id}-${tool.id}`}
                             className="grid grid-cols-[1.5fr_0.75fr_0.75fr] items-center border-b border-border px-4 py-3 md:px-6"
@@ -358,15 +382,21 @@ const Premium = () => {
                             <span className="flex items-center gap-2 pr-3 text-sm text-foreground">
                               <tool.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
                               {tool.name}
+                              {premiumOnlyToolIds.has(tool.id) && (
+                                <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                                  Premium
+                                </span>
+                              )}
                             </span>
                             <div className="flex justify-center">
-                              <Cell value={true} />
+                              <Cell value={access.free} />
                             </div>
                             <div className="flex justify-center">
-                              <Cell value={true} />
+                              <Cell value={access.premium} />
                             </div>
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     ))}
                   </motion.div>
