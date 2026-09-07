@@ -28,9 +28,9 @@
       }
     ]
   },
-  "/word-to-pdf-new": {
-    "name": "Word to PDF New",
-    "title": "Word to PDF New | PDF Palette",
+  "/word-to-pdf": {
+    "name": "Word to PDF",
+    "title": "Word to PDF Converter | PDF Palette",
     "description": "Convert Word documents to PDF free. Keeps fonts, tables, images and page layout.",
     "intro": "Convert a .docx or .doc file into a PDF. The file is sent for conversion only. PDF Palette does not keep a copy.",
     "steps": [
@@ -39,10 +39,6 @@
       "Download the finished PDF."
     ],
     "faqs": [
-      {
-        "q": "How is this different from Word to PDF?",
-        "a": "Word to PDF uses CloudConvert. This card uses a different conversion path and downloads the finished PDF."
-      },
       {
         "q": "Do I need Microsoft Word installed?",
         "a": "No. Nothing is installed and no PDF Palette account is needed."
@@ -54,35 +50,10 @@
       {
         "q": "Is my file uploaded anywhere?",
         "a": "Yes. The Word file is uploaded for this conversion only. PDF Palette does not keep a copy."
-      }
-    ]
-  },
-  "/word-to-pdf": {
-    "name": "Word to PDF",
-    "title": "Word to PDF Converter — CloudConvert | PDF Palette",
-    "description": "Convert Word documents to PDF free. CloudConvert preserves fonts, tables, images and page layout.",
-    "intro": "Convert a .docx or .doc file into a PDF that looks the way your document does. PDF Palette sends the file to CloudConvert, which keeps fonts, colours, tables, images, headers and page breaks. The file is used for conversion only and is not stored by PDF Palette.",
-    "steps": [
-      "Select the Word document you want to convert.",
-      "Wait while CloudConvert converts the document.",
-      "Download the finished PDF."
-    ],
-    "faqs": [
-      {
-        "q": "Do I need Microsoft Word installed?",
-        "a": "No. Nothing is installed and no PDF Palette account is needed. CloudConvert performs the conversion."
       },
       {
         "q": "Are fonts embedded in the PDF?",
         "a": "Yes. Fonts used by the document are embedded so the PDF renders the same on any device."
-      },
-      {
-        "q": "Can I convert .doc as well as .docx?",
-        "a": "Both are accepted. Modern .docx files give the most faithful result."
-      },
-      {
-        "q": "Will hyperlinks still work?",
-        "a": "Links in the document are carried into the PDF and stay clickable."
       }
     ]
   },

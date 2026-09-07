@@ -3,12 +3,12 @@
 ## What you need
 
 1. **Node.js**
-2. **CloudConvert API key** — for Word → PDF.
-   Copy `.env.example` to `.env.local` and set `CLOUDCONVERT_API_KEY`.
-   On Vercel, set the same variable on the project.
+2. **Conversion keys** — PDF ↔ Word use iLovePDF website sessions by default.
+   CloudConvert is optional for other convert paths. Copy `.env.example` to
+   `.env.local` if you need `CLOUDCONVERT_API_KEY` or iLovePDF project keys.
 
 LibreOffice is optional (Word → PDF falls back to the in-browser engine if
-CloudConvert is not configured).
+the conversion service is not available).
 
 ---
 
@@ -28,8 +28,7 @@ cd C:\RAKESH\pdf-palette
 npm run dev
 ```
 
-- **Word → PDF:** http://localhost:8080/word-to-pdf (CloudConvert)
-- **Word → PDF New:** http://localhost:8080/word-to-pdf-new (iLovePDF)
+- **Word → PDF:** http://localhost:8080/word-to-pdf (iLovePDF)
 - **PDF → Word:** http://localhost:8080/pdf-to-word (iLovePDF)
 - **Edit PDF:** http://localhost:8080/edit-pdf (in-browser, no setup)
 - **Sign PDF:** http://localhost:8080/sign-pdf (in-browser, no setup)
@@ -42,11 +41,11 @@ npm run dev
 
 ## PDF → Word and Word → PDF
 
-Word → PDF calls CloudConvert through `api/convert/`. PDF → Word calls
-iLovePDF through `api/ilove/`. The browser never sees the keys.
+PDF → Word and Word → PDF call iLovePDF through `api/ilove/`. The browser
+never sees the keys.
 
 Set this on the deployment (Vercel → Settings → Environment Variables) or in a
-local `.env.local`:
+local `.env.local` if you use the project-key path:
 
 ```
 CLOUDCONVERT_API_KEY=<your CloudConvert API key>
@@ -54,12 +53,12 @@ ILOVEPDF_PUBLIC_KEY=<your iLovePDF public key>
 ILOVEPDF_SECRET_KEY=<your iLovePDF secret key>
 ```
 
-**PDF to Word** (`/pdf-to-word`) and **Word to PDF New** (`/word-to-pdf-new`)
+**PDF to Word** (`/pdf-to-word`) and **Word to PDF** (`/word-to-pdf`)
 send the file to iLovePDF the same way ilovepdf.com does — a public website
 session, no project keys. PDF → Word uses `pdfoffice` + `convert_to=docx`.
 Word → PDF uses `officepdf`.
 
-Check it arrived with `curl https://<your-app>/api/convert/health` — it reports
+Check CloudConvert with `curl https://<your-app>/api/convert/health` — it reports
 `"checks": { "cloudconvert": true }` when the key is readable. That only means
 the variable is set; a live convert still needs a key CloudConvert accepts.
 

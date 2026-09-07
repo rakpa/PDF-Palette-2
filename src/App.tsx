@@ -30,6 +30,7 @@ const RoutedContent = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/pdf-to-word-ilove" element={<Navigate to="/pdf-to-word" replace />} />
         <Route path="/pdf-to-word-new" element={<Navigate to="/pdf-to-word" replace />} />
+        <Route path="/word-to-pdf-new" element={<Navigate to="/word-to-pdf" replace />} />
         {/* Every tool is served by one data-driven page, keyed on its route. */}
         <Route path="/:toolRoute" element={<ToolPage />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
