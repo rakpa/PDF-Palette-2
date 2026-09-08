@@ -11,8 +11,8 @@ const MonetizationBlock = ({
   placement,
   className,
   showAffiliate = true,
-  /** Show an empty labeled AdSense frame before IDs are set (off by default). */
-  reserveAd = false,
+  /** Dedicated AdSense frame stays in the layout even before slot IDs are set. */
+  reserveAd = true,
 }: {
   placement: AdPlacement;
   className?: string;

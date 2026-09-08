@@ -50,15 +50,15 @@ function enableAutoAds() {
 }
 
 /**
- * Dedicated AdSense space. Always mounts a labeled layout slot so inventory
- * stays reserved site-wide; fills with a real unit once client + slot are set.
+ * Dedicated AdSense space. Always mounts a labeled layout slot (by default)
+ * so inventory stays reserved site-wide; fills once client + slot are set.
  *
- * Set `reserve` to keep an empty labeled frame before slot IDs are configured.
+ * Pass `reserve={false}` to hide the empty frame before AdSense is configured.
  */
 const AdSenseUnit = ({
   placement,
   className,
-  reserve = false,
+  reserve = true,
   /** @deprecated use placement */
   slot,
 }: {
