@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { FileText, Github } from "lucide-react";
+import AdSenseUnit from "./AdSenseUnit";
 
 const Footer = () => {
   return (
     <footer className="border-t border-border bg-muted/30">
       <div className="container mx-auto px-4 py-12">
+        <AdSenseUnit placement="site-footer" className="mb-10" />
         <div className="grid gap-8 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">

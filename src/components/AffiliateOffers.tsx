@@ -15,7 +15,8 @@ const accentText: Record<AffiliateOffer["accent"], string> = {
 };
 
 /**
- * Affiliate partner cards. Hidden until VITE_AFFILIATE_*_URL env vars are set.
+ * Manual affiliate cards (Hostinger / Cloudways).
+ * Paste links in src/lib/affiliate-config.ts or set VITE_AFFILIATE_*_URL.
  */
 const AffiliateOffers = ({ className }: { className?: string }) => {
   const offers = getAffiliateOffers();

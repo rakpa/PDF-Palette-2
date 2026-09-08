@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import {
+  ADSENSE_AUTO,
   ADSENSE_CLIENT,
-  ADSENSE_SLOT_INARTICLE,
-  ADSENSE_SLOT_SIDEBAR,
   adsenseEnabled,
+  slotForPlacement,
+  type AdPlacement,
 } from "@/lib/monetization";
 import { cn } from "@/lib/utils";
 
@@ -13,14 +14,8 @@ declare global {
   }
 }
 
-type Slot = "inarticle" | "sidebar";
-
-const slotId: Record<Slot, string> = {
-  inarticle: ADSENSE_SLOT_INARTICLE,
-  sidebar: ADSENSE_SLOT_SIDEBAR,
-};
-
 let scriptLoading: Promise<void> | null = null;
+let autoAdsBootstrapped = false;
 
 function loadAdSense(): Promise<void> {
   if (!adsenseEnabled()) return Promise.resolve();
@@ -41,27 +36,54 @@ function loadAdSense(): Promise<void> {
   return scriptLoading;
 }
 
+function enableAutoAds() {
+  if (!ADSENSE_AUTO || autoAdsBootstrapped || !adsenseEnabled()) return;
+  autoAdsBootstrapped = true;
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: ADSENSE_CLIENT,
+      enable_page_level_ads: true,
+    });
+  } catch {
+    // ignore
+  }
+}
+
 /**
- * Google AdSense unit. Renders nothing until client + slot IDs are configured.
- * Apply for AdSense first; then set VITE_ADSENSE_CLIENT and slot env vars.
+ * Dedicated AdSense space. Always mounts a labeled layout slot so inventory
+ * stays reserved site-wide; fills with a real unit once client + slot are set.
+ *
+ * Set `reserve` to keep an empty labeled frame before slot IDs are configured.
  */
 const AdSenseUnit = ({
-  slot = "inarticle",
+  placement,
   className,
+  reserve = false,
+  /** @deprecated use placement */
+  slot,
 }: {
-  slot?: Slot;
+  placement?: AdPlacement;
   className?: string;
+  reserve?: boolean;
+  /** Legacy alias — maps inarticle → tool-after-upload, sidebar → tool-after-seo */
+  slot?: "inarticle" | "sidebar";
 }) => {
+  const resolved: AdPlacement =
+    placement ??
+    (slot === "sidebar" ? "tool-after-seo" : "tool-after-upload");
+
   const adRef = useRef<HTMLModElement>(null);
-  const adSlot = slotId[slot];
+  const adSlot = slotForPlacement(resolved);
   const ready = adsenseEnabled() && Boolean(adSlot);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!adsenseEnabled()) return;
     let cancelled = false;
     loadAdSense()
       .then(() => {
-        if (cancelled || !adRef.current) return;
+        if (cancelled) return;
+        enableAutoAds();
+        if (!ready || !adRef.current) return;
         try {
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch {
@@ -74,20 +96,35 @@ const AdSenseUnit = ({
     };
   }, [ready, adSlot]);
 
-  if (!ready) return null;
+  if (!ready && !reserve) return null;
 
   return (
-    <div className={cn("overflow-hidden rounded-xl border border-border/60 bg-muted/20 p-2", className)}>
-      <p className="mb-1 px-1 text-[10px] uppercase tracking-wide text-muted-foreground">Advertisement</p>
-      <ins
-        ref={adRef}
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-client={ADSENSE_CLIENT}
-        data-ad-slot={adSlot}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
+    <div
+      className={cn(
+        "overflow-hidden rounded-xl border border-border/60 bg-muted/20 p-2",
+        className
+      )}
+      data-ad-placement={resolved}
+      aria-label="Advertisement"
+    >
+      <p className="mb-1 px-1 text-[10px] uppercase tracking-wide text-muted-foreground">
+        Advertisement
+      </p>
+      {ready ? (
+        <ins
+          ref={adRef}
+          className="adsbygoogle"
+          style={{ display: "block", minHeight: 90 }}
+          data-ad-client={ADSENSE_CLIENT}
+          data-ad-slot={adSlot}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      ) : (
+        <div className="flex min-h-[90px] items-center justify-center rounded-lg bg-muted/40 px-3 text-center text-xs text-muted-foreground">
+          Ad space reserved for Google AdSense
+        </div>
+      )}
     </div>
   );
 };

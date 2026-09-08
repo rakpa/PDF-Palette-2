@@ -3,8 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsGrid from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
-import AffiliateOffers from "@/components/AffiliateOffers";
-import AdSenseUnit from "@/components/AdSenseUnit";
+import MonetizationBlock from "@/components/MonetizationBlock";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from "@/lib/seo";
 
 const Features = lazy(() => import("@/components/Features"));
@@ -23,15 +22,20 @@ const Index = () => {
       <main className="flex-1">
         <Hero />
         <ToolsGrid />
+        <section className="container mx-auto px-4 py-8">
+          <MonetizationBlock placement="home-below-tools" />
+        </section>
         <Suspense fallback={<BelowFoldFallback />}>
           <Features />
         </Suspense>
         <Suspense fallback={<BelowFoldFallback />}>
           <HowItWorks />
         </Suspense>
-        <section className="container mx-auto space-y-8 px-4 py-10">
-          <AffiliateOffers />
-          <AdSenseUnit slot="inarticle" />
+        <section className="container mx-auto px-4 py-10">
+          <MonetizationBlock
+            placement="home-below-content"
+            showAffiliate={false}
+          />
         </section>
       </main>
       <Footer />
