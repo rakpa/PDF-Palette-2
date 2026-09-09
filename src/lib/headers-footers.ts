@@ -16,7 +16,8 @@ export const DEFAULT_HEADERS_FOOTERS: HeaderFooterOptions = {
   headerCenter: "",
   headerRight: "",
   footerLeft: "",
-  footerCenter: "",
+  // Pre-filled so "Add headers & footers" works without empty-form failure.
+  footerCenter: "Page {n} of {N}",
   footerRight: "",
   fontSize: 10,
   margin: 36,
