@@ -225,7 +225,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to PowerPoint",
-    hint: "Upload a PDF. Each page becomes a slide, with editable text boxes, pictures and tables where they stood.",
+    hint: "Upload a PDF. It is converted to an editable PowerPoint (.pptx) file that keeps the original look.",
   },
   "page-numbers": {
     accept: { "application/pdf": [".pdf"] },
@@ -715,6 +715,7 @@ const ToolPage = () => {
         const waitForDownload =
           tool.feature === "pdf-to-word-ilove" ||
           tool.feature === "word-to-pdf-ilove" ||
+          tool.feature === "pdf-to-ppt" ||
           fetchesUrl;
         if (res.blob && !waitForDownload) downloadResult(res);
       } else {
@@ -885,6 +886,7 @@ const ToolPage = () => {
                 label={
                   tool.feature === "pdf-to-word-ilove" ||
                   tool.feature === "word-to-pdf-ilove" ||
+                  tool.feature === "pdf-to-ppt" ||
                   fetchesUrl
                     ? convertStatus || "Converting…"
                     : tool.feature === "ocr"
@@ -902,6 +904,7 @@ const ToolPage = () => {
                     tool.feature === "word-to-pdf-ilove" ||
                     tool.feature === "pdf-to-word" ||
                     tool.feature === "pdf-to-word-ilove" ||
+                    tool.feature === "pdf-to-ppt" ||
                     tool.feature === "html-to-pdf" ||
                     tool.feature === "ocr") &&
                   progress === 0 &&
@@ -927,6 +930,7 @@ const ToolPage = () => {
                     size={
                       tool.feature === "pdf-to-word-ilove" ||
                       tool.feature === "word-to-pdf-ilove" ||
+                      tool.feature === "pdf-to-ppt" ||
                       fetchesUrl
                         ? "default"
                         : "sm"
@@ -934,6 +938,7 @@ const ToolPage = () => {
                     variant={
                       tool.feature === "pdf-to-word-ilove" ||
                       tool.feature === "word-to-pdf-ilove" ||
+                      tool.feature === "pdf-to-ppt" ||
                       fetchesUrl
                         ? "default"
                         : "outline"

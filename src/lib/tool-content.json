@@ -1,9 +1,9 @@
 {
   "/pdf-to-word": {
     "name": "PDF to Word",
-    "title": "PDF to Word Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert PDF to Word (.docx) free online. Editable text, tables and layout — no sign-up, no watermark. Fast PDF to DOCX with PDF Palette.",
-    "intro": "Convert PDF to editable Word documents Use this free online pdf to word tool: upload your file, run the tool, and download the result. No account is required and PDF Palette does not keep your document. Search for “PDF to Word” when you need DOCX you can edit in Microsoft Word, Google Docs, or LibreOffice.",
+    "title": "PDF to Word Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert PDF to Word (.docx) free online. Editable text, tables and layout \u2014 no sign-up, no watermark. Fast PDF to DOCX with PDF Palette.",
+    "intro": "Convert PDF to editable Word documents Use this free online pdf to word tool: upload your file, run the tool, and download the result. No account is required and PDF Palette does not keep your document. Search for \u201cPDF to Word\u201d when you need DOCX you can edit in Microsoft Word, Google Docs, or LibreOffice.",
     "steps": [
       "Drop your PDF onto the upload area, or click to pick a file.",
       "Wait while the document converts.",
@@ -12,7 +12,7 @@
     "faqs": [
       {
         "q": "Will the formatting stay the same?",
-        "a": "Fonts, sizes, colours, alignment, tables and images are reconstructed from the PDF. Complex multi-column magazine layouts may need a little cleanup, but ordinary documents — reports, CVs, letters, invoices — come across closely."
+        "a": "Fonts, sizes, colours, alignment, tables and images are reconstructed from the PDF. Complex multi-column magazine layouts may need a little cleanup, but ordinary documents \u2014 reports, CVs, letters, invoices \u2014 come across closely."
       },
       {
         "q": "Does it work on scanned PDFs?",
@@ -20,7 +20,7 @@
       },
       {
         "q": "Is my file uploaded anywhere?",
-        "a": "Yes — this tool sends the PDF for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
+        "a": "Yes \u2014 this tool sends the PDF for conversion. PDF Palette does not keep a copy after the download is ready. See the Privacy Policy."
       },
       {
         "q": "Is there a file size or page limit?",
@@ -36,18 +36,18 @@
       },
       {
         "q": "Can I use PDF to Word on my phone?",
-        "a": "Yes. PDF to Word works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. PDF to Word works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I pdf to word online for free?",
-        "a": "Open PDF Palette’s PDF to Word page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s PDF to Word page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/word-to-pdf": {
     "name": "Word to PDF",
-    "title": "Word to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert Word to PDF free online. Turn .docx into a shareable PDF — no sign-up, no watermark. Fast DOCX to PDF with PDF Palette.",
+    "title": "Word to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert Word to PDF free online. Turn .docx into a shareable PDF \u2014 no sign-up, no watermark. Fast DOCX to PDF with PDF Palette.",
     "intro": "Convert Word documents to PDF Use this free online word to pdf tool: upload your file, run the tool, and download the result. No account is required and PDF Palette does not keep your document. Ideal when a client or printer asks for PDF instead of an editable Word file.",
     "steps": [
       "Select the Word document you want to convert.",
@@ -81,28 +81,28 @@
       },
       {
         "q": "Can I use Word to PDF on my phone?",
-        "a": "Yes. Word to PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Word to PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I word to pdf online for free?",
-        "a": "Open PDF Palette’s Word to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s Word to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/compress-pdf": {
     "name": "Compress PDF",
-    "title": "Compress PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Compress PDF free online to reduce file size. Shrink large PDFs for email or upload — no sign-up. Fast PDF compressor in your browser.",
+    "title": "Compress PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Compress PDF free online to reduce file size. Shrink large PDFs for email or upload \u2014 no sign-up. Fast PDF compressor in your browser.",
     "intro": "Shrink a PDF so it fits an email attachment limit or an upload form. PDF Palette runs a real Ghostscript pipeline compiled to WebAssembly, so image downsampling and stream compression happen in your tab rather than on someone else's server. Pick a level, see the size before and after, and download. Useful before email attachments, uploads, or sharing on mobile.",
     "steps": [
       "Add the PDF you want to make smaller.",
-      "Choose a compression level — higher compression means smaller files and softer images.",
+      "Choose a compression level \u2014 higher compression means smaller files and softer images.",
       "Compare the original and compressed sizes, then download the result."
     ],
     "faqs": [
       {
         "q": "How much smaller will my file get?",
-        "a": "It depends on what is in it. Scans and photo-heavy PDFs often drop by 60–90%. A PDF that is mostly text is already small and will shrink much less."
+        "a": "It depends on what is in it. Scans and photo-heavy PDFs often drop by 60\u201390%. A PDF that is mostly text is already small and will shrink much less."
       },
       {
         "q": "Will the text stay sharp?",
@@ -126,22 +126,22 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Compress PDF on my phone?",
-        "a": "Yes. Compress PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Compress PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/merge-pdf": {
     "name": "Merge PDF",
-    "title": "Merge PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Merge PDF files free online. Combine multiple PDFs into one document in any order — no sign-up. Fast PDF merger in your browser.",
-    "intro": "Join several PDFs into a single document — contracts and their annexes, a scanned form and its attachments, chapters into one report. Add up to 20 files, arrange them in the order you want, and download one combined PDF. Nothing is uploaded. Common for combining contracts, scanned chapters, or invoice packs into one file.",
+    "title": "Merge PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Merge PDF files free online. Combine multiple PDFs into one document in any order \u2014 no sign-up. Fast PDF merger in your browser.",
+    "intro": "Join several PDFs into a single document \u2014 contracts and their annexes, a scanned form and its attachments, chapters into one report. Add up to 20 files, arrange them in the order you want, and download one combined PDF. Nothing is uploaded. Common for combining contracts, scanned chapters, or invoice packs into one file.",
     "steps": [
       "Add two or more PDF files.",
-      "Check the order in the file list — the documents are combined top to bottom.",
+      "Check the order in the file list \u2014 the documents are combined top to bottom.",
       "Merge, then download the single combined PDF."
     ],
     "faqs": [
@@ -171,18 +171,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Merge PDF on my phone?",
-        "a": "Yes. Merge PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Merge PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/split-pdf": {
     "name": "Split PDF",
-    "title": "Split PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Split PDF free online. Extract pages or divide a PDF into separate files — no sign-up. Fast PDF splitter in your browser.",
+    "title": "Split PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Split PDF free online. Extract pages or divide a PDF into separate files \u2014 no sign-up. Fast PDF splitter in your browser.",
     "intro": "Break a large PDF into smaller ones. Split by page ranges to pull out a chapter or a signed section, or split into one file per page when you need every page separately. You see the page thumbnails as you choose, so you can check before you download. Use it to share only the pages someone needs without sending the whole document.",
     "steps": [
       "Upload the PDF you want to split.",
@@ -192,7 +192,7 @@
     "faqs": [
       {
         "q": "Can I split into uneven ranges?",
-        "a": "Yes. Define each range separately — for example 1–3, 4, and 9–12 — and each becomes its own PDF."
+        "a": "Yes. Define each range separately \u2014 for example 1\u20133, 4, and 9\u201312 \u2014 and each becomes its own PDF."
       },
       {
         "q": "Does splitting change the pages?",
@@ -216,22 +216,22 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Split PDF on my phone?",
-        "a": "Yes. Split PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Split PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/pdf-to-jpg": {
     "name": "PDF to JPG/PNG",
-    "title": "PDF to JPG/PNG Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert PDF to JPG free online. Export each page as a high-quality JPEG image — no sign-up. Fast PDF to JPG with PDF Palette.",
+    "title": "PDF to JPG/PNG Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert PDF to JPG free online. Export each page as a high-quality JPEG image \u2014 no sign-up. Fast PDF to JPG with PDF Palette.",
     "intro": "Turn PDF pages into images you can drop into a slide, a post or a document. Choose JPG for smaller files or PNG for lossless edges, and pick a resolution from screen quality up to 300 dpi for print. Each page becomes one image file.",
     "steps": [
       "Upload the PDF.",
-      "Choose the format (JPG or PNG) and the resolution — 96, 150 or 300 dpi.",
+      "Choose the format (JPG or PNG) and the resolution \u2014 96, 150 or 300 dpi.",
       "Convert and download the page images."
     ],
     "faqs": [
@@ -249,7 +249,7 @@
       },
       {
         "q": "Are the images watermarked?",
-        "a": "No. There are no watermarks and no limits — the tool is free."
+        "a": "No. There are no watermarks and no limits \u2014 the tool is free."
       },
       {
         "q": "Is PDF to JPG/PNG free?",
@@ -261,22 +261,22 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use PDF to JPG/PNG on my phone?",
-        "a": "Yes. PDF to JPG/PNG works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. PDF to JPG/PNG works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/jpg-to-pdf": {
     "name": "JPG/PNG to PDF",
-    "title": "JPG/PNG to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert JPG or PNG to PDF free online. Combine images into one PDF — no sign-up, no watermark. Fast image to PDF with PDF Palette.",
+    "title": "JPG/PNG to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert JPG or PNG to PDF free online. Combine images into one PDF \u2014 no sign-up, no watermark. Fast image to PDF with PDF Palette.",
     "intro": "Combine photos or scans into one PDF. Add up to 30 JPG or PNG images and each becomes a page, in the order you arrange them. Useful for turning phone photos of a document, receipts or ID scans into something you can attach or print.",
     "steps": [
       "Add your JPG or PNG images.",
-      "Check the order — one image becomes one page, top to bottom.",
+      "Check the order \u2014 one image becomes one page, top to bottom.",
       "Create the PDF and download it."
     ],
     "faqs": [
@@ -306,19 +306,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use JPG/PNG to PDF on my phone?",
-        "a": "Yes. JPG/PNG to PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. JPG/PNG to PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/pdf-to-excel": {
     "name": "PDF to Excel",
-    "title": "PDF to Excel Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert PDF to Excel free online. Extract tables into an editable spreadsheet — no sign-up. Fast PDF to XLSX with PDF Palette.",
-    "intro": "Pull tabular data out of a PDF and into a spreadsheet you can actually calculate with. PDF Palette detects table structure from the position of the text on the page — column boundaries, row breaks and merged cells — and writes a .xlsx file with the values in real cells.",
+    "title": "PDF to Excel Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert PDF to Excel free online. Extract tables into an editable spreadsheet \u2014 no sign-up. Fast PDF to XLSX with PDF Palette.",
+    "intro": "Pull tabular data out of a PDF and into a spreadsheet you can actually calculate with. PDF Palette detects table structure from the position of the text on the page \u2014 column boundaries, row breaks and merged cells \u2014 and writes a .xlsx file with the values in real cells.",
     "steps": [
       "Upload the PDF containing the table or tables.",
       "Let the table detection pass run over each page.",
@@ -351,18 +351,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use PDF to Excel on my phone?",
-        "a": "Yes. PDF to Excel works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. PDF to Excel works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/excel-to-pdf": {
     "name": "Excel to PDF",
-    "title": "Excel to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert Excel to PDF free online. Turn spreadsheets into a shareable PDF — no sign-up. Fast XLSX to PDF with PDF Palette.",
+    "title": "Excel to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert Excel to PDF free online. Turn spreadsheets into a shareable PDF \u2014 no sign-up. Fast XLSX to PDF with PDF Palette.",
     "intro": "Turn a spreadsheet into a PDF that anyone can open and that nobody can accidentally edit. Cell values, number formats, fonts, fills and borders are laid out page by page, so the printed result matches what you see in the sheet.",
     "steps": [
       "Upload your .xlsx or .xls file.",
@@ -396,19 +396,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Excel to PDF on my phone?",
-        "a": "Yes. Excel to PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Excel to PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/pdf-to-powerpoint": {
     "name": "PDF to PowerPoint",
-    "title": "PDF to PowerPoint Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert PDF to PowerPoint free online. Turn pages into editable PPTX slides — no sign-up. Fast PDF to PPT with PDF Palette.",
-    "intro": "Turn a PDF back into a presentation. Each PDF page becomes a slide, with the text placed in editable text boxes rather than flattened into a picture, so you can rework the deck in PowerPoint, Keynote or Google Slides.",
+    "title": "PDF to PowerPoint Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert PDF to PowerPoint free online. Turn pages into editable PPTX slides \u2014 no sign-up. Fast PDF to PPT with PDF Palette.",
+    "intro": "Turn each PDF page into an editable PowerPoint slide. The file is sent for conversion only \u2014 PDF Palette does not keep a copy. Download a .pptx you can open in Microsoft PowerPoint, Google Slides, or LibreOffice Impress.",
     "steps": [
       "Upload the PDF.",
       "Each page is analysed and rebuilt as a slide.",
@@ -441,18 +441,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "The file is sent for conversion only. PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use PDF to PowerPoint on my phone?",
-        "a": "Yes. PDF to PowerPoint works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. PDF to PowerPoint works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/powerpoint-to-pdf": {
     "name": "PowerPoint to PDF",
-    "title": "PowerPoint to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert PowerPoint to PDF free online. Export PPTX as a fixed PDF — no sign-up. Fast PowerPoint to PDF with PDF Palette.",
+    "title": "PowerPoint to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert PowerPoint to PDF free online. Export PPTX as a fixed PDF \u2014 no sign-up. Fast PowerPoint to PDF with PDF Palette.",
     "intro": "Share a deck as a PDF so it opens the same way everywhere and nobody needs PowerPoint. Each slide becomes one page, with text, fonts, colours, images and shape positions laid out as they appear in the presentation.",
     "steps": [
       "Upload your .pptx or .ppt file.",
@@ -486,19 +486,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use PowerPoint to PDF on my phone?",
-        "a": "Yes. PowerPoint to PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. PowerPoint to PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/edit-pdf": {
     "name": "Edit PDF",
-    "title": "Edit PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Edit PDF free online. Add text, images and annotations in your browser — no sign-up. Simple PDF editor with PDF Palette.",
-    "intro": "Mark up a PDF without buying an editor. Add text boxes, drop in images, draw shapes and arrows, highlight passages and leave notes, then save a new PDF with your changes baked in. Everything happens in the tab — the document is never uploaded.",
+    "title": "Edit PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Edit PDF free online. Add text, images and annotations in your browser \u2014 no sign-up. Simple PDF editor with PDF Palette.",
+    "intro": "Mark up a PDF without buying an editor. Add text boxes, drop in images, draw shapes and arrows, highlight passages and leave notes, then save a new PDF with your changes baked in. Everything happens in the tab \u2014 the document is never uploaded.",
     "steps": [
       "Upload the PDF you want to edit.",
       "Use the toolbar to add text, images, shapes, highlights or freehand drawing on any page.",
@@ -515,7 +515,7 @@
       },
       {
         "q": "Can I delete something from the page?",
-        "a": "To genuinely remove content rather than cover it, use Redact PDF — drawing a box over text does not delete the text underneath."
+        "a": "To genuinely remove content rather than cover it, use Redact PDF \u2014 drawing a box over text does not delete the text underneath."
       },
       {
         "q": "Are my edits saved automatically?",
@@ -531,22 +531,22 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Edit PDF on my phone?",
-        "a": "Yes. Edit PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Edit PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/sign-pdf": {
     "name": "Sign PDF",
-    "title": "Sign PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Sign PDF free online. Draw or type your signature and place it on the page — no sign-up. Fast e-sign PDF with PDF Palette.",
+    "title": "Sign PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Sign PDF free online. Draw or type your signature and place it on the page \u2014 no sign-up. Fast e-sign PDF with PDF Palette.",
     "intro": "Sign a document without printing and scanning it. Draw your signature with a mouse or finger, type it in a handwriting style, or upload an image of it, then position and resize it on any page. Add a date or initials alongside it and download the signed PDF.",
     "steps": [
       "Upload the PDF you need to sign.",
-      "Create your signature — draw it, type it, or upload an image.",
+      "Create your signature \u2014 draw it, type it, or upload an image.",
       "Place and resize it on the page, then download the signed document."
     ],
     "faqs": [
@@ -572,26 +572,26 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Sign PDF on my phone?",
-        "a": "Yes. Sign PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Sign PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I sign pdf online for free?",
-        "a": "Open PDF Palette’s Sign PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s Sign PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/ocr-pdf": {
     "name": "OCR PDF",
-    "title": "OCR PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "OCR PDF free online. Make scanned PDFs searchable and copyable — no sign-up. Optical character recognition with PDF Palette.",
+    "title": "OCR PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "OCR PDF free online. Make scanned PDFs searchable and copyable \u2014 no sign-up. Optical character recognition with PDF Palette.",
     "intro": "A scanned document is just a picture of text: you cannot search it, select it or copy from it. OCR adds an invisible text layer behind the image so the page looks identical but becomes searchable, selectable and ready for conversion to Word or Excel. After OCR, you can search, select, and copy text that was previously stuck in an image.",
     "steps": [
       "Upload the scanned PDF.",
-      "Wait for recognition to finish — this is the slowest step, and it runs on your own device.",
+      "Wait for recognition to finish \u2014 this is the slowest step, and it runs on your own device.",
       "Download the searchable PDF."
     ],
     "faqs": [
@@ -609,7 +609,7 @@
       },
       {
         "q": "Can I then convert it to Word?",
-        "a": "Yes — that is the usual next step. Once the text layer exists, PDF to Word and PDF to Excel both work on the document."
+        "a": "Yes \u2014 that is the usual next step. Once the text layer exists, PDF to Word and PDF to Excel both work on the document."
       },
       {
         "q": "Is OCR PDF free?",
@@ -621,19 +621,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use OCR PDF on my phone?",
-        "a": "Yes. OCR PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. OCR PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/unlock-pdf": {
     "name": "Unlock PDF",
-    "title": "Unlock PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Unlock PDF free online. Remove PDF password restrictions you know — no sign-up. Open protected PDFs with PDF Palette.",
-    "intro": "Take the password off a PDF you are entitled to open. Supply the password once and download a copy that opens freely — useful for bank statements and payslips that arrive encrypted and that you need to archive, print or convert.",
+    "title": "Unlock PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Unlock PDF free online. Remove PDF password restrictions you know \u2014 no sign-up. Open protected PDFs with PDF Palette.",
+    "intro": "Take the password off a PDF you are entitled to open. Supply the password once and download a copy that opens freely \u2014 useful for bank statements and payslips that arrive encrypted and that you need to archive, print or convert.",
     "steps": [
       "Upload the protected PDF.",
       "Enter the password that opens it.",
@@ -642,7 +642,7 @@
     "faqs": [
       {
         "q": "Do I need to know the password?",
-        "a": "Yes. This tool removes protection from a document you can already open — it does not crack or guess passwords."
+        "a": "Yes. This tool removes protection from a document you can already open \u2014 it does not crack or guess passwords."
       },
       {
         "q": "Is it legal to remove a PDF password?",
@@ -666,19 +666,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Unlock PDF on my phone?",
-        "a": "Yes. Unlock PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Unlock PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/protect-pdf": {
     "name": "Protect PDF",
-    "title": "Protect PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Protect PDF free online. Add a password so others need it to open the file — no sign-up. Encrypt PDFs with PDF Palette.",
-    "intro": "Put a password on a document before you email or share it. The PDF is encrypted so it cannot be opened without the password — which means the password itself has to reach the recipient some other way, not in the same message as the file.",
+    "title": "Protect PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Protect PDF free online. Add a password so others need it to open the file \u2014 no sign-up. Encrypt PDFs with PDF Palette.",
+    "intro": "Put a password on a document before you email or share it. The PDF is encrypted so it cannot be opened without the password \u2014 which means the password itself has to reach the recipient some other way, not in the same message as the file.",
     "steps": [
       "Upload the PDF you want to protect.",
       "Choose a password and confirm it.",
@@ -691,7 +691,7 @@
       },
       {
         "q": "How strong is the encryption?",
-        "a": "The PDF is encrypted with standard PDF encryption. As always, the real strength is the password you choose — long and unique beats short and clever."
+        "a": "The PDF is encrypted with standard PDF encryption. As always, the real strength is the password you choose \u2014 long and unique beats short and clever."
       },
       {
         "q": "Is my password uploaded?",
@@ -711,22 +711,22 @@
       },
       {
         "q": "Can I use Protect PDF on my phone?",
-        "a": "Yes. Protect PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Protect PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I protect pdf online for free?",
-        "a": "Open PDF Palette’s Protect PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s Protect PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/rotate-pdf": {
     "name": "Rotate PDF",
-    "title": "Rotate PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Rotate PDF free online. Fix sideways or upside-down pages permanently — no sign-up. Rotate PDF pages with PDF Palette.",
-    "intro": "Fix a document that was scanned sideways or upside down. Choose how far to turn the pages and download a PDF that opens the right way up everywhere — unlike rotating in a viewer, which usually only changes what you see on screen.",
+    "title": "Rotate PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Rotate PDF free online. Fix sideways or upside-down pages permanently \u2014 no sign-up. Rotate PDF pages with PDF Palette.",
+    "intro": "Fix a document that was scanned sideways or upside down. Choose how far to turn the pages and download a PDF that opens the right way up everywhere \u2014 unlike rotating in a viewer, which usually only changes what you see on screen.",
     "steps": [
       "Upload the PDF.",
-      "Choose the rotation — 90, 180 or 270 degrees.",
+      "Choose the rotation \u2014 90, 180 or 270 degrees.",
       "Download the corrected PDF."
     ],
     "faqs": [
@@ -740,7 +740,7 @@
       },
       {
         "q": "Does rotating reduce quality?",
-        "a": "No. Nothing is re-rendered — only the page orientation flag changes."
+        "a": "No. Nothing is re-rendered \u2014 only the page orientation flag changes."
       },
       {
         "q": "Why does my viewer show it sideways again?",
@@ -756,18 +756,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Rotate PDF on my phone?",
-        "a": "Yes. Rotate PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Rotate PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/organize-pdf": {
     "name": "Organize PDF",
-    "title": "Organize PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Organize PDF free online. Reorder, rotate or delete pages in one place — no sign-up. Rearrange PDF pages with PDF Palette.",
+    "title": "Organize PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Organize PDF free online. Reorder, rotate or delete pages in one place \u2014 no sign-up. Rearrange PDF pages with PDF Palette.",
     "intro": "Rearrange a document by looking at it. Every page appears as a thumbnail you can drag into a new position, rotate on its own, duplicate or delete. It is the fastest way to fix a scan that came out in the wrong order or to drop the pages you do not need.",
     "steps": [
       "Upload the PDF to see all its pages as thumbnails.",
@@ -785,7 +785,7 @@
       },
       {
         "q": "Is the original file changed?",
-        "a": "No. Your original stays untouched on disk — you download a new PDF."
+        "a": "No. Your original stays untouched on disk \u2014 you download a new PDF."
       },
       {
         "q": "Does page quality change?",
@@ -801,18 +801,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Organize PDF on my phone?",
-        "a": "Yes. Organize PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Organize PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/watermark-pdf": {
     "name": "Watermark PDF",
-    "title": "Watermark PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Add a watermark to PDF free online. Place text or an image across pages — no sign-up. Watermark PDFs with PDF Palette.",
+    "title": "Watermark PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Add a watermark to PDF free online. Place text or an image across pages \u2014 no sign-up. Watermark PDFs with PDF Palette.",
     "intro": "Mark a document before you circulate it. Add text like DRAFT, CONFIDENTIAL or your company name diagonally across every page, so a copy is recognisable wherever it ends up.",
     "steps": [
       "Upload the PDF.",
@@ -826,7 +826,7 @@
       },
       {
         "q": "Can the watermark be removed afterwards?",
-        "a": "A watermark is a deterrent, not a security control — it is drawn into the page and can be worked around by a determined person. Use Protect PDF when you need real access control."
+        "a": "A watermark is a deterrent, not a security control \u2014 it is drawn into the page and can be worked around by a determined person. Use Protect PDF when you need real access control."
       },
       {
         "q": "Does it hide the text underneath?",
@@ -846,18 +846,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Watermark PDF on my phone?",
-        "a": "Yes. Watermark PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Watermark PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/html-to-pdf": {
     "name": "HTML to PDF",
-    "title": "HTML to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert HTML or a web page URL to PDF free online. Save pages as PDF — no sign-up. HTML to PDF with PDF Palette.",
+    "title": "HTML to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert HTML or a web page URL to PDF free online. Save pages as PDF \u2014 no sign-up. HTML to PDF with PDF Palette.",
     "intro": "Save a web page or an HTML file as a PDF you can archive, print or share. The text stays selectable and searchable rather than being flattened into a picture. Uploading an HTML file is converted entirely in your browser; converting a live URL is the one case where the address has to be fetched for you, because a browser tab cannot load arbitrary third-party pages on your behalf. Paste a public URL or upload HTML when you need a printable snapshot of a page.",
     "steps": [
       "Upload an .html file, or paste the address of the page you want to capture.",
@@ -891,19 +891,19 @@
       },
       {
         "q": "Can I use HTML to PDF on my phone?",
-        "a": "Yes. HTML to PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. HTML to PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I html to pdf online for free?",
-        "a": "Open PDF Palette’s HTML to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s HTML to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/extract-pages": {
     "name": "Extract Pages",
-    "title": "Extract Pages Free Online — No Sign-Up | PDF Palette",
-    "description": "Extract pages from PDF free online. Save selected pages as a new PDF — no sign-up. Pull pages out with PDF Palette.",
-    "intro": "Keep only the pages you need. Select them from the page thumbnails — a single page, a range, or a scattered handful — and download them as one new PDF. The original file is untouched.",
+    "title": "Extract Pages Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Extract pages from PDF free online. Save selected pages as a new PDF \u2014 no sign-up. Pull pages out with PDF Palette.",
+    "intro": "Keep only the pages you need. Select them from the page thumbnails \u2014 a single page, a range, or a scattered handful \u2014 and download them as one new PDF. The original file is untouched.",
     "steps": [
       "Upload the PDF and browse the page thumbnails.",
       "Select the pages you want to keep.",
@@ -916,7 +916,7 @@
       },
       {
         "q": "Can I pick pages that are not next to each other?",
-        "a": "Yes. Select any combination — for example pages 1, 4 and 9 — and they are collected in page order."
+        "a": "Yes. Select any combination \u2014 for example pages 1, 4 and 9 \u2014 and they are collected in page order."
       },
       {
         "q": "Are the extracted pages identical to the originals?",
@@ -936,19 +936,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Extract Pages on my phone?",
-        "a": "Yes. Extract Pages works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Extract Pages works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/remove-pages": {
     "name": "Remove Pages",
-    "title": "Remove Pages Free Online — No Sign-Up | PDF Palette",
-    "description": "Remove pages from PDF free online. Delete unwanted pages and download a clean file — no sign-up. Edit page list with PDF Palette.",
-    "intro": "Drop the pages you do not want — a blank scan, a cover sheet, an internal note before sending the file on. Select them from the thumbnails and download the document without them.",
+    "title": "Remove Pages Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Remove pages from PDF free online. Delete unwanted pages and download a clean file \u2014 no sign-up. Edit page list with PDF Palette.",
+    "intro": "Drop the pages you do not want \u2014 a blank scan, a cover sheet, an internal note before sending the file on. Select them from the thumbnails and download the document without them.",
     "steps": [
       "Upload the PDF to see its pages.",
       "Select the pages to delete.",
@@ -957,7 +957,7 @@
     "faqs": [
       {
         "q": "Is the content really gone?",
-        "a": "The removed pages are not in the new file at all. Note that removing a page does not redact anything on the pages you keep — use Redact PDF for that."
+        "a": "The removed pages are not in the new file at all. Note that removing a page does not redact anything on the pages you keep \u2014 use Redact PDF for that."
       },
       {
         "q": "Can I undo it?",
@@ -981,19 +981,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Remove Pages on my phone?",
-        "a": "Yes. Remove Pages works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Remove Pages works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/page-numbers": {
     "name": "Add Page Numbers",
-    "title": "Add Page Numbers Free Online — No Sign-Up | PDF Palette",
-    "description": "Add page numbers to PDF free online. Choose position and style — no sign-up. Number PDF pages with PDF Palette.",
-    "intro": "Number a document that arrived without numbers. Choose where the number sits on the page, which format to use, and what number to start from — useful for exhibits, bundles and anything that has to be referenced page by page.",
+    "title": "Add Page Numbers Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Add page numbers to PDF free online. Choose position and style \u2014 no sign-up. Number PDF pages with PDF Palette.",
+    "intro": "Number a document that arrived without numbers. Choose where the number sits on the page, which format to use, and what number to start from \u2014 useful for exhibits, bundles and anything that has to be referenced page by page.",
     "steps": [
       "Upload the PDF.",
       "Choose the position, format and starting number.",
@@ -1002,7 +1002,7 @@
     "faqs": [
       {
         "q": "Can I start from a number other than 1?",
-        "a": "Yes. Set any starting number — useful when the document is one part of a larger bundle."
+        "a": "Yes. Set any starting number \u2014 useful when the document is one part of a larger bundle."
       },
       {
         "q": "Where can the numbers be placed?",
@@ -1026,19 +1026,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Add Page Numbers on my phone?",
-        "a": "Yes. Add Page Numbers works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Add Page Numbers works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/crop-pdf": {
     "name": "Crop PDF",
-    "title": "Crop PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Crop PDF free online. Trim margins or cut to a custom area — no sign-up. Crop PDF pages with PDF Palette.",
-    "intro": "Trim away wide margins or the black edges left by a scanner. Drag a crop area over the page and apply it, and the visible page area shrinks to what you selected — handy for reading on a small screen, where wasted margin means smaller text.",
+    "title": "Crop PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Crop PDF free online. Trim margins or cut to a custom area \u2014 no sign-up. Crop PDF pages with PDF Palette.",
+    "intro": "Trim away wide margins or the black edges left by a scanner. Drag a crop area over the page and apply it, and the visible page area shrinks to what you selected \u2014 handy for reading on a small screen, where wasted margin means smaller text.",
     "steps": [
       "Upload the PDF.",
       "Drag the crop area to the region you want to keep.",
@@ -1059,7 +1059,7 @@
       },
       {
         "q": "Will cropping make the file smaller?",
-        "a": "Not by much — the underlying content is still there. Use Compress PDF to reduce the file size."
+        "a": "Not by much \u2014 the underlying content is still there. Use Compress PDF to reduce the file size."
       },
       {
         "q": "Is Crop PDF free?",
@@ -1071,19 +1071,19 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Crop PDF on my phone?",
-        "a": "Yes. Crop PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Crop PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/fill-forms": {
     "name": "Fill PDF Forms",
-    "title": "Fill PDF Forms Free Online — No Sign-Up | PDF Palette",
-    "description": "Fill PDF forms free online. Type into fillable fields and save — no sign-up. Complete PDF forms with PDF Palette.",
-    "intro": "Complete a PDF form without printing it. Interactive fields — text boxes, checkboxes, dropdowns — are detected and filled in place, and you can flatten the form on the way out so the answers become part of the page and cannot be edited afterwards.",
+    "title": "Fill PDF Forms Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Fill PDF forms free online. Type into fillable fields and save \u2014 no sign-up. Complete PDF forms with PDF Palette.",
+    "intro": "Complete a PDF form without printing it. Interactive fields \u2014 text boxes, checkboxes, dropdowns \u2014 are detected and filled in place, and you can flatten the form on the way out so the answers become part of the page and cannot be edited afterwards.",
     "steps": [
       "Upload the PDF form.",
       "Fill in the detected fields.",
@@ -1112,23 +1112,23 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Fill PDF Forms on my phone?",
-        "a": "Yes. Fill PDF Forms works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Fill PDF Forms works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I fill pdf forms online for free?",
-        "a": "Open PDF Palette’s Fill PDF Forms page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s Fill PDF Forms page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/redact-pdf": {
     "name": "Redact PDF",
-    "title": "Redact PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Redact PDF free online. Permanently black out sensitive text and images — no sign-up. Secure redaction with PDF Palette.",
-    "intro": "Black out sensitive information so it is actually gone. Drawing a rectangle over text in most editors only hides it — the words are still in the file and can be copied straight back out. This tool rebuilds the redacted pages so the underlying content no longer exists in the document. Unlike drawing a black box on top, true redaction removes the underlying content.",
+    "title": "Redact PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Redact PDF free online. Permanently black out sensitive text and images \u2014 no sign-up. Secure redaction with PDF Palette.",
+    "intro": "Black out sensitive information so it is actually gone. Drawing a rectangle over text in most editors only hides it \u2014 the words are still in the file and can be copied straight back out. This tool rebuilds the redacted pages so the underlying content no longer exists in the document. Unlike drawing a black box on top, true redaction removes the underlying content.",
     "steps": [
       "Upload the PDF.",
       "Draw redaction boxes over the text or images to remove.",
@@ -1141,7 +1141,7 @@
       },
       {
         "q": "Why can't I just draw a black box in an editor?",
-        "a": "Because the text stays underneath. Anyone can select it, copy it, or read it from the file's internals — that mistake has caused a long list of public disclosures."
+        "a": "Because the text stays underneath. Anyone can select it, copy it, or read it from the file's internals \u2014 that mistake has caused a long list of public disclosures."
       },
       {
         "q": "Does redacting affect the rest of the page?",
@@ -1161,18 +1161,18 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only — PDF Palette does not keep a copy."
+        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
       },
       {
         "q": "Can I use Redact PDF on my phone?",
-        "a": "Yes. Redact PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Redact PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       }
     ]
   },
   "/compare-pdf": {
     "name": "Compare PDF",
-    "title": "Compare PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Compare two PDFs free online. Spot text and layout differences side by side — no sign-up. PDF diff with PDF Palette.",
+    "title": "Compare PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Compare two PDFs free online. Spot text and layout differences side by side \u2014 no sign-up. PDF diff with PDF Palette.",
     "intro": "Find out what actually changed between two versions of a document. Load both files and the differences are highlighted page by page, so you can check a revised contract or a re-issued report without reading it line by line.",
     "steps": [
       "Upload the original PDF and the revised one.",
@@ -1206,18 +1206,18 @@
       },
       {
         "q": "Can I use Compare PDF on my phone?",
-        "a": "Yes. Compare PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Compare PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I compare pdf online for free?",
-        "a": "Open PDF Palette’s Compare PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s Compare PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/flatten-pdf": {
     "name": "Flatten PDF",
-    "title": "Flatten PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Flatten PDF free online. Bake form fields and annotations into static pages — no sign-up. Lock PDFs with PDF Palette.",
+    "title": "Flatten PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Flatten PDF free online. Bake form fields and annotations into static pages \u2014 no sign-up. Lock PDFs with PDF Palette.",
     "intro": "Lock a filled form or a finished layout. Flattening bakes interactive fields into the page and redraws each page as a static image, so recipients cannot change the content in a PDF reader.",
     "steps": [
       "Upload the PDF you want to lock down.",
@@ -1227,7 +1227,7 @@
     "faqs": [
       {
         "q": "Can I edit the PDF after flattening?",
-        "a": "No. That is the point — fields and page content become fixed. Keep a copy of the original if you may need to change it later."
+        "a": "No. That is the point \u2014 fields and page content become fixed. Keep a copy of the original if you may need to change it later."
       },
       {
         "q": "Will the text stay searchable?",
@@ -1251,18 +1251,18 @@
       },
       {
         "q": "Can I use Flatten PDF on my phone?",
-        "a": "Yes. Flatten PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. Flatten PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I flatten pdf online for free?",
-        "a": "Open PDF Palette’s Flatten PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s Flatten PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/txt-to-pdf": {
     "name": "TXT to PDF",
-    "title": "TXT to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert TXT to PDF free online. Turn plain text into a clean PDF document — no sign-up. Text to PDF with PDF Palette.",
+    "title": "TXT to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert TXT to PDF free online. Turn plain text into a clean PDF document \u2014 no sign-up. Text to PDF with PDF Palette.",
     "intro": "Convert a plain text file to PDF Use this free online txt to pdf tool: upload your file, run the tool, and download the result. No account is required and PDF Palette does not keep your document.",
     "steps": [
       "Upload a .txt file.",
@@ -1296,18 +1296,18 @@
       },
       {
         "q": "Can I use TXT to PDF on my phone?",
-        "a": "Yes. TXT to PDF works in mobile browsers as well as on desktop — open the page, pick your file, and download when ready."
+        "a": "Yes. TXT to PDF works in mobile browsers as well as on desktop \u2014 open the page, pick your file, and download when ready."
       },
       {
         "q": "How do I txt to pdf online for free?",
-        "a": "Open PDF Palette’s TXT to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
+        "a": "Open PDF Palette\u2019s TXT to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
   },
   "/repair-pdf": {
     "name": "Repair PDF",
-    "title": "Repair PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Repair a damaged PDF free online. Rebuild pages so the file opens reliably — no sign-up. Fix broken PDFs with PDF Palette.",
+    "title": "Repair PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Repair a damaged PDF free online. Rebuild pages so the file opens reliably \u2014 no sign-up. Fix broken PDFs with PDF Palette.",
     "intro": "Some PDFs open with errors or refuse to save. Repair rebuilds the document page by page into a fresh file so viewers and printers can open it again. Processing stays in your browser.",
     "steps": [
       "Upload the damaged PDF.",
@@ -1331,12 +1331,12 @@
   },
   "/extract-text": {
     "name": "Extract Text",
-    "title": "Extract Text from PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Extract text from PDF free online to a .txt file — no sign-up. Copy PDF text quickly with PDF Palette.",
+    "title": "Extract Text from PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Extract text from PDF free online to a .txt file \u2014 no sign-up. Copy PDF text quickly with PDF Palette.",
     "intro": "Pull every selectable text string from a PDF into a plain text download. Useful for quotes, notes, and search. Scanned pages need OCR first.",
     "steps": [
       "Upload your PDF.",
-      "Wait while each page’s text is collected.",
+      "Wait while each page\u2019s text is collected.",
       "Download the .txt file."
     ],
     "faqs": [
@@ -1356,8 +1356,8 @@
   },
   "/extract-images": {
     "name": "Extract Images",
-    "title": "Extract Images from PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Extract images from PDF free online as PNG or a ZIP — no sign-up. Save PDF pictures with PDF Palette.",
+    "title": "Extract Images from PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Extract images from PDF free online as PNG or a ZIP \u2014 no sign-up. Save PDF pictures with PDF Palette.",
     "intro": "Pull embedded pictures out of a PDF. When a page has no separate image objects, that page is saved as a PNG render instead.",
     "steps": [
       "Upload your PDF.",
@@ -1381,8 +1381,8 @@
   },
   "/edit-metadata": {
     "name": "Edit Metadata",
-    "title": "Edit PDF Metadata Free Online — No Sign-Up | PDF Palette",
-    "description": "Edit PDF metadata free online. Change title, author, subject and keywords — no sign-up. Update PDF properties with PDF Palette.",
+    "title": "Edit PDF Metadata Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Edit PDF metadata free online. Change title, author, subject and keywords \u2014 no sign-up. Update PDF properties with PDF Palette.",
     "intro": "PDF files store title, author, subject and keywords separately from the page content. Edit those fields and download an updated copy.",
     "steps": [
       "Upload your PDF.",
@@ -1406,9 +1406,9 @@
   },
   "/headers-footers": {
     "name": "Headers & Footers",
-    "title": "Add PDF Headers and Footers Free Online — No Sign-Up | PDF Palette",
-    "description": "Add headers and footers to PDF free online. Page numbers and custom text — no sign-up. Stamp every page with PDF Palette.",
-    "intro": "Place text at the top or bottom of every page. Use {n} for the page number, {N} for the total, and {date} for today’s date.",
+    "title": "Add PDF Headers and Footers Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Add headers and footers to PDF free online. Page numbers and custom text \u2014 no sign-up. Stamp every page with PDF Palette.",
+    "intro": "Place text at the top or bottom of every page. Use {n} for the page number, {N} for the total, and {date} for today\u2019s date.",
     "steps": [
       "Upload your PDF.",
       "Enter header and footer text for left, center and right.",
@@ -1421,7 +1421,7 @@
       },
       {
         "q": "Can I add page numbers here?",
-        "a": "Yes — use {n} and {N}, or use the dedicated Page Numbers tool."
+        "a": "Yes \u2014 use {n} and {N}, or use the dedicated Page Numbers tool."
       },
       {
         "q": "Is my file private?",
@@ -1431,8 +1431,8 @@
   },
   "/markdown-to-pdf": {
     "name": "Markdown to PDF",
-    "title": "Markdown to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert Markdown to PDF free online. Headings, lists and code — no sign-up. MD to PDF with PDF Palette.",
+    "title": "Markdown to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert Markdown to PDF free online. Headings, lists and code \u2014 no sign-up. MD to PDF with PDF Palette.",
     "intro": "Turn a .md file into a clean PDF. Headings, bullet lists and fenced code blocks are laid out in your browser.",
     "steps": [
       "Upload a .md or .markdown file.",
@@ -1456,8 +1456,8 @@
   },
   "/csv-to-pdf": {
     "name": "CSV to PDF",
-    "title": "CSV to PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Convert CSV to PDF free online. Spreadsheet rows become a printable table — no sign-up. CSV to PDF with PDF Palette.",
+    "title": "CSV to PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Convert CSV to PDF free online. Spreadsheet rows become a printable table \u2014 no sign-up. CSV to PDF with PDF Palette.",
     "intro": "Upload a CSV and get a landscape PDF table. The first row repeats as a header on each page.",
     "steps": [
       "Upload a .csv file.",
@@ -1481,8 +1481,8 @@
   },
   "/auto-redact-pii": {
     "name": "Auto-Redact PII",
-    "title": "Auto-Redact PII in PDF Free Online — No Sign-Up | PDF Palette",
-    "description": "Auto-redact emails, phones and other PII in a PDF free online — no sign-up. Black out personal data with PDF Palette.",
+    "title": "Auto-Redact PII in PDF Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Auto-redact emails, phones and other PII in a PDF free online \u2014 no sign-up. Black out personal data with PDF Palette.",
     "intro": "Scan the PDF for common personal data patterns (email, phone, SSN, card-like numbers, IP), paint black boxes over matches, then flatten so the text cannot be copied.",
     "steps": [
       "Upload your PDF.",
@@ -1506,9 +1506,9 @@
   },
   "/chat-with-pdf": {
     "name": "Summarize & Ask PDF",
-    "title": "Summarize PDF & Ask Questions Free Online — No Sign-Up | PDF Palette",
-    "description": "Summarize a PDF and ask questions free online in your browser — no cloud AI upload. Local PDF Q&A with PDF Palette.",
-    "intro": "Load a PDF to build an extractive summary and search for answers with keyword matching. Nothing is sent to a cloud AI — text stays on your device.",
+    "title": "Summarize PDF & Ask Questions Free Online \u2014 No Sign-Up | PDF Palette",
+    "description": "Summarize a PDF and ask questions free online in your browser \u2014 no cloud AI upload. Local PDF Q&A with PDF Palette.",
+    "intro": "Load a PDF to build an extractive summary and search for answers with keyword matching. Nothing is sent to a cloud AI \u2014 text stays on your device.",
     "steps": [
       "Upload your PDF and click Load & summarize.",
       "Read the summary or download it as .txt.",
@@ -1521,7 +1521,7 @@
       },
       {
         "q": "Is this ChatGPT?",
-        "a": "No. It uses local extractive summary and keyword search — private and offline-capable after load."
+        "a": "No. It uses local extractive summary and keyword search \u2014 private and offline-capable after load."
       },
       {
         "q": "Is my file private?",

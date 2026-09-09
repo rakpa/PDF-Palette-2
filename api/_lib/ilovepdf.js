@@ -208,6 +208,11 @@ export async function startPdfToWord() {
   return startWithWebsiteSession(tool, "/pdf_to_word", "PDF to Word");
 }
 
+export async function startPdfToPowerpoint() {
+  const tool = strip(process.env.ILOVEPDF_PPT_TOOL) || PDF_WORD_TOOL;
+  return startWithWebsiteSession(tool, "/pdf_to_powerpoint", "PDF to PowerPoint");
+}
+
 export async function startHtmlToPdf() {
   const tool = strip(process.env.ILOVEPDF_HTML_TOOL) || HTML_PDF_TOOL;
   return startWithWebsiteSession(tool, "/html-to-pdf", "HTML to PDF");
@@ -345,6 +350,12 @@ export function looksLikeWord(processResult) {
   const ext = String(processResult.outputExtensions || "").toLowerCase();
   const name = String(processResult.downloadFilename || "").toLowerCase();
   return ext.includes("docx") || ext.includes("doc") || /\.docx?$/.test(name);
+}
+
+export function looksLikePowerpoint(processResult) {
+  const ext = String(processResult.outputExtensions || "").toLowerCase();
+  const name = String(processResult.downloadFilename || "").toLowerCase();
+  return ext.includes("pptx") || ext.includes("ppt") || /\.pptx?$/.test(name);
 }
 
 export function looksLikePdf(processResult) {

@@ -1,6 +1,7 @@
 import {
   assertPublicPageUrl,
   startHtmlToPdf,
+  startPdfToPowerpoint,
   startPdfToWord,
   startWordToPdf,
   uploadPublicUrl,
@@ -10,6 +11,7 @@ import { guardMethod, readJson, sendError, sendJson } from "../_lib/http.js";
 function kindOf(body) {
   if (body.kind === "word-to-pdf") return "word-to-pdf";
   if (body.kind === "html-to-pdf") return "html-to-pdf";
+  if (body.kind === "pdf-to-ppt") return "pdf-to-ppt";
   return "pdf-to-word";
 }
 
@@ -47,12 +49,26 @@ export default async function handler(req, res) {
       return;
     }
 
-    const filename = String(body.filename || (kind === "word-to-pdf" ? "document.docx" : "document.pdf"));
-    const started = kind === "word-to-pdf" ? await startWordToPdf() : await startPdfToWord();
+    const filename = String(
+      body.filename ||
+        (kind === "word-to-pdf" ? "document.docx" : "document.pdf")
+    );
+    const started =
+      kind === "word-to-pdf"
+        ? await startWordToPdf()
+        : kind === "pdf-to-ppt"
+          ? await startPdfToPowerpoint()
+          : await startPdfToWord();
     const base =
       kind === "word-to-pdf"
         ? filename.replace(/\.docx?$/i, "") || "document"
         : filename.replace(/\.pdf$/i, "") || "document";
+    const outName =
+      kind === "word-to-pdf"
+        ? `${base}.pdf`
+        : kind === "pdf-to-ppt"
+          ? `${base}.pptx`
+          : `${base}.docx`;
     sendJson(res, 200, {
       engine: "ilovepdf",
       token: started.token,
@@ -60,7 +76,7 @@ export default async function handler(req, res) {
       task: started.task,
       tool: started.tool,
       uploadUrl: `https://${started.server}/v1/upload`,
-      filename: kind === "word-to-pdf" ? `${base}.pdf` : `${base}.docx`,
+      filename: outName,
     });
   } catch (error) {
     sendError(res, error);

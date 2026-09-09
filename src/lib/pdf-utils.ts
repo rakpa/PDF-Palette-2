@@ -11,12 +11,12 @@ import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { convertPdfToWordFidelity } from "./pdf-to-word-new/convert";
+import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
+import { convertPdfToPptIlove } from "./ilovepdf-direct";
 import {
   convertPdfToWordViaIlove,
   convertWordToPdfViaIlove,
 } from "./pdf-to-word-ilove-client";
-import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
-import { convertPdfToPptBrowser } from "./pdf-to-ppt-browser";
 import { unlockPdfLocal } from "./unlock-pdf-client";
 import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
@@ -666,8 +666,13 @@ export async function pdfToPpt(
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = await convertPdfToPptBrowser(file, onProgress);
-    return { success: true, blob, filename, message: "Presentation ready." };
+    const { blob, filename } = await convertPdfToPptIlove(file, onProgress);
+    return {
+      success: true,
+      blob,
+      filename: filename.endsWith(".pptx") ? filename : `${filename.replace(/\.pdf$/i, "") || "document"}.pptx`,
+      message: "Presentation ready.",
+    };
   } catch (error) {
     return {
       success: false,

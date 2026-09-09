@@ -30,7 +30,7 @@ function iloveApiUrl(name: "health" | "start" | "process"): string {
   return `/api/ilove/${name}`;
 }
 
-type ConvertKind = "pdf-to-word" | "word-to-pdf" | "html-to-pdf";
+type ConvertKind = "pdf-to-word" | "word-to-pdf" | "html-to-pdf" | "pdf-to-ppt";
 
 function outputFilename(name: string, kind: ConvertKind): string {
   if (kind === "word-to-pdf" || kind === "html-to-pdf") {
@@ -43,6 +43,9 @@ function outputFilename(name: string, kind: ConvertKind): string {
       }
     }
     return `${name.replace(/\.docx?$/i, "") || "document"}.pdf`;
+  }
+  if (kind === "pdf-to-ppt") {
+    return `${name.replace(/\.pdf$/i, "") || "document"}.pptx`;
   }
   return `${name.replace(/\.pdf$/i, "") || "document"}.docx`;
 }
@@ -168,9 +171,15 @@ async function convertViaIlove(
   const missing =
     kind === "word-to-pdf"
       ? "Could not start a Word to PDF task."
-      : "Could not start a PDF to Word task.";
+      : kind === "pdf-to-ppt"
+        ? "Could not start a PDF to PowerPoint task."
+        : "Could not start a PDF to Word task.";
   const empty =
-    kind === "word-to-pdf" ? "Conversion did not return a PDF." : "Conversion did not return a Word file.";
+    kind === "word-to-pdf"
+      ? "Conversion did not return a PDF."
+      : kind === "pdf-to-ppt"
+        ? "Conversion did not return a PowerPoint file."
+        : "Conversion did not return a Word file.";
 
   onProgress?.(8, "Converting…");
   const start = await postJson<StartResponse>(
@@ -285,4 +294,11 @@ export async function convertWordToPdfIlove(
   onProgress?: Progress
 ): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
   return convertViaIlove(file, "word-to-pdf", onProgress);
+}
+
+export async function convertPdfToPptIlove(
+  file: File,
+  onProgress?: Progress
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  return convertViaIlove(file, "pdf-to-ppt", onProgress);
 }
