@@ -299,7 +299,8 @@ function drawInvisibleWord(page: PDFPage, set: FontSet, word: WordBox, pageHeigh
 async function renderRedactedPage(
   bytes: Uint8Array,
   pageNumber: number,
-  boxes: RedactionBox[]
+  boxes: RedactionBox[],
+  fill: RedactFill
 ): Promise<{ data: Uint8Array; width: number; height: number }> {
   const task = pdfjsLib.getDocument({
     data: new Uint8Array(bytes),
@@ -314,16 +315,21 @@ async function renderRedactedPage(
     const canvas = document.createElement("canvas");
     canvas.width = Math.max(1, Math.round(viewport.width));
     canvas.height = Math.max(1, Math.round(viewport.height));
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) throw new RedactError("This browser could not render the page.");
 
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     await page.render({ canvas, canvasContext: ctx, viewport }).promise;
 
-    ctx.fillStyle = "#000000";
     for (const box of boxes) {
-      ctx.fillRect(box.x * SCALE, box.y * SCALE, box.width * SCALE, box.height * SCALE);
+      const x = box.x * SCALE;
+      const y = box.y * SCALE;
+      const w = box.width * SCALE;
+      const h = box.height * SCALE;
+      ctx.fillStyle =
+        fill.mode === "auto" ? sampleBackgroundColor(ctx, x, y, w, h) : fill.color;
+      ctx.fillRect(x, y, w, h);
     }
     page.cleanup();
 
@@ -341,10 +347,90 @@ async function renderRedactedPage(
   }
 }
 
+export type RedactFillMode = "auto" | "color";
+
+export type RedactFill = {
+  mode: RedactFillMode;
+  /** Used when mode is "color". */
+  color: string;
+};
+
+export const DEFAULT_REDACT_FILL: RedactFill = { mode: "auto", color: "#ffffff" };
+
+/**
+ * Pick a fill that matches the page around a redaction box.
+ *
+ * Samples a ring just outside the box (so we read page background, not the
+ * ink being covered). Falls back to page corners, then white.
+ */
+function sampleBackgroundColor(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): string {
+  const canvas = ctx.canvas;
+  const buckets = new Map<string, number>();
+
+  const push = (px: number, py: number) => {
+    const ix = Math.round(px);
+    const iy = Math.round(py);
+    if (ix < 0 || iy < 0 || ix >= canvas.width || iy >= canvas.height) return;
+    try {
+      const [r, g, b] = ctx.getImageData(ix, iy, 1, 1).data;
+      // Quantise so nearby greys/creams vote together.
+      const key = `${r >> 3},${g >> 3},${b >> 3}`;
+      buckets.set(key, (buckets.get(key) ?? 0) + 1);
+    } catch {
+      /* tainted or out of bounds */
+    }
+  };
+
+  const pad = Math.max(2, Math.round(SCALE));
+  const step = Math.max(1, Math.round(SCALE));
+  for (let i = 0; i <= w; i += step) {
+    push(x + i, y - pad);
+    push(x + i, y + h + pad);
+  }
+  for (let j = 0; j <= h; j += step) {
+    push(x - pad, y + j);
+    push(x + w + pad, y + j);
+  }
+
+  // Corners of the page as a last resort (covers full-bleed dark covers).
+  const inset = Math.min(24, Math.floor(Math.min(canvas.width, canvas.height) / 10));
+  for (const [cx, cy] of [
+    [inset, inset],
+    [canvas.width - inset, inset],
+    [inset, canvas.height - inset],
+    [canvas.width - inset, canvas.height - inset],
+  ] as const) {
+    push(cx, cy);
+  }
+
+  let best: string | null = null;
+  let bestCount = 0;
+  for (const [key, count] of buckets) {
+    if (count > bestCount) {
+      best = key;
+      bestCount = count;
+    }
+  }
+  if (!best) return "#ffffff";
+  const [rq, gq, bq] = best.split(",").map(Number);
+  const r = Math.min(255, (rq << 3) + 3);
+  const g = Math.min(255, (gq << 3) + 3);
+  const b = Math.min(255, (bq << 3) + 3);
+  const hex = (n: number) => n.toString(16).padStart(2, "0");
+  return `#${hex(r)}${hex(g)}${hex(b)}`;
+}
+
 export async function applyRedactions(
   bytes: Uint8Array,
   boxes: RedactionBox[],
   pages: PageWords[],
+  fill: RedactFill = DEFAULT_REDACT_FILL,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<Uint8Array> {
   if (boxes.length === 0) throw new RedactError("Mark something to redact first.");
@@ -372,7 +458,7 @@ export async function applyRedactions(
     }
 
     const pageBoxes = boxes.filter((box) => box.page === number);
-    const picture = await renderRedactedPage(bytes, number, pageBoxes);
+    const picture = await renderRedactedPage(bytes, number, pageBoxes, fill);
     const image = await output.embedPng(picture.data);
     const page = output.addPage([picture.width, picture.height]);
     page.drawImage(image, {

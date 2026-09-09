@@ -18,14 +18,23 @@ import FileUploader, { type UploadedFile } from "@/components/FileUploader";
 import { loadPdfForEditing, type LoadedPdf } from "@/lib/pdf-editor/document";
 import {
   applyRedactions,
+  DEFAULT_REDACT_FILL,
   findPhrase,
   readWords,
   RedactError,
+  type RedactFill,
   type RedactionBox,
 } from "@/lib/pdf-redact/redact";
 import PageThumbnail from "./PageThumbnail";
+import { cn } from "@/lib/utils";
 
 type Words = Awaited<ReturnType<typeof readWords>>;
+
+const FILL_PRESETS: { id: "auto" | "white" | "black"; label: string; color?: string }[] = [
+  { id: "auto", label: "Match page" },
+  { id: "white", label: "White", color: "#ffffff" },
+  { id: "black", label: "Black", color: "#000000" },
+];
 
 const PdfRedactor = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
@@ -37,6 +46,7 @@ const PdfRedactor = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fill, setFill] = useState<RedactFill>(DEFAULT_REDACT_FILL);
 
   const surfaceRef = useRef<HTMLDivElement>(null);
   const drawing = useRef<{ x: number; y: number } | null>(null);
@@ -161,7 +171,7 @@ const PdfRedactor = () => {
     if (!loaded || !file) return;
     setSaving(true);
     try {
-      const output = await applyRedactions(loaded.bytes, boxes, words);
+      const output = await applyRedactions(loaded.bytes, boxes, words, fill);
       const copy = new Uint8Array(output);
       saveAs(
         new Blob([copy], { type: "application/pdf" }),
@@ -275,6 +285,69 @@ const PdfRedactor = () => {
         </div>
       </div>
 
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs">Redaction fill</Label>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {FILL_PRESETS.map((preset) => {
+              const active =
+                preset.id === "auto"
+                  ? fill.mode === "auto"
+                  : fill.mode === "color" && fill.color.toLowerCase() === preset.color;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() =>
+                    setFill(
+                      preset.id === "auto"
+                        ? { mode: "auto", color: fill.color }
+                        : { mode: "color", color: preset.color || "#ffffff" }
+                    )
+                  }
+                  className={cn(
+                    "rounded-lg border px-2.5 py-1.5 text-xs font-medium transition",
+                    active
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border text-muted-foreground hover:border-primary/40"
+                  )}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+            <label
+              className={cn(
+                "flex cursor-pointer items-center gap-1.5 rounded-lg border px-2 py-1 text-xs transition",
+                fill.mode === "color" &&
+                  fill.color.toLowerCase() !== "#ffffff" &&
+                  fill.color.toLowerCase() !== "#000000"
+                  ? "border-primary bg-primary/10"
+                  : "border-border text-muted-foreground hover:border-primary/40"
+              )}
+            >
+              <span
+                className="h-4 w-4 rounded border border-border"
+                style={{ backgroundColor: fill.color }}
+              />
+              Custom
+              <input
+                type="color"
+                aria-label="Custom redaction colour"
+                value={/^#[0-9a-fA-F]{6}$/.test(fill.color) ? fill.color : "#808080"}
+                onChange={(event) => setFill({ mode: "color", color: event.target.value })}
+                className="sr-only"
+              />
+            </label>
+          </div>
+        </div>
+        <p className="max-w-sm text-xs text-muted-foreground">
+          {fill.mode === "auto"
+            ? "Match page paints each mark with the background around it — dark covers stay dark, white pages stay white."
+            : "Every mark is filled with the colour you picked."}
+        </p>
+      </div>
+
       <div className="flex items-end gap-2 rounded-xl border border-border bg-card p-3">
         <div className="flex-1 space-y-1.5">
           <Label htmlFor="redact-phrase" className="text-xs">
@@ -313,12 +386,18 @@ const PdfRedactor = () => {
           {[...pageBoxes, ...(draft ? [draft] : [])].map((box, index) => (
             <div
               key={index}
-              className="pointer-events-none absolute bg-slate-900/85 ring-1 ring-slate-900"
+              className={cn(
+                "pointer-events-none absolute ring-1",
+                fill.mode === "auto"
+                  ? "bg-slate-500/55 ring-slate-700/80"
+                  : "ring-black/40"
+              )}
               style={{
                 left: `${(box.x / page.width) * 100}%`,
                 top: `${(box.y / page.height) * 100}%`,
                 width: `${(box.width / page.width) * 100}%`,
                 height: `${(box.height / page.height) * 100}%`,
+                ...(fill.mode === "color" ? { backgroundColor: fill.color } : null),
               }}
             />
           ))}
@@ -327,8 +406,9 @@ const PdfRedactor = () => {
 
       <p className="text-sm text-muted-foreground">
         A page you redact is rebuilt as a picture of itself with the marked areas painted
-        out, so the removed words are not in the file at all. The text that survives stays
-        selectable and searchable; untouched pages are copied through as they were.
+        out, so the removed words are not in the file at all. By default the paint matches
+        the page background (dark cover → dark fill, white page → white fill); you can also
+        force white, black, or a custom colour. Untouched pages are copied through as they were.
       </p>
     </div>
   );
