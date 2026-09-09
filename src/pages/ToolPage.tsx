@@ -218,7 +218,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Convert to Excel",
-    hint: "Upload a PDF. Tables are recovered into sheets — one per page — with numbers as real numbers.",
+    hint: "Upload a PDF. It is converted to an editable Excel (.xlsx) workbook via the same conversion service as PDF to Word.",
   },
   "pdf-to-ppt": {
     accept: { "application/pdf": [".pdf"] },
@@ -701,6 +701,7 @@ const ToolPage = () => {
           tool.feature === "pdf-to-word-ilove" ||
           tool.feature === "word-to-pdf-ilove" ||
           tool.feature === "pdf-to-ppt" ||
+          tool.feature === "pdf-to-excel" ||
           tool.feature === "ocr" ||
           fetchesUrl;
         if (res.blob && !waitForDownload) downloadResult(res);
@@ -873,6 +874,7 @@ const ToolPage = () => {
                   tool.feature === "pdf-to-word-ilove" ||
                   tool.feature === "word-to-pdf-ilove" ||
                   tool.feature === "pdf-to-ppt" ||
+                  tool.feature === "pdf-to-excel" ||
                   tool.feature === "ocr" ||
                   fetchesUrl
                     ? convertStatus || (tool.feature === "ocr" ? "Recognising…" : "Converting…")
@@ -890,6 +892,7 @@ const ToolPage = () => {
                     tool.feature === "pdf-to-word" ||
                     tool.feature === "pdf-to-word-ilove" ||
                     tool.feature === "pdf-to-ppt" ||
+                    tool.feature === "pdf-to-excel" ||
                     tool.feature === "html-to-pdf" ||
                     tool.feature === "ocr") &&
                   progress === 0 &&
@@ -916,6 +919,7 @@ const ToolPage = () => {
                       tool.feature === "pdf-to-word-ilove" ||
                       tool.feature === "word-to-pdf-ilove" ||
                       tool.feature === "pdf-to-ppt" ||
+                      tool.feature === "pdf-to-excel" ||
                       tool.feature === "ocr" ||
                       fetchesUrl
                         ? "default"
@@ -925,6 +929,7 @@ const ToolPage = () => {
                       tool.feature === "pdf-to-word-ilove" ||
                       tool.feature === "word-to-pdf-ilove" ||
                       tool.feature === "pdf-to-ppt" ||
+                      tool.feature === "pdf-to-excel" ||
                       tool.feature === "ocr" ||
                       fetchesUrl
                         ? "default"
@@ -987,6 +992,7 @@ const ToolPage = () => {
               tool.feature === "pdf-to-word-ilove" ||
               tool.feature === "word-to-pdf-ilove" ||
               tool.feature === "pdf-to-ppt" ||
+              tool.feature === "pdf-to-excel" ||
               tool.feature === "ocr" ||
               fetchesUrl
             } />

@@ -318,16 +318,16 @@
     "name": "PDF to Excel",
     "title": "PDF to Excel Free Online \u2014 No Sign-Up | PDF Palette",
     "description": "Convert PDF to Excel free online. Extract tables into an editable spreadsheet \u2014 no sign-up. Fast PDF to XLSX with PDF Palette.",
-    "intro": "Pull tabular data out of a PDF and into a spreadsheet you can actually calculate with. PDF Palette detects table structure from the position of the text on the page \u2014 column boundaries, row breaks and merged cells \u2014 and writes a .xlsx file with the values in real cells.",
+    "intro": "Pull tabular data out of a PDF and into a spreadsheet you can actually calculate with. PDF Palette converts the PDF to an editable .xlsx workbook so you can open it in Excel, Numbers or Google Sheets.",
     "steps": [
       "Upload the PDF containing the table or tables.",
-      "Let the table detection pass run over each page.",
+      "Wait for conversion to finish.",
       "Download the .xlsx file and open it in Excel, Numbers or Google Sheets."
     ],
     "faqs": [
       {
         "q": "Does it work on tables without gridlines?",
-        "a": "Yes. Columns are inferred from where the text sits on the page, so ruled and unruled tables both work. Ruled tables are usually more accurate."
+        "a": "Yes. Column structure is recovered from the page layout, so ruled and unruled tables both work. Ruled tables are usually more accurate."
       },
       {
         "q": "Will formulas be recreated?",
@@ -339,7 +339,7 @@
       },
       {
         "q": "Are multiple tables kept separate?",
-        "a": "Tables found on different pages are written to the sheet in page order so you can see where each one came from."
+        "a": "Tables found across pages are written into the workbook so you can see where each one came from."
       },
       {
         "q": "Is PDF to Excel free?",
@@ -351,7 +351,7 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
+        "a": "PDF to Excel sends the file to a conversion service only for conversion. PDF Palette does not keep a copy. Most other tools still run in your browser."
       },
       {
         "q": "Can I use PDF to Excel on my phone?",

@@ -219,6 +219,12 @@ export async function startPdfOcr() {
   return startWithWebsiteSession(tool, "/ocr-pdf", "OCR PDF");
 }
 
+/** Website tool is pdfoffice + convert_to=xlsx (subtool pdfexcel on /pdf_to_excel). */
+export async function startPdfToExcel() {
+  const tool = strip(process.env.ILOVEPDF_EXCEL_TOOL) || PDF_WORD_TOOL;
+  return startWithWebsiteSession(tool, "/pdf_to_excel", "PDF to Excel");
+}
+
 export async function startHtmlToPdf() {
   const tool = strip(process.env.ILOVEPDF_HTML_TOOL) || HTML_PDF_TOOL;
   return startWithWebsiteSession(tool, "/html-to-pdf", "HTML to PDF");
@@ -362,6 +368,12 @@ export function looksLikePowerpoint(processResult) {
   const ext = String(processResult.outputExtensions || "").toLowerCase();
   const name = String(processResult.downloadFilename || "").toLowerCase();
   return ext.includes("pptx") || ext.includes("ppt") || /\.pptx?$/.test(name);
+}
+
+export function looksLikeExcel(processResult) {
+  const ext = String(processResult.outputExtensions || "").toLowerCase();
+  const name = String(processResult.downloadFilename || "").toLowerCase();
+  return ext.includes("xlsx") || ext.includes("xls") || /\.xlsx?$/.test(name);
 }
 
 export function looksLikePdf(processResult) {

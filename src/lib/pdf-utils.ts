@@ -11,8 +11,7 @@ import { convertExcelToPdfBrowser, ExcelError } from "./excel-to-pdf-browser";
 import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { convertPdfToWordFidelity } from "./pdf-to-word-new/convert";
-import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
-import { convertPdfToPptIlove, convertPdfOcrIlove } from "./ilovepdf-direct";
+import { convertPdfToPptIlove, convertPdfOcrIlove, convertPdfToExcelIlove } from "./ilovepdf-direct";
 import {
   convertPdfToWordViaIlove,
   convertWordToPdfViaIlove,
@@ -651,8 +650,15 @@ export async function pdfToExcel(
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename } = await convertPdfToExcelBrowser(file, onProgress);
-    return { success: true, blob, filename, message: "Workbook ready." };
+    const { blob, filename } = await convertPdfToExcelIlove(file, onProgress);
+    return {
+      success: true,
+      blob,
+      filename: filename.endsWith(".xlsx")
+        ? filename
+        : `${filename.replace(/\.pdf$/i, "") || "document"}.xlsx`,
+      message: "Workbook ready.",
+    };
   } catch (error) {
     return {
       success: false,

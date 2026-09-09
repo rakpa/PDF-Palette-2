@@ -2,6 +2,7 @@ import {
   assertPublicPageUrl,
   startHtmlToPdf,
   startPdfOcr,
+  startPdfToExcel,
   startPdfToPowerpoint,
   startPdfToWord,
   startWordToPdf,
@@ -13,6 +14,7 @@ function kindOf(body) {
   if (body.kind === "word-to-pdf") return "word-to-pdf";
   if (body.kind === "html-to-pdf") return "html-to-pdf";
   if (body.kind === "pdf-to-ppt") return "pdf-to-ppt";
+  if (body.kind === "pdf-to-excel") return "pdf-to-excel";
   if (body.kind === "ocr-pdf") return "ocr-pdf";
   return "pdf-to-word";
 }
@@ -60,9 +62,11 @@ export default async function handler(req, res) {
         ? await startWordToPdf()
         : kind === "pdf-to-ppt"
           ? await startPdfToPowerpoint()
-          : kind === "ocr-pdf"
-            ? await startPdfOcr()
-            : await startPdfToWord();
+          : kind === "pdf-to-excel"
+            ? await startPdfToExcel()
+            : kind === "ocr-pdf"
+              ? await startPdfOcr()
+              : await startPdfToWord();
     const base =
       kind === "word-to-pdf"
         ? filename.replace(/\.docx?$/i, "") || "document"
@@ -72,7 +76,9 @@ export default async function handler(req, res) {
         ? `${base}.pdf`
         : kind === "pdf-to-ppt"
           ? `${base}.pptx`
-          : `${base}.docx`;
+          : kind === "pdf-to-excel"
+            ? `${base}.xlsx`
+            : `${base}.docx`;
     sendJson(res, 200, {
       engine: "ilovepdf",
       token: started.token,

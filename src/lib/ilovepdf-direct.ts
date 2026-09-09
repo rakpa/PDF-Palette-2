@@ -30,7 +30,13 @@ function iloveApiUrl(name: "health" | "start" | "process"): string {
   return `/api/ilove/${name}`;
 }
 
-type ConvertKind = "pdf-to-word" | "word-to-pdf" | "html-to-pdf" | "pdf-to-ppt" | "ocr-pdf";
+type ConvertKind =
+  | "pdf-to-word"
+  | "word-to-pdf"
+  | "html-to-pdf"
+  | "pdf-to-ppt"
+  | "pdf-to-excel"
+  | "ocr-pdf";
 
 function outputFilename(name: string, kind: ConvertKind): string {
   if (kind === "word-to-pdf" || kind === "html-to-pdf" || kind === "ocr-pdf") {
@@ -46,6 +52,9 @@ function outputFilename(name: string, kind: ConvertKind): string {
   }
   if (kind === "pdf-to-ppt") {
     return `${name.replace(/\.pdf$/i, "") || "document"}.pptx`;
+  }
+  if (kind === "pdf-to-excel") {
+    return `${name.replace(/\.pdf$/i, "") || "document"}.xlsx`;
   }
   return `${name.replace(/\.pdf$/i, "") || "document"}.docx`;
 }
@@ -173,17 +182,21 @@ async function convertViaIlove(
       ? "Could not start a Word to PDF task."
       : kind === "pdf-to-ppt"
         ? "Could not start a PDF to PowerPoint task."
-        : kind === "ocr-pdf"
-          ? "Could not start an OCR task."
-          : "Could not start a PDF to Word task.";
+        : kind === "pdf-to-excel"
+          ? "Could not start a PDF to Excel task."
+          : kind === "ocr-pdf"
+            ? "Could not start an OCR task."
+            : "Could not start a PDF to Word task.";
   const empty =
     kind === "word-to-pdf"
       ? "Conversion did not return a PDF."
       : kind === "pdf-to-ppt"
         ? "Conversion did not return a PowerPoint file."
-        : kind === "ocr-pdf"
-          ? "OCR did not return a PDF."
-          : "Conversion did not return a Word file.";
+        : kind === "pdf-to-excel"
+          ? "Conversion did not return an Excel file."
+          : kind === "ocr-pdf"
+            ? "OCR did not return a PDF."
+            : "Conversion did not return a Word file.";
 
   onProgress?.(8, kind === "ocr-pdf" ? "Recognising…" : "Converting…");
   const start = await postJson<StartResponse>(
@@ -305,6 +318,13 @@ export async function convertPdfToPptIlove(
   onProgress?: Progress
 ): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
   return convertViaIlove(file, "pdf-to-ppt", onProgress);
+}
+
+export async function convertPdfToExcelIlove(
+  file: File,
+  onProgress?: Progress
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  return convertViaIlove(file, "pdf-to-excel", onProgress);
 }
 
 export async function convertPdfOcrIlove(
