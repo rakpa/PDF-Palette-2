@@ -5,13 +5,13 @@ const Privacy = () => (
   <LegalPage
     title="Privacy Policy"
     description="PDF Palette does not collect customer accounts or keep the files you process. This page explains what does and does not happen when you use the site."
-        updated="7 September 2026"
+        updated="9 September 2026"
   >
     <section>
       <h2>The short version</h2>
       <p>
         We do not ask you to sign up. We do not take your documents as customer data. Most tools process
-        files in your browser. PDF to Word, Word to PDF, and PDF to PowerPoint send the file to a conversion
+        files in your browser. PDF to Word, Word to PDF, PDF to PowerPoint, and OCR PDF send the file to a conversion
         service. PDF Palette does not keep a copy. We do not sell personal information, because
         we do not run a customer database of people or files.
       </p>
@@ -59,13 +59,23 @@ const Privacy = () => (
         after the download is ready. The conversion service processes the file under its own terms.
       </p>
       <p>
+        <strong>PDF to PowerPoint</strong> uploads the selected PDF to a conversion service so it can
+        be turned into PowerPoint. PDF Palette does not keep the upload or the result after the
+        download is ready. The conversion service processes the file under its own terms.
+      </p>
+      <p>
+        <strong>OCR PDF</strong> uploads the selected PDF to a conversion service so scanned pages can
+        be made searchable. PDF Palette does not keep the upload or the result after the download is
+        ready. The conversion service processes the file under its own terms.
+      </p>
+      <p>
         If you use HTML to PDF and paste a <strong>web page URL</strong>, that URL is sent to a conversion
         service so the page can be fetched and rendered. A browser tab cannot load someone else’s website the
         way a server can. We do not use that path to build a customer list. Prefer uploading an HTML file if
         you want the conversion to stay entirely in the browser.
       </p>
       <p>
-        Other tools, including OCR, merge, split, and compress, are designed to run in the browser without
+        Other tools, including merge, split, and compress, are designed to run in the browser without
         uploading your document to PDF Palette.
       </p>
     </section>
@@ -109,7 +119,7 @@ const Privacy = () => (
       <h2>Third parties</h2>
       <p>
         Script libraries (PDF, Office, OCR, and similar) load as part of the web app so processing can happen
-        in your browser. PDF to Word, Word to PDF, and PDF to PowerPoint share the file with a conversion
+        in your browser. PDF to Word, Word to PDF, PDF to PowerPoint, and OCR PDF share the file with a conversion
         service. The HTML to PDF URL path uses the conversion service only to fetch and render that page.
         Advertising and affiliate partners receive only what their own scripts or landing pages collect when
         you interact with those offers — not the documents you process in PDF tools.

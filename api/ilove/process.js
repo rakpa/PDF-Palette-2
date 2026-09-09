@@ -11,12 +11,14 @@ function kindOf(body) {
   if (body.kind === "word-to-pdf") return "word-to-pdf";
   if (body.kind === "html-to-pdf") return "html-to-pdf";
   if (body.kind === "pdf-to-ppt") return "pdf-to-ppt";
+  if (body.kind === "ocr-pdf") return "ocr-pdf";
   return "pdf-to-word";
 }
 
 function convertToFor(kind) {
   if (kind === "pdf-to-word") return "docx";
   if (kind === "pdf-to-ppt") return "pptx";
+  if (kind === "ocr-pdf") return "pdf";
   return undefined;
 }
 
@@ -36,7 +38,7 @@ export default async function handler(req, res) {
       convertTo: convertToFor(kind),
     });
     const ok =
-      kind === "word-to-pdf" || kind === "html-to-pdf"
+      kind === "word-to-pdf" || kind === "html-to-pdf" || kind === "ocr-pdf"
         ? looksLikePdf(processed)
         : kind === "pdf-to-ppt"
           ? looksLikePowerpoint(processed)
@@ -48,7 +50,9 @@ export default async function handler(req, res) {
             ? "Conversion finished but did not return a Word file."
             : kind === "pdf-to-ppt"
               ? "Conversion finished but did not return a PowerPoint file."
-              : "Conversion finished but did not return a PDF."
+              : kind === "ocr-pdf"
+                ? "OCR finished but did not return a PDF."
+                : "Conversion finished but did not return a PDF."
         ),
         { statusCode: 502 }
       );

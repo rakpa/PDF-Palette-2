@@ -29,7 +29,7 @@ const About = () => (
       <p>
         A few tools send a file (or a page URL) to a conversion service so the work can finish, then return
         the result for download. PDF Palette does not keep the upload or the result. Those exceptions —
-        PDF to Word, Word to PDF, and HTML to PDF from a URL — are described in our{" "}
+        PDF to Word, Word to PDF, PDF to PowerPoint, OCR PDF, and HTML to PDF from a URL — are described in our{" "}
         <Link to="/privacy">Privacy Policy</Link>.
       </p>
     </section>

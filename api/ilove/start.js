@@ -1,6 +1,7 @@
 import {
   assertPublicPageUrl,
   startHtmlToPdf,
+  startPdfOcr,
   startPdfToPowerpoint,
   startPdfToWord,
   startWordToPdf,
@@ -12,6 +13,7 @@ function kindOf(body) {
   if (body.kind === "word-to-pdf") return "word-to-pdf";
   if (body.kind === "html-to-pdf") return "html-to-pdf";
   if (body.kind === "pdf-to-ppt") return "pdf-to-ppt";
+  if (body.kind === "ocr-pdf") return "ocr-pdf";
   return "pdf-to-word";
 }
 
@@ -58,13 +60,15 @@ export default async function handler(req, res) {
         ? await startWordToPdf()
         : kind === "pdf-to-ppt"
           ? await startPdfToPowerpoint()
-          : await startPdfToWord();
+          : kind === "ocr-pdf"
+            ? await startPdfOcr()
+            : await startPdfToWord();
     const base =
       kind === "word-to-pdf"
         ? filename.replace(/\.docx?$/i, "") || "document"
         : filename.replace(/\.pdf$/i, "") || "document";
     const outName =
-      kind === "word-to-pdf"
+      kind === "word-to-pdf" || kind === "ocr-pdf"
         ? `${base}.pdf`
         : kind === "pdf-to-ppt"
           ? `${base}.pptx`

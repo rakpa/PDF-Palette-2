@@ -30,10 +30,10 @@ function iloveApiUrl(name: "health" | "start" | "process"): string {
   return `/api/ilove/${name}`;
 }
 
-type ConvertKind = "pdf-to-word" | "word-to-pdf" | "html-to-pdf" | "pdf-to-ppt";
+type ConvertKind = "pdf-to-word" | "word-to-pdf" | "html-to-pdf" | "pdf-to-ppt" | "ocr-pdf";
 
 function outputFilename(name: string, kind: ConvertKind): string {
-  if (kind === "word-to-pdf" || kind === "html-to-pdf") {
+  if (kind === "word-to-pdf" || kind === "html-to-pdf" || kind === "ocr-pdf") {
     if (kind === "html-to-pdf") {
       try {
         const host = new URL(name).hostname.replace(/^www\./, "") || "page";
@@ -42,7 +42,7 @@ function outputFilename(name: string, kind: ConvertKind): string {
         return "page.pdf";
       }
     }
-    return `${name.replace(/\.docx?$/i, "") || "document"}.pdf`;
+    return `${name.replace(/\.pdf$/i, "").replace(/\.docx?$/i, "") || "document"}.pdf`;
   }
   if (kind === "pdf-to-ppt") {
     return `${name.replace(/\.pdf$/i, "") || "document"}.pptx`;
@@ -173,29 +173,33 @@ async function convertViaIlove(
       ? "Could not start a Word to PDF task."
       : kind === "pdf-to-ppt"
         ? "Could not start a PDF to PowerPoint task."
-        : "Could not start a PDF to Word task.";
+        : kind === "ocr-pdf"
+          ? "Could not start an OCR task."
+          : "Could not start a PDF to Word task.";
   const empty =
     kind === "word-to-pdf"
       ? "Conversion did not return a PDF."
       : kind === "pdf-to-ppt"
         ? "Conversion did not return a PowerPoint file."
-        : "Conversion did not return a Word file.";
+        : kind === "ocr-pdf"
+          ? "OCR did not return a PDF."
+          : "Conversion did not return a Word file.";
 
-  onProgress?.(8, "Converting…");
+  onProgress?.(8, kind === "ocr-pdf" ? "Recognising…" : "Converting…");
   const start = await postJson<StartResponse>(
     iloveApiUrl("start"),
     { filename: file.name, kind },
-    "Could not start conversion"
+    kind === "ocr-pdf" ? "Could not start OCR" : "Could not start conversion"
   );
 
   if (start.engine !== "ilovepdf" || !start.uploadUrl || !start.task || !start.token) {
     throw new Error(start.reason || missing);
   }
 
-  onProgress?.(22, "Converting…");
+  onProgress?.(22, kind === "ocr-pdf" ? "Recognising…" : "Converting…");
   const serverFilename = await uploadFile(start.uploadUrl, file, start.task, start.token);
 
-  onProgress?.(48, "Converting…");
+  onProgress?.(48, kind === "ocr-pdf" ? "Recognising…" : "Converting…");
   const processed = await postJson<ProcessResponse>(
     iloveApiUrl("process"),
     {
@@ -207,7 +211,7 @@ async function convertViaIlove(
       filename: file.name,
       token: start.token,
     },
-    "Conversion failed"
+    kind === "ocr-pdf" ? "OCR failed" : "Conversion failed"
   );
 
   if (processed.engine !== "ilovepdf" || !processed.downloadUrl) {
@@ -215,9 +219,9 @@ async function convertViaIlove(
   }
   const downloadToken = processed.token || start.token;
 
-  onProgress?.(88, "Converting…");
+  onProgress?.(88, kind === "ocr-pdf" ? "Preparing download…" : "Converting…");
   const blob = await downloadFile(processed.downloadUrl, downloadToken);
-  onProgress?.(100, "Converting…");
+  onProgress?.(100, kind === "ocr-pdf" ? "Done" : "Converting…");
   return {
     blob,
     filename: start.filename || outputFilename(file.name, kind),
@@ -301,4 +305,11 @@ export async function convertPdfToPptIlove(
   onProgress?: Progress
 ): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
   return convertViaIlove(file, "pdf-to-ppt", onProgress);
+}
+
+export async function convertPdfOcrIlove(
+  file: File,
+  onProgress?: Progress
+): Promise<{ blob: Blob; filename: string; engine: "ilovepdf" }> {
+  return convertViaIlove(file, "ocr-pdf", onProgress);
 }

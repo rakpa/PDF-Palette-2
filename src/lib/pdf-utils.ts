@@ -12,7 +12,7 @@ import { convertPptToPdfBrowser, PowerPointError } from "./ppt-to-pdf-browser";
 import { convertPdfToWordBrowser, PdfToWordError } from "./pdf-to-word-browser";
 import { convertPdfToWordFidelity } from "./pdf-to-word-new/convert";
 import { convertPdfToExcelBrowser } from "./pdf-to-excel-browser";
-import { convertPdfToPptIlove } from "./ilovepdf-direct";
+import { convertPdfToPptIlove, convertPdfOcrIlove } from "./ilovepdf-direct";
 import {
   convertPdfToWordViaIlove,
   convertWordToPdfViaIlove,
@@ -685,29 +685,20 @@ export async function ocrPDF(
   file: File,
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
-  const { ocrPdf, OcrError } = await import("./pdf-ocr/ocr");
   try {
-    const { blob, filename, ocrPages, skippedPages, words } = await ocrPdf(file, onProgress);
-    let message: string;
-    if (ocrPages === 0 && skippedPages > 0) {
-      message = "This PDF is already searchable — nothing to recognise.";
-    } else if (words === 0) {
-      message = ocrPages === 1
-        ? "The page was scanned, but no readable text was found."
-        : "The pages were scanned, but no readable text was found.";
-    } else if (skippedPages > 0) {
-      message = `Made ${ocrPages} page${ocrPages === 1 ? "" : "s"} searchable. ${skippedPages} already had text.`;
-    } else {
-      message = `Made ${ocrPages} page${ocrPages === 1 ? "" : "s"} searchable.`;
-    }
-    return { success: true, blob, filename, message };
+    const { blob, filename } = await convertPdfOcrIlove(file, onProgress);
+    return {
+      success: true,
+      blob,
+      filename: filename.endsWith(".pdf")
+        ? filename
+        : `${filename.replace(/\.pdf$/i, "") || "document"}.pdf`,
+      message: "Searchable PDF ready.",
+    };
   } catch (error) {
     return {
       success: false,
-      message:
-        error instanceof OcrError || error instanceof Error
-          ? error.message
-          : "Could not recognise this PDF.",
+      message: error instanceof Error ? error.message : "Could not recognise this PDF.",
     };
   }
 }

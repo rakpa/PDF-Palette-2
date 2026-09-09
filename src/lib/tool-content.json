@@ -591,21 +591,21 @@
     "intro": "A scanned document is just a picture of text: you cannot search it, select it or copy from it. OCR adds an invisible text layer behind the image so the page looks identical but becomes searchable, selectable and ready for conversion to Word or Excel. After OCR, you can search, select, and copy text that was previously stuck in an image.",
     "steps": [
       "Upload the scanned PDF.",
-      "Wait for recognition to finish \u2014 this is the slowest step, and it runs on your own device.",
+      "Wait for recognition to finish.",
       "Download the searchable PDF."
     ],
     "faqs": [
       {
         "q": "Does the page look different afterwards?",
-        "a": "No. The original scan is untouched; the recognised text sits invisibly behind it, aligned with what you see."
+        "a": "Usually no. The original scan is kept and recognised text is added as a searchable layer aligned with what you see."
       },
       {
         "q": "How accurate is it?",
         "a": "Clean, straight, high-resolution scans of printed text read very well. Low-resolution, skewed or handwritten pages are much less reliable."
       },
       {
-        "q": "Why does it take so long?",
-        "a": "Character recognition is genuinely heavy work, and it is running on your machine rather than a server farm. Larger documents take proportionally longer."
+        "q": "Why does it take a moment?",
+        "a": "Optical character recognition is heavy work. Larger multi-page scans take longer than a single page."
       },
       {
         "q": "Can I then convert it to Word?",
@@ -621,7 +621,7 @@
       },
       {
         "q": "Is my file private?",
-        "a": "Most tools run in your browser. PDF to Word, Word to PDF, and HTML to PDF from a URL send the file (or page address) for conversion only \u2014 PDF Palette does not keep a copy."
+        "a": "OCR PDF sends the file to a conversion service only for recognition. PDF Palette does not keep a copy. Most other tools still run in your browser."
       },
       {
         "q": "Can I use OCR PDF on my phone?",

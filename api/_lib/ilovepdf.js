@@ -213,6 +213,12 @@ export async function startPdfToPowerpoint() {
   return startWithWebsiteSession(tool, "/pdf_to_powerpoint", "PDF to PowerPoint");
 }
 
+/** Website tool is pdfoffice + convert_to=pdf (subtool pdfocr on /ocr-pdf). */
+export async function startPdfOcr() {
+  const tool = strip(process.env.ILOVEPDF_OCR_TOOL) || PDF_WORD_TOOL;
+  return startWithWebsiteSession(tool, "/ocr-pdf", "OCR PDF");
+}
+
 export async function startHtmlToPdf() {
   const tool = strip(process.env.ILOVEPDF_HTML_TOOL) || HTML_PDF_TOOL;
   return startWithWebsiteSession(tool, "/html-to-pdf", "HTML to PDF");

@@ -322,8 +322,8 @@ const featureConfig: Record<
     accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
     minFiles: 1,
-    cta: "Make searchable",
-    hint: "Upload a scanned PDF. Each page is recognised in your browser and the original look is kept, with a selectable text layer added.",
+    cta: "Apply OCR",
+    hint: "Upload a scanned PDF. Recognition runs via the same conversion service as PDF to Word — download a searchable copy when it finishes.",
   },
 };
 
@@ -390,21 +390,6 @@ const ToolPage = () => {
     warmupGhostscript().catch(() => {
       // Warmup is best-effort; compress will retry loading the engine.
     });
-  }, [tool?.feature]);
-
-  useEffect(() => {
-    if (tool?.feature !== "ocr") return;
-    let cancelled = false;
-    import("@/lib/pdf-ocr/ocr")
-      .then(({ warmupOcr }) => {
-        if (!cancelled) return warmupOcr();
-      })
-      .catch(() => {
-        // Warmup is best-effort; OCR will retry loading the engine.
-      });
-    return () => {
-      cancelled = true;
-    };
   }, [tool?.feature]);
 
   if (!tool) return <NotFound />;
@@ -716,6 +701,7 @@ const ToolPage = () => {
           tool.feature === "pdf-to-word-ilove" ||
           tool.feature === "word-to-pdf-ilove" ||
           tool.feature === "pdf-to-ppt" ||
+          tool.feature === "ocr" ||
           fetchesUrl;
         if (res.blob && !waitForDownload) downloadResult(res);
       } else {
@@ -887,17 +873,16 @@ const ToolPage = () => {
                   tool.feature === "pdf-to-word-ilove" ||
                   tool.feature === "word-to-pdf-ilove" ||
                   tool.feature === "pdf-to-ppt" ||
+                  tool.feature === "ocr" ||
                   fetchesUrl
-                    ? convertStatus || "Converting…"
-                    : tool.feature === "ocr"
-                      ? convertStatus || "Recognising…"
-                      : tool.feature === "word-to-pdf" ||
-                          tool.feature === "pdf-to-word" ||
-                          tool.feature === "pdf-to-word-new"
-                        ? convertStatus || "Converting…"
-                        : tool.feature === "compress"
-                          ? convertStatus || "Compressing…"
-                          : "Processing…"
+                    ? convertStatus || (tool.feature === "ocr" ? "Recognising…" : "Converting…")
+                    : tool.feature === "word-to-pdf" ||
+                        tool.feature === "pdf-to-word" ||
+                        tool.feature === "pdf-to-word-new"
+                      ? convertStatus || "Converting…"
+                      : tool.feature === "compress"
+                        ? convertStatus || "Compressing…"
+                        : "Processing…"
                 }
                 indeterminate={
                   (tool.feature === "word-to-pdf" ||
@@ -931,6 +916,7 @@ const ToolPage = () => {
                       tool.feature === "pdf-to-word-ilove" ||
                       tool.feature === "word-to-pdf-ilove" ||
                       tool.feature === "pdf-to-ppt" ||
+                      tool.feature === "ocr" ||
                       fetchesUrl
                         ? "default"
                         : "sm"
@@ -939,6 +925,7 @@ const ToolPage = () => {
                       tool.feature === "pdf-to-word-ilove" ||
                       tool.feature === "word-to-pdf-ilove" ||
                       tool.feature === "pdf-to-ppt" ||
+                      tool.feature === "ocr" ||
                       fetchesUrl
                         ? "default"
                         : "outline"
@@ -996,7 +983,13 @@ const ToolPage = () => {
               )}
             </div>
 
-            <PrivacyNote />
+            <PrivacyNote remote={
+              tool.feature === "pdf-to-word-ilove" ||
+              tool.feature === "word-to-pdf-ilove" ||
+              tool.feature === "pdf-to-ppt" ||
+              tool.feature === "ocr" ||
+              fetchesUrl
+            } />
           </div>
         )}
       </div>
@@ -1402,10 +1395,12 @@ const HeadersFootersOptionsPanel = ({
   );
 };
 
-const PrivacyNote = () => (
+const PrivacyNote = ({ remote = false }: { remote?: boolean }) => (
   <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">
     <ShieldCheck className="h-4 w-4 text-tool-green" />
-    Processed in your browser — your file never leaves this device.
+    {remote
+      ? "Sent for conversion only — PDF Palette does not keep a copy."
+      : "Processed in your browser — your file never leaves this device."}
   </div>
 );
 
