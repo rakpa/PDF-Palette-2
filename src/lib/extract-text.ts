@@ -56,7 +56,11 @@ export async function extractTextLocal(
       filename: `${base}.txt`,
     };
   } finally {
-    await pdf.destroy().catch(() => undefined);
+    try {
+      pdf.cleanup?.();
+    } catch {
+      /* ignore */
+    }
     void task.destroy().catch(() => undefined);
   }
 }

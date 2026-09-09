@@ -88,7 +88,11 @@ export async function autoRedactPiiLocal(
       onProgress?.(8 + Math.round((n / total) * 40), `Scanning page ${n} of ${total}…`);
     }
   } finally {
-    await src.destroy().catch(() => undefined);
+    try {
+      src.cleanup?.();
+    } catch {
+      /* ignore */
+    }
     void task.destroy().catch(() => undefined);
   }
 

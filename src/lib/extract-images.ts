@@ -128,7 +128,11 @@ export async function extractImagesLocal(
       onProgress?.(10 + Math.round((n / total) * 80), `Page ${n} of ${total}…`);
     }
   } finally {
-    await pdf.destroy().catch(() => undefined);
+    try {
+      pdf.cleanup?.();
+    } catch {
+      /* ignore */
+    }
     void task.destroy().catch(() => undefined);
   }
 
