@@ -89,7 +89,7 @@ const Navbar = () => {
                         to="/#tools"
                         className="block rounded-md px-2 py-1.5 text-center text-sm font-medium text-primary hover:bg-accent"
                       >
-                        Browse all 29 tools →
+                        Browse all 38 tools →
                       </Link>
                     </div>
                   </NavigationMenuContent>

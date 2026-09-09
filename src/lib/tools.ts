@@ -24,6 +24,15 @@ import {
   ScanText,
   Layers,
   FileType,
+  Wrench,
+  TextSelect,
+  Images,
+  Tags,
+  PanelTop,
+  FileCode,
+  Table,
+  ShieldAlert,
+  MessageSquareText,
   LucideIcon,
 } from "lucide-react";
 
@@ -69,7 +78,16 @@ export type ToolFeature =
   | "compare"
   | "ocr"
   | "flatten-pdf"
-  | "txt-to-pdf";
+  | "txt-to-pdf"
+  | "repair-pdf"
+  | "extract-text"
+  | "extract-images"
+  | "edit-metadata"
+  | "headers-footers"
+  | "markdown-to-pdf"
+  | "csv-to-pdf"
+  | "auto-redact-pii"
+  | "chat-with-pdf";
 
 export interface PDFTool {
   id: string;
@@ -393,6 +411,105 @@ export const pdfTools: PDFTool[] = [
     isNew: true,
     route: "/txt-to-pdf",
     feature: "txt-to-pdf",
+  },
+  {
+    id: "repair-pdf",
+    name: "Repair PDF",
+    description: "Rebuild a damaged PDF so it opens reliably",
+    icon: Wrench,
+    color: "orange",
+    category: ["optimize"],
+    isNew: true,
+    route: "/repair-pdf",
+    feature: "repair-pdf",
+  },
+  {
+    id: "extract-text",
+    name: "Extract Text",
+    description: "Copy all text from a PDF into a .txt file",
+    icon: TextSelect,
+    color: "teal",
+    category: ["convert-from"],
+    isNew: true,
+    route: "/extract-text",
+    feature: "extract-text",
+  },
+  {
+    id: "extract-images",
+    name: "Extract Images",
+    description: "Pull images out of a PDF as PNG files",
+    icon: Images,
+    color: "pink",
+    category: ["convert-from"],
+    isNew: true,
+    route: "/extract-images",
+    feature: "extract-images",
+  },
+  {
+    id: "edit-metadata",
+    name: "Edit Metadata",
+    description: "Change PDF title, author, subject and keywords",
+    icon: Tags,
+    color: "purple",
+    category: ["edit"],
+    isNew: true,
+    route: "/edit-metadata",
+    feature: "edit-metadata",
+  },
+  {
+    id: "headers-footers",
+    name: "Headers & Footers",
+    description: "Add header and footer text to every page",
+    icon: PanelTop,
+    color: "blue",
+    category: ["edit"],
+    isNew: true,
+    route: "/headers-footers",
+    feature: "headers-footers",
+  },
+  {
+    id: "markdown-to-pdf",
+    name: "Markdown to PDF",
+    description: "Convert a Markdown (.md) file to PDF",
+    icon: FileCode,
+    color: "green",
+    category: ["convert-to"],
+    isNew: true,
+    route: "/markdown-to-pdf",
+    feature: "markdown-to-pdf",
+  },
+  {
+    id: "csv-to-pdf",
+    name: "CSV to PDF",
+    description: "Turn a CSV spreadsheet into a PDF table",
+    icon: Table,
+    color: "yellow",
+    category: ["convert-to"],
+    isNew: true,
+    route: "/csv-to-pdf",
+    feature: "csv-to-pdf",
+  },
+  {
+    id: "auto-redact-pii",
+    name: "Auto-Redact PII",
+    description: "Black out emails, phones and other personal data",
+    icon: ShieldAlert,
+    color: "coral",
+    category: ["security"],
+    isNew: true,
+    route: "/auto-redact-pii",
+    feature: "auto-redact-pii",
+  },
+  {
+    id: "chat-with-pdf",
+    name: "Summarize & Ask PDF",
+    description: "Summarize a PDF and ask questions locally",
+    icon: MessageSquareText,
+    color: "teal",
+    category: ["convert-from"],
+    isNew: true,
+    route: "/chat-with-pdf",
+    feature: "chat-with-pdf",
   },
 ];
 

@@ -40,6 +40,14 @@ import {
   wordToPDF,
   wordToPdfIlove,
   ocrPDF,
+  repairPDF,
+  extractTextFromPDF,
+  extractImagesFromPDF,
+  editPdfMetadata,
+  addHeadersFootersToPDF,
+  markdownToPDF,
+  csvToPDF,
+  autoRedactPiiPDF,
 } from "@/lib/pdf-utils";
 import ToolPageLayout from "@/components/ToolPageLayout";
 import PdfEditor from "@/components/pdf-editor/PdfEditor";
@@ -49,9 +57,16 @@ import PdfCropper from "@/components/pdf-pages/PdfCropper";
 import PdfFormFiller from "@/components/pdf-pages/PdfFormFiller";
 import PdfRedactor from "@/components/pdf-pages/PdfRedactor";
 import PdfComparer from "@/components/pdf-pages/PdfComparer";
+import PdfChatPanel from "@/components/PdfChatPanel";
 import { DEFAULT_PAGE_NUMBERS } from "@/lib/pdf-pages/page-numbers";
 import type { NumberPosition, PageNumberOptions } from "@/lib/pdf-pages/page-numbers";
 import type { PdfToImageOptions } from "@/lib/pdf-to-image";
+import {
+  DEFAULT_HEADERS_FOOTERS,
+  type HeaderFooterOptions,
+} from "@/lib/headers-footers";
+import type { PdfMetadataFields } from "@/lib/edit-metadata";
+import { readPdfMetadata } from "@/lib/edit-metadata";
 import FileUploader, { UploadedFile } from "@/components/FileUploader";
 import ProgressBar from "@/components/ProgressBar";
 import NotFound from "./NotFound";
@@ -76,7 +91,8 @@ type InteractiveFeature =
   | "fill-forms"
   | "redact"
   | "compare"
-  | "split";
+  | "split"
+  | "chat-with-pdf";
 
 const featureConfig: Record<
   Exclude<ToolFeature, InteractiveFeature>,
@@ -246,6 +262,62 @@ const featureConfig: Record<
     cta: "Convert to PDF",
     hint: "Upload a .txt file. It is laid out as a simple multi-page PDF.",
   },
+  "repair-pdf": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Repair PDF",
+    hint: "Rebuild the PDF page-by-page. Helps with many damaged or incomplete files.",
+  },
+  "extract-text": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Extract text",
+    hint: "Pull all selectable text into a .txt download. Use OCR first for scanned pages.",
+  },
+  "extract-images": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Extract images",
+    hint: "Save embedded images (or page renders) as PNG. Multiple images download as a ZIP.",
+  },
+  "edit-metadata": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Save metadata",
+    hint: "Update title, author, subject and keywords stored in the PDF.",
+  },
+  "headers-footers": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Add headers & footers",
+    hint: "Use {n} for page number, {N} for total pages, {date} for today’s date.",
+  },
+  "markdown-to-pdf": {
+    accept: { "text/markdown": [".md", ".markdown"], "text/plain": [".txt"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to PDF",
+    hint: "Upload a Markdown (.md) file. Headings, lists and code blocks are laid out as PDF.",
+  },
+  "csv-to-pdf": {
+    accept: { "text/csv": [".csv"], "text/plain": [".csv", ".txt"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Convert to PDF",
+    hint: "Upload a CSV. The first row is treated as a header on every page.",
+  },
+  "auto-redact-pii": {
+    accept: { "application/pdf": [".pdf"] },
+    maxFiles: 1,
+    minFiles: 1,
+    cta: "Auto-redact PII",
+    hint: "Finds emails, phones, SSNs, card-like numbers and IPs, blacks them out, then flattens the pages.",
+  },
   ocr: {
     accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
@@ -293,6 +365,16 @@ const ToolPage = () => {
     dpi: 150,
     quality: 0.92,
   });
+  const [metadata, setMetadata] = useState<PdfMetadataFields>({
+    title: "",
+    author: "",
+    subject: "",
+    keywords: "",
+    creator: "",
+    producer: "",
+  });
+  const [headersFooters, setHeadersFooters] =
+    useState<HeaderFooterOptions>(DEFAULT_HEADERS_FOOTERS);
 
   const config = useMemo(
     () =>
@@ -395,6 +477,14 @@ const ToolPage = () => {
     return (
       <ToolPageLayout tool={tool}>
         <PdfComparer />
+      </ToolPageLayout>
+    );
+  }
+
+  if (tool.feature === "chat-with-pdf") {
+    return (
+      <ToolPageLayout tool={tool}>
+        <PdfChatPanel />
       </ToolPageLayout>
     );
   }
@@ -567,6 +657,54 @@ const ToolPage = () => {
             if (message) setConvertStatus(message);
           });
           break;
+        case "repair-pdf":
+          res = await repairPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "extract-text":
+          res = await extractTextFromPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "extract-images":
+          res = await extractImagesFromPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "edit-metadata":
+          res = await editPdfMetadata(inputFiles[0], metadata, (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "headers-footers":
+          res = await addHeadersFootersToPDF(inputFiles[0], headersFooters, (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "markdown-to-pdf":
+          res = await markdownToPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "csv-to-pdf":
+          res = await csvToPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
+        case "auto-redact-pii":
+          res = await autoRedactPiiPDF(inputFiles[0], (p, message) => {
+            onProgress(p);
+            if (message) setConvertStatus(message);
+          });
+          break;
         default:
           res = { success: false, message: "This tool isn’t available yet." };
       }
@@ -674,6 +812,21 @@ const ToolPage = () => {
 
             {tool.feature === "pdf-to-jpg" && (
               <ImageOptionsPanel value={imageOptions} onChange={setImageOptions} />
+            )}
+
+            {tool.feature === "edit-metadata" && (
+              <MetadataOptionsPanel
+                value={metadata}
+                onChange={setMetadata}
+                file={files[0]?.file}
+              />
+            )}
+
+            {tool.feature === "headers-footers" && (
+              <HeadersFootersOptionsPanel
+                value={headersFooters}
+                onChange={setHeadersFooters}
+              />
             )}
 
             {(tool.feature === "unlock-pdf" ||
@@ -1127,6 +1280,122 @@ const ImageOptionsPanel = ({
     </div>
   </div>
 );
+
+const MetadataOptionsPanel = ({
+  value,
+  onChange,
+  file,
+}: {
+  value: PdfMetadataFields;
+  onChange: (next: PdfMetadataFields) => void;
+  file?: File;
+}) => {
+  useEffect(() => {
+    if (!file) return;
+    let cancelled = false;
+    readPdfMetadata(file)
+      .then((fields) => {
+        if (!cancelled) onChange(fields);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reload only when file identity changes
+  }, [file]);
+
+  const set = (key: keyof PdfMetadataFields, v: string) =>
+    onChange({ ...value, [key]: v });
+
+  return (
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+      {(
+        [
+          ["title", "Title"],
+          ["author", "Author"],
+          ["subject", "Subject"],
+          ["keywords", "Keywords (comma-separated)"],
+          ["creator", "Creator"],
+          ["producer", "Producer"],
+        ] as const
+      ).map(([key, label]) => (
+        <div key={key} className="space-y-1.5">
+          <Label htmlFor={`meta-${key}`}>{label}</Label>
+          <Input
+            id={`meta-${key}`}
+            value={value[key]}
+            onChange={(e) => set(key, e.target.value)}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const HeadersFootersOptionsPanel = ({
+  value,
+  onChange,
+}: {
+  value: HeaderFooterOptions;
+  onChange: (next: HeaderFooterOptions) => void;
+}) => {
+  const set = <K extends keyof HeaderFooterOptions>(key: K, v: HeaderFooterOptions[K]) =>
+    onChange({ ...value, [key]: v });
+
+  return (
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+      <p className="text-xs text-muted-foreground">
+        Tokens: {"{n}"} page number · {"{N}"} total pages · {"{date}"} today
+      </p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {(
+          [
+            ["headerLeft", "Header left"],
+            ["headerCenter", "Header center"],
+            ["headerRight", "Header right"],
+            ["footerLeft", "Footer left"],
+            ["footerCenter", "Footer center"],
+            ["footerRight", "Footer right"],
+          ] as const
+        ).map(([key, label]) => (
+          <div key={key} className="space-y-1.5">
+            <Label htmlFor={key}>{label}</Label>
+            <Input
+              id={key}
+              value={value[key]}
+              onChange={(e) => set(key, e.target.value)}
+              placeholder={key.includes("Center") ? "Page {n} of {N}" : ""}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="hf-size">Font size</Label>
+          <Input
+            id="hf-size"
+            type="number"
+            min={6}
+            max={24}
+            value={value.fontSize}
+            onChange={(e) => set("fontSize", Number(e.target.value) || 10)}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="hf-margin">Margin</Label>
+          <Input
+            id="hf-margin"
+            type="number"
+            min={12}
+            max={72}
+            value={value.margin}
+            onChange={(e) => set("margin", Number(e.target.value) || 36)}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const PrivacyNote = () => (
   <div className="flex items-center justify-center gap-2 pt-1 text-xs text-muted-foreground">

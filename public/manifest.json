@@ -1,7 +1,7 @@
 {
   "name": "PDF Palette — Free Online PDF Tools",
   "short_name": "PDF Palette",
-  "description": "29 free PDF tools. Most run in your browser. A few send a file for conversion only — PDF Palette does not store it.",
+  "description": "38 free PDF tools. Most run in your browser. A few send a file for conversion only — PDF Palette does not store it.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

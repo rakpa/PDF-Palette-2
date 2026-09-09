@@ -22,6 +22,18 @@ import { protectPdfLocal } from "./protect-pdf-client";
 import { htmlToPdfLocal } from "./html-to-pdf-client";
 import { flattenPdfLocal } from "./flatten-pdf";
 import { txtToPdfLocal } from "./txt-to-pdf";
+import { repairPdfLocal } from "./repair-pdf";
+import { extractTextLocal } from "./extract-text";
+import { extractImagesLocal } from "./extract-images";
+import { editMetadataLocal, type PdfMetadataFields } from "./edit-metadata";
+import {
+  addHeadersFootersLocal,
+  type HeaderFooterOptions,
+} from "./headers-footers";
+import { markdownToPdfLocal } from "./markdown-to-pdf";
+import { csvToPdfLocal } from "./csv-to-pdf";
+import { autoRedactPiiLocal } from "./auto-redact-pii";
+import { summarizePdfLocal } from "./summarize-pdf";
 import { addPageNumbers } from "./pdf-pages/page-numbers";
 import type { PageNumberOptions } from "./pdf-pages/page-numbers";
 import { pdfToImages } from "./pdf-to-image";
@@ -787,6 +799,148 @@ export async function txtToPDF(
     return {
       success: false,
       message: error instanceof Error ? error.message : "Could not convert this text file.",
+    };
+  }
+}
+
+export async function repairPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await repairPdfLocal(file, onProgress);
+    return { success: true, message: "PDF rebuilt successfully.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not repair this PDF.",
+    };
+  }
+}
+
+export async function extractTextFromPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await extractTextLocal(file, onProgress);
+    return { success: true, message: "Text extracted successfully.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not extract text.",
+    };
+  }
+}
+
+export async function extractImagesFromPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await extractImagesLocal(file, onProgress);
+    return { success: true, message: "Images extracted successfully.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not extract images.",
+    };
+  }
+}
+
+export async function editPdfMetadata(
+  file: File,
+  fields: PdfMetadataFields,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await editMetadataLocal(file, fields, onProgress);
+    return { success: true, message: "Metadata updated successfully.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not update metadata.",
+    };
+  }
+}
+
+export async function addHeadersFootersToPDF(
+  file: File,
+  options: HeaderFooterOptions,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await addHeadersFootersLocal(file, options, onProgress);
+    return { success: true, message: "Headers and footers added.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not add headers or footers.",
+    };
+  }
+}
+
+export async function markdownToPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await markdownToPdfLocal(file, onProgress);
+    return { success: true, message: "Markdown converted to PDF.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not convert Markdown.",
+    };
+  }
+}
+
+export async function csvToPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await csvToPdfLocal(file, onProgress);
+    return { success: true, message: "CSV converted to PDF.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not convert CSV.",
+    };
+  }
+}
+
+export async function autoRedactPiiPDF(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename, redactionCount } = await autoRedactPiiLocal(file, onProgress);
+    return {
+      success: true,
+      message: `Redacted ${redactionCount} personal-data match${redactionCount === 1 ? "" : "es"}.`,
+      blob,
+      filename,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not auto-redact this PDF.",
+    };
+  }
+}
+
+export async function summarizePDFFile(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<ProcessingResult> {
+  try {
+    const { blob, filename } = await summarizePdfLocal(file, onProgress);
+    return { success: true, message: "Summary ready.", blob, filename };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Could not summarize this PDF.",
     };
   }
 }

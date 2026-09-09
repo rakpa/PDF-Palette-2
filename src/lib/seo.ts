@@ -19,7 +19,7 @@ export interface ToolContent {
 export const SITE_NAME = "PDF Palette";
 
 export const DEFAULT_TITLE =
-  "PDF Palette — 29 Free PDF Tools That Don’t Keep Your Files";
+  "PDF Palette — 38 Free PDF Tools That Don’t Keep Your Files";
 
 export const DEFAULT_DESCRIPTION =
   "Merge, split, compress, convert, sign, OCR and edit PDFs free. Most tools run in your browser. A few send a file for conversion only — PDF Palette does not store it.";

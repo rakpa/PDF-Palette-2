@@ -1303,5 +1303,230 @@
         "a": "Open PDF Palette’s TXT to PDF page, upload your file, follow the on-screen steps, and download the result. No software install or account is required."
       }
     ]
+  },
+  "/repair-pdf": {
+    "name": "Repair PDF",
+    "title": "Repair PDF Free Online — No Sign-Up | PDF Palette",
+    "description": "Repair a damaged PDF free online. Rebuild pages so the file opens reliably — no sign-up. Fix broken PDFs with PDF Palette.",
+    "intro": "Some PDFs open with errors or refuse to save. Repair rebuilds the document page by page into a fresh file so viewers and printers can open it again. Processing stays in your browser.",
+    "steps": [
+      "Upload the damaged PDF.",
+      "Wait while pages are copied into a new document.",
+      "Download the repaired PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Is Repair PDF free?",
+        "a": "Yes. No account and no watermark."
+      },
+      {
+        "q": "Will it unlock a password PDF?",
+        "a": "No. Unlock the file first with Unlock PDF, then repair if needed."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Repair runs in your browser. PDF Palette does not keep a copy."
+      }
+    ]
+  },
+  "/extract-text": {
+    "name": "Extract Text",
+    "title": "Extract Text from PDF Free Online — No Sign-Up | PDF Palette",
+    "description": "Extract text from PDF free online to a .txt file — no sign-up. Copy PDF text quickly with PDF Palette.",
+    "intro": "Pull every selectable text string from a PDF into a plain text download. Useful for quotes, notes, and search. Scanned pages need OCR first.",
+    "steps": [
+      "Upload your PDF.",
+      "Wait while each page’s text is collected.",
+      "Download the .txt file."
+    ],
+    "faqs": [
+      {
+        "q": "Is Extract Text free?",
+        "a": "Yes. No account required."
+      },
+      {
+        "q": "Why is the file empty?",
+        "a": "The PDF may be a scan. Run OCR PDF first, then extract text."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Extraction runs in your browser."
+      }
+    ]
+  },
+  "/extract-images": {
+    "name": "Extract Images",
+    "title": "Extract Images from PDF Free Online — No Sign-Up | PDF Palette",
+    "description": "Extract images from PDF free online as PNG or a ZIP — no sign-up. Save PDF pictures with PDF Palette.",
+    "intro": "Pull embedded pictures out of a PDF. When a page has no separate image objects, that page is saved as a PNG render instead.",
+    "steps": [
+      "Upload your PDF.",
+      "Wait while images are collected.",
+      "Download a PNG or a ZIP of images."
+    ],
+    "faqs": [
+      {
+        "q": "Is Extract Images free?",
+        "a": "Yes."
+      },
+      {
+        "q": "What format do I get?",
+        "a": "PNG files. Several images are packed into a ZIP."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Processing stays in your browser."
+      }
+    ]
+  },
+  "/edit-metadata": {
+    "name": "Edit Metadata",
+    "title": "Edit PDF Metadata Free Online — No Sign-Up | PDF Palette",
+    "description": "Edit PDF metadata free online. Change title, author, subject and keywords — no sign-up. Update PDF properties with PDF Palette.",
+    "intro": "PDF files store title, author, subject and keywords separately from the page content. Edit those fields and download an updated copy.",
+    "steps": [
+      "Upload your PDF.",
+      "Edit title, author, subject, keywords and related fields.",
+      "Download the PDF with updated metadata."
+    ],
+    "faqs": [
+      {
+        "q": "Is Edit Metadata free?",
+        "a": "Yes."
+      },
+      {
+        "q": "Does this change the page content?",
+        "a": "No. Only document properties change."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Edits run in your browser."
+      }
+    ]
+  },
+  "/headers-footers": {
+    "name": "Headers & Footers",
+    "title": "Add PDF Headers and Footers Free Online — No Sign-Up | PDF Palette",
+    "description": "Add headers and footers to PDF free online. Page numbers and custom text — no sign-up. Stamp every page with PDF Palette.",
+    "intro": "Place text at the top or bottom of every page. Use {n} for the page number, {N} for the total, and {date} for today’s date.",
+    "steps": [
+      "Upload your PDF.",
+      "Enter header and footer text for left, center and right.",
+      "Download the stamped PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Is this free?",
+        "a": "Yes."
+      },
+      {
+        "q": "Can I add page numbers here?",
+        "a": "Yes — use {n} and {N}, or use the dedicated Page Numbers tool."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Processing stays in your browser."
+      }
+    ]
+  },
+  "/markdown-to-pdf": {
+    "name": "Markdown to PDF",
+    "title": "Markdown to PDF Free Online — No Sign-Up | PDF Palette",
+    "description": "Convert Markdown to PDF free online. Headings, lists and code — no sign-up. MD to PDF with PDF Palette.",
+    "intro": "Turn a .md file into a clean PDF. Headings, bullet lists and fenced code blocks are laid out in your browser.",
+    "steps": [
+      "Upload a .md or .markdown file.",
+      "Wait while pages are laid out.",
+      "Download the PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Is Markdown to PDF free?",
+        "a": "Yes."
+      },
+      {
+        "q": "Are images in Markdown supported?",
+        "a": "This first version focuses on text, headings, lists and code."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Conversion stays in your browser."
+      }
+    ]
+  },
+  "/csv-to-pdf": {
+    "name": "CSV to PDF",
+    "title": "CSV to PDF Free Online — No Sign-Up | PDF Palette",
+    "description": "Convert CSV to PDF free online. Spreadsheet rows become a printable table — no sign-up. CSV to PDF with PDF Palette.",
+    "intro": "Upload a CSV and get a landscape PDF table. The first row repeats as a header on each page.",
+    "steps": [
+      "Upload a .csv file.",
+      "Wait while the table is paginated.",
+      "Download the PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Is CSV to PDF free?",
+        "a": "Yes."
+      },
+      {
+        "q": "How wide can the table be?",
+        "a": "Columns share a landscape page. Very wide CSVs may clip long cells."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Conversion stays in your browser."
+      }
+    ]
+  },
+  "/auto-redact-pii": {
+    "name": "Auto-Redact PII",
+    "title": "Auto-Redact PII in PDF Free Online — No Sign-Up | PDF Palette",
+    "description": "Auto-redact emails, phones and other PII in a PDF free online — no sign-up. Black out personal data with PDF Palette.",
+    "intro": "Scan the PDF for common personal data patterns (email, phone, SSN, card-like numbers, IP), paint black boxes over matches, then flatten so the text cannot be copied.",
+    "steps": [
+      "Upload your PDF.",
+      "Wait while personal-data patterns are found and covered.",
+      "Download the redacted, flattened PDF."
+    ],
+    "faqs": [
+      {
+        "q": "Is Auto-Redact free?",
+        "a": "Yes."
+      },
+      {
+        "q": "Is this perfect?",
+        "a": "No automated redaction catches everything. Review the output, or use Redact PDF for manual boxes."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Scanning and redaction run in your browser."
+      }
+    ]
+  },
+  "/chat-with-pdf": {
+    "name": "Summarize & Ask PDF",
+    "title": "Summarize PDF & Ask Questions Free Online — No Sign-Up | PDF Palette",
+    "description": "Summarize a PDF and ask questions free online in your browser — no cloud AI upload. Local PDF Q&A with PDF Palette.",
+    "intro": "Load a PDF to build an extractive summary and search for answers with keyword matching. Nothing is sent to a cloud AI — text stays on your device.",
+    "steps": [
+      "Upload your PDF and click Load & summarize.",
+      "Read the summary or download it as .txt.",
+      "Type a question to find matching passages."
+    ],
+    "faqs": [
+      {
+        "q": "Is this free?",
+        "a": "Yes."
+      },
+      {
+        "q": "Is this ChatGPT?",
+        "a": "No. It uses local extractive summary and keyword search — private and offline-capable after load."
+      },
+      {
+        "q": "Is my file private?",
+        "a": "Yes. Text never leaves your browser for this tool."
+      }
+    ]
   }
 }

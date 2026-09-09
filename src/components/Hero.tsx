@@ -13,7 +13,7 @@ const Hero = () => {
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-6xl text-center">
           <h1 className="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:mb-4 md:whitespace-nowrap md:text-[2.35rem] lg:text-4xl">
-            29 PDF tools, most of them in{" "}
+            38 PDF tools, most of them in{" "}
             <span className="text-primary">your browser</span>
           </h1>
 
