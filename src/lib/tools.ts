@@ -492,7 +492,7 @@ export const pdfTools: PDFTool[] = [
   {
     id: "auto-redact-pii",
     name: "Auto-Redact PII",
-    description: "Black out emails, phones and other personal data",
+    description: "Black out names, emails, phones and other personal data",
     icon: ShieldAlert,
     color: "coral",
     category: ["security"],

@@ -915,10 +915,11 @@ export async function autoRedactPiiPDF(
   onProgress?: (progress: number, message?: string) => void
 ): Promise<ProcessingResult> {
   try {
-    const { blob, filename, redactionCount } = await autoRedactPiiLocal(file, onProgress);
+    const { blob, filename, redactionCount, kinds } = await autoRedactPiiLocal(file, onProgress);
+    const kindLabel = kinds.length ? ` (${kinds.join(", ")})` : "";
     return {
       success: true,
-      message: `Redacted ${redactionCount} personal-data match${redactionCount === 1 ? "" : "es"}.`,
+      message: `Redacted ${redactionCount} personal-data match${redactionCount === 1 ? "" : "es"}${kindLabel}.`,
       blob,
       filename,
     };
