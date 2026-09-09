@@ -72,8 +72,9 @@ const PdfFormFiller = () => {
     setSaving(true);
     try {
       const output = await fillForm(bytes, { values, multiValues: multi, flatten });
+      const copy = new Uint8Array(output);
       saveAs(
-        new Blob([output as unknown as BlobPart], { type: "application/pdf" }),
+        new Blob([copy], { type: "application/pdf" }),
         `${file.name.replace(/\.pdf$/i, "") || "document"}_filled.pdf`
       );
       toast.success(flatten ? "Filled and flattened." : "Form filled.");

@@ -1,11 +1,15 @@
+import fontkit from "@pdf-lib/fontkit";
 import {
+  PDFBool,
   PDFCheckBox,
   PDFDict,
   PDFDocument,
   PDFDropdown,
+  PDFName,
   PDFOptionList,
   PDFRadioGroup,
   PDFTextField,
+  StandardFonts,
 } from "pdf-lib";
 
 export class PdfFormError extends Error {
@@ -40,12 +44,23 @@ function labelOf(name: string): string {
 
 async function open(bytes: Uint8Array): Promise<PDFDocument> {
   try {
-    return await PDFDocument.load(bytes);
+    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    pdf.registerFontkit(fontkit);
+    return pdf;
   } catch (error) {
-    if (/encrypted/i.test(error instanceof Error ? error.message : "")) {
+    if (/encrypted|password/i.test(error instanceof Error ? error.message : "")) {
       throw new PdfFormError("This PDF is password protected. Unlock it first.");
     }
     throw new PdfFormError("This file could not be read as a PDF.");
+  }
+}
+
+function assertNotXfa(pdf: PDFDocument) {
+  const acro = pdf.catalog.lookupMaybe(PDFName.of("AcroForm"), PDFDict);
+  if (acro?.has(PDFName.of("XFA"))) {
+    throw new PdfFormError(
+      "This PDF uses an XFA form, which cannot be filled here. Open it in Adobe Reader, or flatten/export it as a standard AcroForm first."
+    );
   }
 }
 
@@ -53,9 +68,8 @@ async function open(bytes: Uint8Array): Promise<PDFDocument> {
  * Which page each field appears on.
  *
  * A field is a piece of data; what sits on a page is a widget annotation
- * pointing back at it. The widget's own /P entry names its page, but that
- * entry is optional and plenty of writers leave it out — so the pages'
- * annotation lists are indexed instead, which always holds.
+ * pointing back at it. The widget's own /P entry is optional and plenty of
+ * writers leave it out — so the pages' annotation lists are indexed instead.
  */
 function widgetPages(pdf: PDFDocument): Map<PDFDict, number> {
   const pages = new Map<PDFDict, number>();
@@ -72,6 +86,7 @@ function widgetPages(pdf: PDFDocument): Map<PDFDict, number> {
 
 export async function readForm(bytes: Uint8Array): Promise<FormField[]> {
   const pdf = await open(bytes);
+  assertNotXfa(pdf);
   const form = pdf.getForm();
   const pages = widgetPages(pdf);
 
@@ -143,8 +158,26 @@ export interface FillOptions {
   flatten: boolean;
 }
 
+let formFontBytes: ArrayBuffer | null = null;
+
+async function loadFormFont(): Promise<ArrayBuffer> {
+  if (formFontBytes) return formFontBytes;
+  const res = await fetch("/fonts/DejaVuSans.ttf");
+  if (!res.ok) {
+    throw new PdfFormError("Could not load the form font.");
+  }
+  formFontBytes = await res.arrayBuffer();
+  return formFontBytes;
+}
+
+function markNeedAppearances(pdf: PDFDocument) {
+  const acro = pdf.catalog.lookupMaybe(PDFName.of("AcroForm"), PDFDict);
+  if (acro) acro.set(PDFName.of("NeedAppearances"), PDFBool.True);
+}
+
 export async function fillForm(bytes: Uint8Array, options: FillOptions): Promise<Uint8Array> {
   const pdf = await open(bytes);
+  assertNotXfa(pdf);
   const form = pdf.getForm();
 
   for (const field of form.getFields()) {
@@ -180,11 +213,48 @@ export async function fillForm(bytes: Uint8Array, options: FillOptions): Promise
     }
   }
 
+  // Draw visible field appearances. Helvetica first (small); DejaVu if the
+  // answers need characters WinAnsi cannot encode (accents, Cyrillic, …).
+  let appearancesOk = false;
+  try {
+    const helvetica = await pdf.embedFont(StandardFonts.Helvetica);
+    form.updateFieldAppearances(helvetica);
+    appearancesOk = true;
+  } catch {
+    try {
+      const font = await pdf.embedFont(await loadFormFont());
+      form.updateFieldAppearances(font);
+      appearancesOk = true;
+    } catch (inner) {
+      console.warn("pdf-forms: could not refresh field appearances", inner);
+      markNeedAppearances(pdf);
+    }
+  }
+
   if (options.flatten) {
-    form.flatten();
-  } else {
-    // Without this a reader may show the old value until the field is clicked.
-    form.getFields().forEach((field) => field.needsAppearancesUpdate());
+    try {
+      form.flatten();
+    } catch (error) {
+      if (!appearancesOk) {
+        throw new PdfFormError(
+          "Could not lock the answers for this form. Try downloading without “Lock answers”, or use simpler characters in the fields."
+        );
+      }
+      throw new PdfFormError(
+        error instanceof Error
+          ? `Could not lock the answers: ${error.message}`
+          : "Could not lock the answers on this form."
+      );
+    }
+  } else if (!appearancesOk) {
+    form.getFields().forEach((field) => {
+      try {
+        field.needsAppearancesUpdate();
+      } catch {
+        /* ignore fields that cannot be marked dirty */
+      }
+    });
+    markNeedAppearances(pdf);
   }
 
   return pdf.save();
