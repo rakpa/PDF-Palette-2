@@ -4,7 +4,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import FileUploader, { type UploadedFile } from "@/components/FileUploader";
 import { extractPdfTextString } from "@/lib/extract-text";
-import { answerFromPdfText, summarizePdfLocal } from "@/lib/summarize-pdf";
+import {
+  answerFromPdfText,
+  buildSummaryFromText,
+  summarizePdfLocal,
+} from "@/lib/summarize-pdf";
 import { downloadResult } from "@/lib/pdf-utils";
 import { toast } from "sonner";
 
@@ -26,11 +30,15 @@ const PdfChatPanel = () => {
     if (!pdfFile) return;
     setBusy(true);
     setAnswer("");
+    setSummary("");
+    setText("");
     try {
+      // Extract once — summarize from the same text (avoids double work / double failure).
       const extracted = await extractPdfTextString(pdfFile, (_p, m) => setStatus(m || ""));
       setText(extracted);
-      const result = await summarizePdfLocal(pdfFile, (_p, m) => setStatus(m || ""));
-      setSummary(result.summary);
+      setStatus("Building summary…");
+      const built = buildSummaryFromText(pdfFile.name, extracted);
+      setSummary(built);
       toast.success("Document loaded. Ask a question or download the summary.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not read this PDF.");
@@ -47,6 +55,10 @@ const PdfChatPanel = () => {
       toast.error("Load a PDF first.");
       return;
     }
+    if (!question.trim()) {
+      toast.error("Type a question first.");
+      return;
+    }
     setAnswer(answerFromPdfText(text, question));
   };
 
@@ -54,17 +66,33 @@ const PdfChatPanel = () => {
     if (!pdfFile) return;
     setBusy(true);
     try {
-      const result = await summarizePdfLocal(pdfFile);
+      // Prefer already-built summary so short docs still download after Load.
+      if (summary) {
+        const base = pdfFile.name.replace(/\.pdf$/i, "") || "document";
+        downloadResult({
+          success: true,
+          message: "Summary ready",
+          blob: new Blob([summary], { type: "text/plain;charset=utf-8" }),
+          filename: `${base}-summary.txt`,
+        });
+        toast.success("Summary downloaded.");
+        return;
+      }
+      const result = await summarizePdfLocal(pdfFile, (_p, m) => setStatus(m || ""));
+      setText(result.text);
+      setSummary(result.summary);
       downloadResult({
         success: true,
         message: "Summary ready",
         blob: result.blob,
         filename: result.filename,
       });
+      toast.success("Summary downloaded.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Summarize failed.");
     } finally {
       setBusy(false);
+      setStatus("");
     }
   };
 
@@ -76,6 +104,10 @@ const PdfChatPanel = () => {
         accept={{ "application/pdf": [".pdf"] }}
         maxFiles={1}
       />
+      <p className="text-sm text-muted-foreground">
+        Upload a PDF, then click <span className="font-medium text-foreground">Load &amp; summarize</span>.
+        Summary and answers stay on your device — no cloud AI.
+      </p>
       <div className="flex flex-wrap gap-2">
         <Button onClick={load} disabled={!pdfFile || busy}>
           {busy ? status || "Working…" : "Load & summarize"}
