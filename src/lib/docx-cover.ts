@@ -79,11 +79,15 @@ export async function prepareCoverFromPdf(file: File): Promise<CoverImage | null
 async function pageLooksLikeCover(
   page: import("pdfjs-dist").PDFPageProxy
 ): Promise<boolean> {
-  const [text, ops] = await Promise.all([page.getTextContent(), page.getOperatorList()]);
+  const [text, ops] = await Promise.all([
+    page.getTextContent().catch(() => ({ items: [] as unknown[] })),
+    page.getOperatorList().catch(() => ({ fnArray: [] as number[] })),
+  ]);
   let chars = 0;
-  for (const item of text.items) {
-    if (!("str" in item)) continue;
-    chars += String(item.str).replace(/\s/g, "").length;
+  const textItems = Array.isArray(text?.items) ? text.items : [];
+  for (const item of textItems) {
+    if (!item || typeof item !== "object" || !("str" in item)) continue;
+    chars += String((item as { str: unknown }).str).replace(/\s/g, "").length;
   }
   const OPS = pdfjsLib.OPS as unknown as Record<string, number>;
   const imageOps = new Set([
@@ -94,7 +98,8 @@ async function pageLooksLikeCover(
     OPS.paintImageXObjectRepeat,
   ]);
   let images = 0;
-  for (const fn of ops.fnArray) {
+  const fnArray = Array.isArray(ops?.fnArray) ? ops.fnArray : [];
+  for (const fn of fnArray) {
     if (imageOps.has(fn)) images += 1;
   }
   if (chars <= COVER_SPARSE_CHARS) return true;

@@ -68,8 +68,18 @@ async function readDocument(bytes: Uint8Array): Promise<{
   const pages: PageText[] = [];
   for (let number = 1; number <= pdf.numPages; number++) {
     const page = await pdf.getPage(number);
-    const content = await page.getTextContent();
-    const text = (content.items as Array<{ str: string }>).map((item) => item.str).join(" ");
+    const content = await page.getTextContent().catch(() => ({ items: [] as unknown[] }));
+    const rawItems = content?.items;
+    const items = Array.isArray(rawItems)
+      ? rawItems
+      : rawItems && typeof (rawItems as Iterable<unknown>)[Symbol.iterator] === "function"
+        ? Array.from(rawItems as Iterable<unknown>)
+        : [];
+    const text = items
+      .map((item) =>
+        item && typeof item === "object" && "str" in item ? String((item as { str: unknown }).str) : ""
+      )
+      .join(" ");
     page.cleanup();
     pages.push({ page: number, words: text.split(/\s+/).filter(Boolean) });
   }

@@ -1554,7 +1554,7 @@ export async function extractPage(
   // and the image XObjects available on the page proxy.
   const scan = await scanOperators(page, pdfjsLib, viewportTransform);
   await yieldUi();
-  const content = await page.getTextContent();
+  const content = await page.getTextContent().catch(() => ({ items: [] as unknown[], styles: {} }));
   const styles = (content.styles ?? {}) as Record<
     string,
     { fontFamily?: string; ascent?: number; descent?: number }
@@ -1563,7 +1563,12 @@ export async function extractPage(
   const runs = new RunIndex(scan.runMarks);
 
   const spans: PdfSpan[] = [];
-  for (const raw of content.items) {
+  const contentItems = Array.isArray(content?.items)
+    ? content.items
+    : content?.items && typeof (content.items as Iterable<unknown>)[Symbol.iterator] === "function"
+      ? Array.from(content.items as Iterable<unknown>)
+      : [];
+  for (const raw of contentItems) {
     if (!isTextItem(raw) || !raw.str) continue;
     const text = collapseTrackedHeading(raw.str, Math.hypot(
       (raw.transform?.[2] ?? 0),

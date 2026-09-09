@@ -92,15 +92,17 @@ export async function extractImagesLocal(
     const total = pdf.numPages;
     for (let n = 1; n <= total; n++) {
       const page = await pdf.getPage(n);
-      const ops = await page.getOperatorList();
+      const ops = await page.getOperatorList().catch(() => ({ fnArray: [] as number[], argsArray: [] as unknown[][] }));
+      const fnArray = Array.isArray(ops?.fnArray) ? ops.fnArray : [];
+      const argsArray = Array.isArray(ops?.argsArray) ? ops.argsArray : [];
       const fns = pdfjsLib.OPS;
       const seen = new Set<string>();
       let extractedOnPage = 0;
 
-      for (let i = 0; i < ops.fnArray.length; i++) {
-        const fn = ops.fnArray[i];
+      for (let i = 0; i < fnArray.length; i++) {
+        const fn = fnArray[i];
         if (fn !== fns.paintImageXObject && fn !== fns.paintInlineImageXObject) continue;
-        const args = ops.argsArray[i] as unknown[];
+        const args = (Array.isArray(argsArray[i]) ? argsArray[i] : []) as unknown[];
         const name = typeof args[0] === "string" ? args[0] : `inline-${i}`;
         if (seen.has(name)) continue;
         seen.add(name);

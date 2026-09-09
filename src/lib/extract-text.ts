@@ -30,9 +30,16 @@ export async function extractTextLocal(
     const total = pdf.numPages;
     for (let n = 1; n <= total; n++) {
       const page = await pdf.getPage(n);
-      const content = await page.getTextContent();
-      const line = content.items
-        .map((item) => ("str" in item ? String(item.str) : ""))
+      const content = await page.getTextContent().catch(() => ({ items: [] as unknown[] }));
+      const items = Array.isArray(content?.items)
+        ? content.items
+        : content?.items && typeof (content.items as Iterable<unknown>)[Symbol.iterator] === "function"
+          ? Array.from(content.items as Iterable<unknown>)
+          : [];
+      const line = items
+        .map((item) =>
+          item && typeof item === "object" && "str" in item ? String((item as { str: unknown }).str) : ""
+        )
         .join(" ")
         .replace(/\s+/g, " ")
         .trim();
