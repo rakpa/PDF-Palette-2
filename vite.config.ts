@@ -55,9 +55,11 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ["pdf-lib"],
   },
   optimizeDeps: {
     exclude: ["pdfjs-dist"],
+    include: ["pdf-lib", "@pdf-lib/fontkit"],
   },
   preview: {
     headers: {

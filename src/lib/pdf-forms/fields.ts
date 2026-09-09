@@ -55,30 +55,29 @@ async function open(bytes: Uint8Array): Promise<PDFDocument> {
   }
 }
 
-function assertNotXfa(pdf: PDFDocument) {
-  const acro = pdf.catalog.lookupMaybe(PDFName.of("AcroForm"), PDFDict);
-  if (acro?.has(PDFName.of("XFA"))) {
-    throw new PdfFormError(
-      "This PDF uses an XFA form, which cannot be filled here. Open it in Adobe Reader, or flatten/export it as a standard AcroForm first."
-    );
-  }
-}
-
 /**
  * Which page each field appears on.
  *
  * A field is a piece of data; what sits on a page is a widget annotation
  * pointing back at it. The widget's own /P entry is optional and plenty of
  * writers leave it out — so the pages' annotation lists are indexed instead.
+ *
+ * Avoid `instanceof PDFDict` / typed `lookupMaybe(PDFDict)`: Vite can ship two
+ * copies of pdf-lib, and those checks throw the minified
+ * "Expected instance of e, but got instance of e".
  */
-function widgetPages(pdf: PDFDocument): Map<PDFDict, number> {
-  const pages = new Map<PDFDict, number>();
+function widgetPages(pdf: PDFDocument): Map<object, number> {
+  const pages = new Map<object, number>();
   pdf.getPages().forEach((page, index) => {
     const annots = page.node.Annots();
     if (!annots) return;
     for (let i = 0; i < annots.size(); i++) {
-      const entry = annots.lookup(i);
-      if (entry instanceof PDFDict) pages.set(entry, index + 1);
+      try {
+        const entry = annots.lookup(i);
+        if (entry) pages.set(entry as object, index + 1);
+      } catch {
+        /* skip malformed annotation entries */
+      }
     }
   });
   return pages;
@@ -86,8 +85,18 @@ function widgetPages(pdf: PDFDocument): Map<PDFDict, number> {
 
 export async function readForm(bytes: Uint8Array): Promise<FormField[]> {
   const pdf = await open(bytes);
-  assertNotXfa(pdf);
-  const form = pdf.getForm();
+  let form;
+  try {
+    form = pdf.getForm();
+  } catch (error) {
+    throw new PdfFormError(
+      error instanceof Error && /Expected instance of/i.test(error.message)
+        ? "This PDF’s form fields could not be read. Try another export of the form, or use Edit PDF to type onto the page."
+        : error instanceof Error
+          ? error.message
+          : "This PDF’s form fields could not be read."
+    );
+  }
   const pages = widgetPages(pdf);
 
   const pageOf = (field: { acroField: { getWidgets?: () => Array<{ dict: PDFDict }> } }) => {
@@ -171,13 +180,15 @@ async function loadFormFont(): Promise<ArrayBuffer> {
 }
 
 function markNeedAppearances(pdf: PDFDocument) {
-  const acro = pdf.catalog.lookupMaybe(PDFName.of("AcroForm"), PDFDict);
-  if (acro) acro.set(PDFName.of("NeedAppearances"), PDFBool.True);
+  // Untyped lookup — typed PDFDict checks break when pdf-lib is duplicated.
+  const acro = pdf.catalog.lookup(PDFName.of("AcroForm")) as PDFDict | undefined;
+  if (acro && typeof acro.set === "function") {
+    acro.set(PDFName.of("NeedAppearances"), PDFBool.True);
+  }
 }
 
 export async function fillForm(bytes: Uint8Array, options: FillOptions): Promise<Uint8Array> {
   const pdf = await open(bytes);
-  assertNotXfa(pdf);
   const form = pdf.getForm();
 
   for (const field of form.getFields()) {
