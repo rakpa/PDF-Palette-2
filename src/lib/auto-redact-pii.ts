@@ -73,7 +73,51 @@ const DOB_RE =
   /\b(?:(?:0?[1-9]|[12]\d|3[01])[\/\-.](?:0?[1-9]|1[0-2])[\/\-.](?:19|20)\d{2}|(?:19|20)\d{2}[\/\-.](?:0?[1-9]|1[0-2])[\/\-.](?:0?[1-9]|[12]\d|3[01]))\b/g;
 
 const LABEL_VALUE_RE =
-  /\b(full\s*name|candidate\s*name|name|phone|mobile|tel|telephone|cell|email|e-?mail|address|location|dob|date\s*of\s*birth|father'?s\s*name|mother'?s\s*name)\s*[:\-–]\s*([^\n|;]+)/gi;
+  /\b(full\s*name|candidate\s*name|name|phone|mobile|tel|telephone|cell|email|e-?mail|address|location|reside(?:nce)?|current\s*address|permanent\s*address|home\s*address|mailing\s*address|dob|date\s*of\s*birth|father'?s\s*name|mother'?s\s*name)\s*[:\-–]\s*([^\n|;]+)/gi;
+
+const STREET_WORD_RE =
+  /\b(?:road|rd\.?|street|st\.?|avenue|ave\.?|lane|ln\.?|boulevard|blvd\.?|drive|dr\.?|nagar|colony|society|apartment|apartments|apt\.?|sector|block|plot|flat|floor|cross|layout|village|district|township|phase|plaza|tower|residency|enclave|park|hill|villa|house|near|opp\.?|opposite)\b/i;
+
+const PIN_RE = /\b(?:PIN(?:code)?|Zip(?:code)?)\s*[:\-]?\s*\d{4,6}\b|\b\d{6}\b|\b\d{5}(?:-\d{4})?\b/i;
+
+function isLikelyAddress(raw: string): boolean {
+  const text = raw.replace(/\s+/g, " ").trim();
+  if (text.length < 8 || text.length > 140) return false;
+  if (NOT_A_NAME.has(text.toLowerCase())) return false;
+  if (/@/.test(text)) return false;
+  if (/^https?:/i.test(text)) return false;
+  // Don't treat pure phone lines as addresses.
+  if (isLikelyPhone(text) && !STREET_WORD_RE.test(text)) return false;
+
+  const hasDigit = /\d/.test(text);
+  const hasStreet = STREET_WORD_RE.test(text);
+  const hasPin = PIN_RE.test(text);
+  const hasCommaPlace = /,\s*[A-Za-z][A-Za-z .'-]{2,}/.test(text);
+  const labeled =
+    /^(?:address|location|residence|current address|permanent address|home address)\b/i.test(text);
+
+  if (labeled && text.length > 12) return true;
+  if (hasStreet && (hasDigit || hasCommaPlace)) return true;
+  if (hasPin && (hasStreet || hasCommaPlace || hasDigit)) return true;
+  if (hasDigit && hasCommaPlace && /[A-Za-z]{3,}/.test(text)) return true;
+  return false;
+}
+
+function isAddressContinuation(raw: string): boolean {
+  const text = raw.replace(/\s+/g, " ").trim();
+  if (text.length < 3 || text.length > 100) return false;
+  if (NOT_A_NAME.has(text.toLowerCase())) return false;
+  if (/^(experience|education|skills|summary|projects|work|objective)\b/i.test(text)) return false;
+  if (/@/.test(text)) return false;
+  return (
+    STREET_WORD_RE.test(text) ||
+    PIN_RE.test(text) ||
+    /,\s*[A-Za-z]/.test(text) ||
+    /\b(?:India|USA|UK|UAE|Canada|Australia|Maharashtra|Karnataka|Delhi|Mumbai|Pune|Bengaluru|Bangalore|Hyderabad|Chennai|Kolkata|California|Texas|New York)\b/i.test(
+      text
+    )
+  );
+}
 
 function isLikelyPhone(raw: string): boolean {
   const digits = raw.replace(/\D/g, "");
@@ -270,7 +314,8 @@ export async function autoRedactPiiLocal(
       const sizes = items.map((it) => it.height).sort((a, b) => a - b);
       const medianSize = sizes.length ? sizes[Math.floor(sizes.length / 2)] : 12;
 
-      for (const line of lines) {
+      for (let li = 0; li < lines.length; li++) {
+        const line = lines[li];
         hits.push(...addRegexHits(line, n, EMAIL_RE, "email"));
         hits.push(...addRegexHits(line, n, PHONE_RE, "phone", isLikelyPhone));
         hits.push(...addRegexHits(line, n, SSN_RE, "ssn"));
@@ -278,18 +323,48 @@ export async function autoRedactPiiLocal(
         hits.push(...addRegexHits(line, n, URL_PII_RE, "profile-url"));
         hits.push(...addRegexHits(line, n, DOB_RE, "dob"));
 
-        // Labeled fields: "Phone: 98765..." / "Name: Ada Lovelace"
+        // Labeled fields: "Phone: 98765..." / "Name: Ada Lovelace" / "Address: ..."
         LABEL_VALUE_RE.lastIndex = 0;
         let labelMatch: RegExpExecArray | null;
+        let redactedAddressLabel = false;
         while ((labelMatch = LABEL_VALUE_RE.exec(line.text))) {
           const label = labelMatch[1].toLowerCase();
           const value = labelMatch[2].trim();
           if (!value) continue;
           const valueStart = labelMatch.index + labelMatch[0].length - labelMatch[2].length;
-          // For name labels, redact the value; for phone/email also (pattern may have caught it).
-          if (/name/.test(label) || /phone|mobile|tel|cell|email|address|location|dob|birth/.test(label)) {
+          if (/name|phone|mobile|tel|cell|email|address|location|reside|dob|birth/.test(label)) {
             const end = valueStart + value.length;
             hits.push(...boxesForRange(line, valueStart, end, n, `label-${label}`));
+            if (/address|location|reside/.test(label)) redactedAddressLabel = true;
+          }
+        }
+
+        // Standalone address lines (common on CVs without "Address:").
+        const trimmed = line.text.trim();
+        if (isLikelyAddress(trimmed)) {
+          hits.push(...boxesForRange(line, 0, line.text.length, n, "address"));
+          redactedAddressLabel = true;
+        }
+
+        // Multi-line address: if this line is/was an address, redact the next 1–2 lines below.
+        if (redactedAddressLabel) {
+          for (let k = 1; k <= 2; k++) {
+            const next = lines[li + k];
+            if (!next) break;
+            // Lines are sorted top-to-bottom in PDF y (higher y = higher on page),
+            // so "below" means smaller y.
+            const gap = line.y - next.y;
+            if (gap < 0 || gap > Math.max(36, line.height * 2.8)) break;
+            const nextText = next.text.trim();
+            if (!nextText || NOT_A_NAME.has(nextText.toLowerCase())) break;
+            if (/^(experience|education|skills|summary|projects|objective|work)\b/i.test(nextText)) {
+              break;
+            }
+            if (isAddressContinuation(nextText) || isLikelyAddress(nextText)) {
+              hits.push(...boxesForRange(next, 0, next.text.length, n, "address"));
+            } else {
+              break;
+            }
           }
         }
 
@@ -298,7 +373,6 @@ export async function autoRedactPiiLocal(
           const fromTop = pageHeight - line.y;
           const nearTop = fromTop < pageHeight * 0.28;
           const large = line.height >= medianSize * 1.25 || line.height >= 14;
-          const trimmed = line.text.trim();
           if (nearTop && large && isPersonName(trimmed)) {
             hits.push(...boxesForRange(line, 0, line.text.length, n, "name"));
           } else if (nearTop && isPersonName(trimmed) && line.height >= medianSize) {
