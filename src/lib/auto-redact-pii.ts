@@ -243,9 +243,10 @@ function addRegexHits(line: MappedLine, page: number, re: RegExp, kind: string, 
   return hits;
 }
 
-function collectPageItems(content: { items: unknown[] }): TextItem[] {
+function collectPageItems(content: { items?: unknown[] } | null | undefined): TextItem[] {
   const out: TextItem[] = [];
-  for (const raw of content.items) {
+  const items = Array.isArray(content?.items) ? content.items : [];
+  for (const raw of items) {
     if (!raw || typeof raw !== "object" || !("str" in raw)) continue;
     const item = raw as {
       str: string;
@@ -254,7 +255,7 @@ function collectPageItems(content: { items: unknown[] }): TextItem[] {
       height?: number;
     };
     if (!item.str || !item.str.trim()) continue;
-    const transform = item.transform;
+    const transform = Array.isArray(item.transform) ? item.transform : [1, 0, 0, 1, 0, 0];
     const height = Math.abs(transform[3] || transform[0] || item.height || 10);
     const width =
       typeof item.width === "number" && item.width > 0
@@ -262,8 +263,8 @@ function collectPageItems(content: { items: unknown[] }): TextItem[] {
         : Math.max(height * 0.5 * item.str.length, height);
     out.push({
       str: item.str,
-      x: transform[4],
-      y: transform[5],
+      x: Number(transform[4]) || 0,
+      y: Number(transform[5]) || 0,
       width,
       height,
     });

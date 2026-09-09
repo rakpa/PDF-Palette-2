@@ -70,7 +70,12 @@ const PdfRedactor = () => {
       })
       .catch((cause) => {
         if (cancelled) return;
-        setError(cause?.message ?? "This PDF could not be opened.");
+        const message = cause?.message ?? "This PDF could not be opened.";
+        setError(
+          /undefined is not a function|is not iterable|matchAll/i.test(message)
+            ? "This PDF’s text layer could not be read. Try another export of the file, or draw redaction boxes on a simpler PDF."
+            : message
+        );
         setLoaded(null);
       })
       .finally(() => {
@@ -157,8 +162,9 @@ const PdfRedactor = () => {
     setSaving(true);
     try {
       const output = await applyRedactions(loaded.bytes, boxes, words);
+      const copy = new Uint8Array(output);
       saveAs(
-        new Blob([output as unknown as BlobPart], { type: "application/pdf" }),
+        new Blob([copy], { type: "application/pdf" }),
         `${file.name.replace(/\.pdf$/i, "") || "document"}_redacted.pdf`
       );
       toast.success("Redacted. The removed content is gone from the file.");

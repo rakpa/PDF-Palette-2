@@ -74,7 +74,22 @@ function overlaps(word: WordBox, box: RedactionBox): boolean {
   );
 }
 
-type TextItem = { str: string; transform: number[]; width: number; height: number };
+type TextItem = { str?: string; transform?: number[]; width?: number; height?: number };
+
+function isTextItem(raw: unknown): raw is TextItem {
+  return Boolean(raw && typeof raw === "object" && typeof (raw as TextItem).str === "string");
+}
+
+/** Split a text run into words without String.matchAll (missing on older WebKit). */
+function wordMatches(run: string): { text: string; index: number }[] {
+  const out: { text: string; index: number }[] = [];
+  const re = /\S+/g;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(run))) {
+    out.push({ text: match[0], index: match.index });
+  }
+  return out;
+}
 
 /**
  * Read every page's words with their positions, measured from the top-left of
@@ -101,28 +116,41 @@ export async function readWords(bytes: Uint8Array): Promise<PageWords[]> {
     for (let number = 1; number <= pdf.numPages; number++) {
       const page = await pdf.getPage(number);
       const viewport = page.getViewport({ scale: 1 });
-      const content = await page.getTextContent();
+      let content: { items?: unknown[] } = { items: [] };
+      try {
+        content = await page.getTextContent();
+      } catch (error) {
+        console.warn(`pdf-redact: text layer unavailable on page ${number}`, error);
+      }
+      const rawItems = content?.items;
+      const items = Array.isArray(rawItems)
+        ? rawItems
+        : rawItems && typeof (rawItems as Iterable<unknown>)[Symbol.iterator] === "function"
+          ? Array.from(rawItems as Iterable<unknown>)
+          : [];
       const words: WordBox[] = [];
 
-      for (const raw of content.items as TextItem[]) {
-        const run = raw.str;
-        if (!run || !run.trim()) continue;
-        const [, , , , x, y] = raw.transform;
-        const height = raw.height || 10;
+      for (const raw of items) {
+        if (!isTextItem(raw)) continue;
+        const run = raw.str ?? "";
+        if (!run.trim()) continue;
+        const transform = Array.isArray(raw.transform) ? raw.transform : [1, 0, 0, 1, 0, 0];
+        const x = Number(transform[4]) || 0;
+        const y = Number(transform[5]) || 0;
+        const height = Number(raw.height) || 10;
         // pdf.js reports the baseline in PDF space; the box hangs above it.
         const top = viewport.height - y - height;
         // Split the run into words. pdf.js hands back whole runs, and keeping
         // them whole would mean one redacted name takes its entire line out of
         // the text layer with it. Advance is assumed even across the run,
         // which is close enough to decide which words a box covers.
-        const per = raw.width / Math.max(1, run.length);
-        for (const match of run.matchAll(/\S+/g)) {
-          const at = match.index ?? 0;
+        const per = (Number(raw.width) || 0) / Math.max(1, run.length);
+        for (const match of wordMatches(run)) {
           words.push({
-            text: match[0],
-            x: x + at * per,
+            text: match.text,
+            x: x + match.index * per,
             y: top,
-            width: match[0].length * per,
+            width: match.text.length * per,
             height,
           });
         }
@@ -150,9 +178,9 @@ export function findPhrase(pages: PageWords[], phrase: string): RedactionBox[] {
   const boxes: RedactionBox[] = [];
   const pad = 1;
 
-  for (const page of pages) {
+  for (const page of pages ?? []) {
     const lines = new Map<number, WordBox[]>();
-    for (const word of page.words) {
+    for (const word of page.words ?? []) {
       // Round to the nearest point so a line's words share a key despite the
       // sub-point wobble that comes out of the text extractor.
       const key = Math.round(word.y);
