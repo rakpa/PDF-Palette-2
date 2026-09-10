@@ -316,7 +316,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Auto-redact PII",
-    hint: "Finds names, emails, phones, labeled contact fields, LinkedIn/GitHub, DOB, SSNs and card numbers — blacks them out, then flattens so text cannot be copied.",
+    hint: "Finds names, emails, phones, addresses and labeled contact fields. Scanned/image PDFs need OCR PDF first so the text is selectable.",
   },
   ocr: {
     accept: { "application/pdf": [".pdf"] },

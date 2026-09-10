@@ -74,7 +74,7 @@ const DOB_RE =
   /\b(?:(?:0?[1-9]|[12]\d|3[01])[\/\-.](?:0?[1-9]|1[0-2])[\/\-.](?:19|20)\d{2}|(?:19|20)\d{2}[\/\-.](?:0?[1-9]|1[0-2])[\/\-.](?:0?[1-9]|[12]\d|3[01]))\b/g;
 
 const LABEL_VALUE_RE =
-  /\b(full\s*name|candidate\s*name|name|phone|mobile|tel|telephone|cell|email|e-?mail|address|location|reside(?:nce)?|current\s*address|permanent\s*address|home\s*address|mailing\s*address|dob|date\s*of\s*birth|father'?s\s*name|mother'?s\s*name)\s*[:\-–]\s*([^\n|;]+)/gi;
+  /\b(full\s*name|candidate\s*name|name|phone|mobile|tel|telephone|cell|email|e-?mail|address|location|reside(?:nce)?|current\s*address|permanent\s*address|home\s*address|mailing\s*address|dob|date\s*of\s*birth|father'?s\s*name|mother'?s\s*name)\s*[:\-–=|]\s*([^\n|;]+)/gi;
 
 const STREET_WORD_RE =
   /\b(?:road|rd\.?|street|st\.?|avenue|ave\.?|lane|ln\.?|boulevard|blvd\.?|drive|dr\.?|nagar|colony|society|apartment|apartments|apt\.?|sector|block|plot|flat|floor|cross|layout|village|district|township|phase|plaza|tower|residency|enclave|park|hill|villa|house|near|opp\.?|opposite)\b/i;
@@ -139,10 +139,18 @@ function isPersonName(raw: string): boolean {
   if (NOT_A_NAME.has(text.toLowerCase())) return false;
   if (/\d/.test(text) || /@/.test(text)) return false;
   if (/https?:/i.test(text)) return false;
+  if (/[|/•·]/.test(text)) return false;
   // Drop common resume prefixes: Dr. / Mr. / Ms. / Mrs. / Prof.
   text = text.replace(/^(?:Dr|Mr|Mrs|Ms|Miss|Prof|Professor)\.?\s+/i, "").trim();
   // "Ada Lovelace", "JOHN DOE", "Mary-Jane Watson", "Ada Lovelace, PMP"
   text = text.replace(/,\s*(?:PMP|MBA|PhD|CPA|Esq\.?)$/i, "").trim();
+  if (
+    /engineer|manager|developer|designer|analyst|consultant|student|intern|director|officer|executive|specialist|architect|founder|ceo|cto|lead|senior|junior|associate/i.test(
+      text
+    )
+  ) {
+    return false;
+  }
   // Allow a single middle initial: "Jane M Doe"
   if (
     /^[A-Z][a-z]+(?:[-'][A-Z][a-z]+)*(?:\s+[A-Z](?:\.|[a-z]+(?:[-'][A-Z][a-z]+)*)?){1,3}$/.test(
@@ -152,7 +160,17 @@ function isPersonName(raw: string): boolean {
     return true;
   }
   if (/^[A-Z]{2,}(?:\s+[A-Z](?:\.|[A-Z]{1,})?){1,3}$/.test(text)) return true;
+  // Lowercase / mixed CV names: "amit kumar", "Priya sharma"
+  if (/^[A-Za-z][A-Za-z'-]*(?:\s+[A-Za-z][A-Za-z'-]*){1,3}$/.test(text)) return true;
   return false;
+}
+
+/** Labels that often sit alone on a line with the value on the next line. */
+const SOLO_LABEL_RE =
+  /^(?:full\s*name|candidate\s*name|name|phone|mobile|tel|telephone|cell|email|e-?mail|address|location|residence|current\s*address|permanent\s*address|home\s*address|mailing\s*address|dob|date\s*of\s*birth|linkedin|github)\s*:?\s*$/i;
+
+function isSoloLabel(text: string): boolean {
+  return SOLO_LABEL_RE.test(text.replace(/\s+/g, " ").trim());
 }
 
 function groupIntoLines(items: TextItem[]): TextItem[][] {
@@ -274,6 +292,59 @@ function addRegexHits(
   return hits;
 }
 
+/**
+ * Match emails even when pdf.js inserted spaces between glyphs
+ * ("j a n e @ x . c o m") by searching a whitespace-collapsed copy.
+ */
+function addCollapsedEmailHits(line: MappedLine, page: number, pageHeight: number): Hit[] {
+  const original = line.text || "";
+  let collapsed = "";
+  const toOrig: number[] = [];
+  for (let i = 0; i < original.length; i++) {
+    const ch = original[i];
+    if (/\s/.test(ch) || ch === "\u200b" || ch === "\ufeff" || ch === "\u00ad") continue;
+    toOrig.push(i);
+    collapsed += ch;
+  }
+  if (!collapsed.includes("@")) return [];
+  const hits: Hit[] = [];
+  const re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(collapsed))) {
+    const from = toOrig[match.index];
+    const last = toOrig[match.index + match[0].length - 1];
+    if (from == null || last == null) continue;
+    const range = boxesForRange(line, from, last + 1, page, "email", pageHeight);
+    for (let i = 0; i < range.length; i++) hits.push(range[i]);
+  }
+  return hits;
+}
+
+/** Digits-only phone hunt for numbers broken by spaces/glyphs. */
+function addCollapsedPhoneHits(line: MappedLine, page: number, pageHeight: number): Hit[] {
+  const original = line.text || "";
+  let collapsed = "";
+  const toOrig: number[] = [];
+  for (let i = 0; i < original.length; i++) {
+    const ch = original[i];
+    if (/\s/.test(ch) || ch === "\u200b" || ch === "\ufeff") continue;
+    toOrig.push(i);
+    collapsed += ch;
+  }
+  const hits: Hit[] = [];
+  const re = /(?:\+|00)?\d[\d().-]{8,18}\d/g;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(collapsed))) {
+    if (!isLikelyPhone(match[0])) continue;
+    const from = toOrig[match.index];
+    const last = toOrig[match.index + match[0].length - 1];
+    if (from == null || last == null) continue;
+    const range = boxesForRange(line, from, last + 1, page, "phone", pageHeight);
+    for (let i = 0; i < range.length; i++) hits.push(range[i]);
+  }
+  return hits;
+}
+
 function collectPageItems(content: { items?: unknown[] } | null | undefined): TextItem[] {
   const out: TextItem[] = [];
   const rawItems = content?.items;
@@ -378,6 +449,7 @@ export async function autoRedactPiiLocal(
   }
 
   const hits: Hit[] = [];
+  let totalChars = 0;
   try {
     const total = src.numPages;
     for (let n = 1; n <= total; n++) {
@@ -391,6 +463,9 @@ export async function autoRedactPiiLocal(
         console.warn(`auto-redact: text layer unavailable on page ${n}`, error);
       }
       const items = collectPageItems(content);
+      for (let ii = 0; ii < items.length; ii++) {
+        totalChars += items[ii].str.replace(/\s/g, "").length;
+      }
       const lineGroups = groupIntoLines(items);
       const lines: MappedLine[] = [];
       for (let g = 0; g < lineGroups.length; g++) {
@@ -408,13 +483,14 @@ export async function autoRedactPiiLocal(
           for (let i = 0; i < more.length; i++) hits.push(more[i]);
         };
         pushHits(addRegexHits(line, n, pageHeight, EMAIL_RE, "email"));
+        pushHits(addCollapsedEmailHits(line, n, pageHeight));
         pushHits(addRegexHits(line, n, pageHeight, PHONE_RE, "phone", isLikelyPhone));
+        pushHits(addCollapsedPhoneHits(line, n, pageHeight));
         pushHits(addRegexHits(line, n, pageHeight, SSN_RE, "ssn"));
         pushHits(addRegexHits(line, n, pageHeight, CARD_RE, "card", isLikelyCard));
         pushHits(addRegexHits(line, n, pageHeight, URL_PII_RE, "profile-url"));
         pushHits(addRegexHits(line, n, pageHeight, DOB_RE, "dob"));
 
-        // Labeled fields: "Phone: 98765..." / "Name: Ada Lovelace" / "Address: ..."
         LABEL_VALUE_RE.lastIndex = 0;
         let labelMatch: RegExpExecArray | null;
         let redactedAddressLabel = false;
@@ -429,27 +505,53 @@ export async function autoRedactPiiLocal(
           }
         }
 
-        // Standalone address lines (common on CVs without "Address:").
         const trimmed = (line.text || "").trim();
+
+        if (isSoloLabel(trimmed)) {
+          const labelKind = trimmed.replace(/:$/, "").toLowerCase();
+          for (let k = 1; k <= 2; k++) {
+            const next = lines[li + k];
+            if (!next) break;
+            const gap = line.y - next.y;
+            if (gap < 0 || gap > Math.max(40, line.height * 3)) break;
+            const nextText = (next.text || "").trim();
+            if (!nextText || isSoloLabel(nextText) || NOT_A_NAME.has(nextText.toLowerCase())) break;
+            if (/^(experience|education|skills|summary|projects|objective|work)\b/i.test(nextText)) break;
+            pushHits(boxesForRange(next, 0, next.text.length, n, `label-${labelKind}`, pageHeight));
+            if (/address|location|reside/.test(labelKind)) redactedAddressLabel = true;
+            if (!/address|location|reside/.test(labelKind)) break;
+          }
+        }
+
         if (isLikelyAddress(trimmed)) {
           pushHits(boxesForRange(line, 0, line.text.length, n, "address", pageHeight));
           redactedAddressLabel = true;
         }
 
-        // Multi-line address: if this line is/was an address, redact the next 1–2 lines below.
+        if (/[|/•·]/.test(trimmed) && (/@/.test(trimmed) || /\d{8,}/.test(trimmed))) {
+          const parts = trimmed.split(/\s*[|/•·]\s*/);
+          let cursor = 0;
+          for (let pi = 0; pi < parts.length; pi++) {
+            const part = parts[pi];
+            const at = trimmed.indexOf(part, cursor);
+            if (at < 0) continue;
+            cursor = at + part.length;
+            if (!part || /@/.test(part) || isLikelyPhone(part)) continue;
+            if (/^[A-Za-z][A-Za-z .'-]{2,40}$/.test(part) && !NOT_A_NAME.has(part.toLowerCase())) {
+              pushHits(boxesForRange(line, at, at + part.length, n, "address", pageHeight));
+            }
+          }
+        }
+
         if (redactedAddressLabel) {
           for (let k = 1; k <= 2; k++) {
             const next = lines[li + k];
             if (!next) break;
-            // Lines are sorted top-to-bottom in PDF y (higher y = higher on page),
-            // so "below" means smaller y.
             const gap = line.y - next.y;
             if (gap < 0 || gap > Math.max(36, line.height * 2.8)) break;
             const nextText = (next.text || "").trim();
             if (!nextText || NOT_A_NAME.has(nextText.toLowerCase())) break;
-            if (/^(experience|education|skills|summary|projects|objective|work)\b/i.test(nextText)) {
-              break;
-            }
+            if (/^(experience|education|skills|summary|projects|objective|work)\b/i.test(nextText)) break;
             if (isAddressContinuation(nextText) || isLikelyAddress(nextText)) {
               pushHits(boxesForRange(next, 0, next.text.length, n, "address", pageHeight));
             } else {
@@ -458,14 +560,11 @@ export async function autoRedactPiiLocal(
           }
         }
 
-        // CV name heuristic: large title-like text in the top band of page 1.
         if (n === 1) {
           const fromTop = pageHeight - line.y;
-          const nearTop = fromTop < pageHeight * 0.35;
-          const large = line.height >= medianSize * 1.2 || line.height >= 13;
-          if (nearTop && large && isPersonName(trimmed)) {
-            pushHits(boxesForRange(line, 0, line.text.length, n, "name", pageHeight));
-          } else if (nearTop && isPersonName(trimmed) && line.height >= medianSize * 0.95) {
+          const nearTop = fromTop < pageHeight * 0.4;
+          const large = line.height >= medianSize * 1.15 || line.height >= 12;
+          if (nearTop && (large || line.height >= medianSize * 0.9) && isPersonName(trimmed)) {
             pushHits(boxesForRange(line, 0, line.text.length, n, "name", pageHeight));
           }
         }
@@ -483,7 +582,6 @@ export async function autoRedactPiiLocal(
     void task.destroy().catch(() => undefined);
   }
 
-  // Deduplicate nearly-identical boxes.
   const unique: Hit[] = [];
   for (let hi = 0; hi < hits.length; hi++) {
     const hit = hits[hi];
@@ -504,8 +602,13 @@ export async function autoRedactPiiLocal(
   }
 
   if (unique.length === 0) {
+    if (totalChars < 8) {
+      throw new Error(
+        "No selectable text was found in this PDF. If it is a scan or photo, run OCR PDF first, then try Auto-Redact again."
+      );
+    }
     throw new Error(
-      "No personal data patterns were found (name, email, phone, address, LinkedIn/GitHub, DOB, SSN, or card)."
+      "No personal data patterns were found (name, email, phone, address, LinkedIn/GitHub, DOB, SSN, or card). If the info is only in an image, run OCR PDF first."
     );
   }
 
