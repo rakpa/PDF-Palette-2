@@ -75,7 +75,7 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
 
         <section className="py-5 md:py-6">
           <div className="container mx-auto px-4">
-            <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_260px] xl:grid-cols-[minmax(0,1fr)_280px]">
+            <div className="grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_240px] lg:grid-cols-[minmax(0,1fr)_280px] xl:grid-cols-[minmax(0,1fr)_300px]">
               <div className="min-w-0">
                 {children}
                 <MonetizationBlock
@@ -90,7 +90,7 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
                   showAffiliate={false}
                 />
               </div>
-              <AffiliateSidebar className="lg:sticky lg:top-24 lg:self-start" />
+              <AffiliateSidebar className="md:sticky md:top-24 md:self-start" />
             </div>
           </div>
         </section>
