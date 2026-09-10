@@ -7,7 +7,6 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ToolSeoContent from "./ToolSeoContent";
 import MonetizationBlock from "./MonetizationBlock";
-import AffiliateSidebar from "./AffiliateSidebar";
 import { cn } from "@/lib/utils";
 
 interface ToolPageLayoutProps {
@@ -75,23 +74,17 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
 
         <section className="py-5 md:py-6">
           <div className="container mx-auto px-4">
-            <div className="grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_240px] lg:grid-cols-[minmax(0,1fr)_280px] xl:grid-cols-[minmax(0,1fr)_300px]">
-              <div className="min-w-0">
-                {children}
-                <MonetizationBlock
-                  placement="tool-after-upload"
-                  className="mx-auto mt-8 max-w-3xl"
-                  showAffiliate={false}
-                />
-                {content && <ToolSeoContent tool={tool} content={content} />}
-                <MonetizationBlock
-                  placement="tool-after-seo"
-                  className="mx-auto mt-10 max-w-3xl"
-                  showAffiliate={false}
-                />
-              </div>
-              <AffiliateSidebar className="md:sticky md:top-24 md:self-start" />
-            </div>
+            {children}
+            <MonetizationBlock
+              placement="tool-after-upload"
+              className="mx-auto mt-8 max-w-3xl"
+            />
+            {content && <ToolSeoContent tool={tool} content={content} />}
+            <MonetizationBlock
+              placement="tool-after-seo"
+              className="mx-auto mt-10 max-w-3xl"
+              showAffiliate={false}
+            />
           </div>
         </section>
       </main>

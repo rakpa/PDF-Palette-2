@@ -51,7 +51,8 @@ export function slotForPlacement(placement: AdPlacement): string {
   return placementEnv[placement] || "";
 }
 
-function withEnvAffiliateUrls(): AffiliateOffer[] {
+/** Env overrides win; otherwise use affiliate-config.ts URLs. */
+export function getAffiliateOffers(): AffiliateOffer[] {
   const hostingerEnv = String(env.VITE_AFFILIATE_HOSTINGER_URL || "").trim();
   const cloudwaysEnv = String(env.VITE_AFFILIATE_CLOUDWAYS_URL || "").trim();
 
@@ -60,18 +61,5 @@ function withEnvAffiliateUrls(): AffiliateOffer[] {
     if (offer.id === "hostinger" && hostingerEnv) url = hostingerEnv;
     if (offer.id === "cloudways" && cloudwaysEnv) url = cloudwaysEnv;
     return { ...offer, url };
-  });
-}
-
-/** Live offers only (URL set in config or env). */
-export function getAffiliateOffers(): AffiliateOffer[] {
-  return withEnvAffiliateUrls().filter((offer) => Boolean(offer.url));
-}
-
-/**
- * All configured partner slots, including empty URLs.
- * Used for reserved sidebar banners on tool pages.
- */
-export function getAffiliateSlots(): AffiliateOffer[] {
-  return withEnvAffiliateUrls();
+  }).filter((offer) => Boolean(offer.url));
 }
