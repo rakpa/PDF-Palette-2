@@ -316,7 +316,7 @@ const featureConfig: Record<
     maxFiles: 1,
     minFiles: 1,
     cta: "Auto-redact PII",
-    hint: "Finds names, emails, phones, addresses and labeled contact fields. Scanned/image PDFs need OCR PDF first so the text is selectable.",
+    hint: "Finds names, emails, phones and addresses. Scanned PDFs are OCR’d automatically in your browser, then redacted.",
   },
   ocr: {
     accept: { "application/pdf": [".pdf"] },

@@ -1,6 +1,7 @@
 import "./promise-with-resolvers-polyfill";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { applyRedactions, type RedactionBox } from "./pdf-redact/redact";
+import { ocrPdf, OcrError } from "./pdf-ocr/ocr";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.min.mjs`;
 
@@ -425,14 +426,19 @@ function uniqueKinds(hits: Hit[]): string[] {
 
 /**
  * Find CV / personal-data patterns across reconstructed text lines (so phones
- * split across spans still match), black them out, then flatten.
+ * split across spans still match), then rebuild affected pages as pictures
+ * with the matches painted out.
+ *
+ * Scanned / image-only PDFs have no text layer — when that happens we OCR in
+ * the browser first, then scan again, so the user does not need a separate
+ * OCR step.
  */
-export async function autoRedactPiiLocal(
-  file: File,
-  onProgress?: (progress: number, message?: string) => void
-): Promise<{ blob: Blob; filename: string; redactionCount: number; kinds: string[] }> {
-  onProgress?.(5, "Opening PDF…");
-  const data = new Uint8Array(await file.arrayBuffer());
+async function scanPiiHits(
+  data: Uint8Array,
+  onProgress?: (progress: number, message?: string) => void,
+  progressFrom = 8,
+  progressTo = 48
+): Promise<{ hits: Hit[]; totalChars: number }> {
   const task = pdfjsLib.getDocument({
     data: data.slice(),
     verbosity: 0,
@@ -571,7 +577,11 @@ export async function autoRedactPiiLocal(
       }
 
       page.cleanup();
-      onProgress?.(8 + Math.round((n / total) * 40), `Scanning page ${n} of ${total}…`);
+      const span = progressTo - progressFrom;
+      onProgress?.(
+        progressFrom + Math.round((n / total) * span),
+        `Scanning page ${n} of ${total}…`
+      );
     }
   } finally {
     try {
@@ -582,6 +592,10 @@ export async function autoRedactPiiLocal(
     void task.destroy().catch(() => undefined);
   }
 
+  return { hits, totalChars };
+}
+
+function dedupeHits(hits: Hit[]): Hit[] {
   const unique: Hit[] = [];
   for (let hi = 0; hi < hits.length; hi++) {
     const hit = hits[hi];
@@ -600,22 +614,58 @@ export async function autoRedactPiiLocal(
     }
     if (!dup) unique.push(hit);
   }
+  return unique;
+}
+
+export async function autoRedactPiiLocal(
+  file: File,
+  onProgress?: (progress: number, message?: string) => void
+): Promise<{ blob: Blob; filename: string; redactionCount: number; kinds: string[] }> {
+  onProgress?.(4, "Opening PDF…");
+  let data = new Uint8Array(await file.arrayBuffer());
+
+  let { hits, totalChars } = await scanPiiHits(data, onProgress, 6, 28);
+
+  // Image-only / scanned PDFs: recognise text in the browser, then scan again.
+  if (totalChars < 8) {
+    onProgress?.(30, "No text layer — running OCR…");
+    try {
+      const ocr = await ocrPdf(file, (p, message) =>
+        onProgress?.(30 + Math.round(Math.min(100, Math.max(0, p)) * 0.28), message || "Recognising…")
+      );
+      if (ocr.words < 1 && ocr.ocrPages < 1) {
+        throw new Error(
+          "OCR could not read any text from this PDF. Try a clearer scan, or run OCR PDF first."
+        );
+      }
+      data = new Uint8Array(await ocr.blob.arrayBuffer());
+      ({ hits, totalChars } = await scanPiiHits(data, onProgress, 60, 72));
+    } catch (error) {
+      if (error instanceof OcrError) throw new Error(error.message);
+      const message = error instanceof Error ? error.message : "";
+      if (/OCR could not read|clearer scan/i.test(message)) throw error instanceof Error ? error : new Error(message);
+      throw new Error(
+        message ||
+          "This PDF has no selectable text and OCR failed. Try OCR PDF first, then Auto-Redact."
+      );
+    }
+  }
+
+  const unique = dedupeHits(hits);
 
   if (unique.length === 0) {
     if (totalChars < 8) {
       throw new Error(
-        "No selectable text was found in this PDF. If it is a scan or photo, run OCR PDF first, then try Auto-Redact again."
+        "OCR could not read any text from this PDF. Try a clearer scan, or run OCR PDF first."
       );
     }
     throw new Error(
-      "No personal data patterns were found (name, email, phone, address, LinkedIn/GitHub, DOB, SSN, or card). If the info is only in an image, run OCR PDF first."
+      "No personal data patterns were found (name, email, phone, address, LinkedIn/GitHub, DOB, SSN, or card)."
     );
   }
 
-  onProgress?.(55, "Applying redactions…");
+  onProgress?.(75, "Applying redactions...");
   const boxes = hitsToRedactionBoxes(unique);
-  // Rebuild affected pages as pictures with black bars — same engine as Redact PDF,
-  // so text is actually removed (not just covered) and we avoid the flatten crash path.
   let saved: Uint8Array;
   try {
     saved = await applyRedactions(
@@ -623,11 +673,11 @@ export async function autoRedactPiiLocal(
       boxes,
       [],
       { mode: "color", color: "#000000" },
-      (p, message) => onProgress?.(55 + Math.round(p * 0.4), message)
+      (p, message) => onProgress?.(75 + Math.round(p * 0.22), message)
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
-    throw new Error(message || "Could not apply redactions to this PDF.");
+    throw new Error(message || "Could not apply rededations to this PDF.");
   }
 
   onProgress?.(100, "Done");
