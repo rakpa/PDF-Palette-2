@@ -1,6 +1,6 @@
-import { PDFDocument, rgb } from "pdf-lib";
 import "./promise-with-resolvers-polyfill";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import { applyRedactions, type RedactionBox } from "./pdf-redact/redact";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.min.mjs`;
 
@@ -12,7 +12,8 @@ type TextItem = {
   height: number;
 };
 
-type Hit = { page: number; x: number; y: number; w: number; h: number; kind: string };
+/** Hit in PDF user space (origin bottom-left), converted to top-left boxes later. */
+type Hit = { page: number; x: number; y: number; w: number; h: number; kind: string; pageHeight: number };
 
 /** Section headers / labels that must not be treated as a person name. */
 const NOT_A_NAME = new Set(
@@ -133,31 +134,40 @@ function isLikelyCard(raw: string): boolean {
 }
 
 function isPersonName(raw: string): boolean {
-  const text = raw.replace(/\s+/g, " ").trim();
-  if (text.length < 3 || text.length > 60) return false;
+  let text = raw.replace(/\s+/g, " ").trim();
+  if (text.length < 3 || text.length > 70) return false;
   if (NOT_A_NAME.has(text.toLowerCase())) return false;
   if (/\d/.test(text) || /@/.test(text)) return false;
   if (/https?:/i.test(text)) return false;
-  // "Ada Lovelace", "JOHN DOE", "Mary-Jane Watson"
-  if (/^[A-Z][a-z]+(?:[-'][A-Z][a-z]+)*(?:\s+[A-Z][a-z]+(?:[-'][A-Z][a-z]+)*){1,3}$/.test(text)) {
+  // Drop common resume prefixes: Dr. / Mr. / Ms. / Mrs. / Prof.
+  text = text.replace(/^(?:Dr|Mr|Mrs|Ms|Miss|Prof|Professor)\.?\s+/i, "").trim();
+  // "Ada Lovelace", "JOHN DOE", "Mary-Jane Watson", "Ada Lovelace, PMP"
+  text = text.replace(/,\s*(?:PMP|MBA|PhD|CPA|Esq\.?)$/i, "").trim();
+  // Allow a single middle initial: "Jane M Doe"
+  if (
+    /^[A-Z][a-z]+(?:[-'][A-Z][a-z]+)*(?:\s+[A-Z](?:\.|[a-z]+(?:[-'][A-Z][a-z]+)*)?){1,3}$/.test(
+      text
+    )
+  ) {
     return true;
   }
-  if (/^[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}$/.test(text)) return true;
+  if (/^[A-Z]{2,}(?:\s+[A-Z](?:\.|[A-Z]{1,})?){1,3}$/.test(text)) return true;
   return false;
 }
 
 function groupIntoLines(items: TextItem[]): TextItem[][] {
-  if (items.length === 0) return [];
-  const sorted = [...items].sort((a, b) => b.y - a.y || a.x - b.x);
+  if (!items || items.length === 0) return [];
+  const sorted = items.slice().sort((a, b) => b.y - a.y || a.x - b.x);
   const lines: TextItem[][] = [];
-  for (const item of sorted) {
-    const line = lines.find(
+  for (let i = 0; i < sorted.length; i++) {
+    const item = sorted[i];
+    let line = lines.find(
       (group) => Math.abs(group[0].y - item.y) <= Math.max(3.5, group[0].height * 0.45)
     );
     if (line) line.push(item);
     else lines.push([item]);
   }
-  for (const line of lines) line.sort((a, b) => a.x - b.x);
+  for (let i = 0; i < lines.length; i++) lines[i].sort((a, b) => a.x - b.x);
   return lines;
 }
 
@@ -178,8 +188,13 @@ function buildMappedLine(items: TextItem[]): MappedLine {
     if (i > 0) {
       const prev = items[i - 1];
       const gap = item.x - (prev.x + prev.width);
-      // Insert a space when glyphs are visually separated.
-      if (gap > Math.max(1.2, prev.height * 0.12) && !text.endsWith(" ") && !item.str.startsWith(" ")) {
+      // Insert a space when glyphs are visually separated. Keep single-character
+      // runs tight so emails/phones split across spans still match.
+      const singleRun = prev.str.length <= 1 && item.str.length <= 1;
+      const gapLimit = singleRun
+        ? Math.max(2.5, prev.height * 0.35)
+        : Math.max(1.2, prev.height * 0.12);
+      if (gap > gapLimit && !text.endsWith(" ") && !item.str.startsWith(" ")) {
         text += " ";
         map.push(null);
       }
@@ -194,7 +209,14 @@ function buildMappedLine(items: TextItem[]): MappedLine {
   return { text, map, y, height, pageTop: 0 };
 }
 
-function boxesForRange(line: MappedLine, start: number, end: number, page: number, kind: string): Hit[] {
+function boxesForRange(
+  line: MappedLine,
+  start: number,
+  end: number,
+  page: number,
+  kind: string,
+  pageHeight: number
+): Hit[] {
   const hits: Hit[] = [];
   let i = Math.max(0, start);
   while (i < end && i < line.map.length) {
@@ -224,33 +246,48 @@ function boxesForRange(line: MappedLine, start: number, end: number, page: numbe
       w: w + padX * 2,
       h: item.height + padY * 2,
       kind,
+      pageHeight,
     });
     i = j;
   }
   return hits;
 }
 
-function addRegexHits(line: MappedLine, page: number, re: RegExp, kind: string, validate?: (m: string) => boolean): Hit[] {
+function addRegexHits(
+  line: MappedLine,
+  page: number,
+  pageHeight: number,
+  re: RegExp,
+  kind: string,
+  validate?: (m: string) => boolean
+): Hit[] {
   const hits: Hit[] = [];
   re.lastIndex = 0;
   let match: RegExpExecArray | null;
-  const source = line.text;
+  const source = line.text || "";
   while ((match = re.exec(source))) {
     const value = match[0];
     if (validate && !validate(value)) continue;
-    hits.push(...boxesForRange(line, match.index, match.index + value.length, page, kind));
+    const range = boxesForRange(line, match.index, match.index + value.length, page, kind, pageHeight);
+    for (let i = 0; i < range.length; i++) hits.push(range[i]);
   }
   return hits;
 }
 
 function collectPageItems(content: { items?: unknown[] } | null | undefined): TextItem[] {
   const out: TextItem[] = [];
-  const items = Array.isArray(content?.items) ? content.items : [];
-  for (const raw of items) {
+  const rawItems = content?.items;
+  const items = Array.isArray(rawItems)
+    ? rawItems
+    : rawItems && typeof (rawItems as Iterable<unknown>)[Symbol.iterator] === "function"
+      ? Array.from(rawItems as Iterable<unknown>)
+      : [];
+  for (let i = 0; i < items.length; i++) {
+    const raw = items[i];
     if (!raw || typeof raw !== "object" || !("str" in raw)) continue;
     const item = raw as {
       str: string;
-      transform: number[];
+      transform?: number[];
       width?: number;
       height?: number;
     };
@@ -270,6 +307,49 @@ function collectPageItems(content: { items?: unknown[] } | null | undefined): Te
     });
   }
   return out;
+}
+
+function hitsToRedactionBoxes(hits: Hit[]): RedactionBox[] {
+  const boxes: RedactionBox[] = [];
+  for (let i = 0; i < hits.length; i++) {
+    const hit = hits[i];
+    // pdf-lib / PDF user space → top-left display space used by applyRedactions.
+    boxes.push({
+      page: hit.page,
+      x: hit.x,
+      y: hit.pageHeight - hit.y - hit.h,
+      width: Math.max(hit.w, 4),
+      height: Math.max(hit.h, 4),
+    });
+  }
+  return boxes;
+}
+
+function normalizeKind(kind: string): string {
+  const raw = String(kind || "");
+  if (raw.startsWith("label-")) {
+    const rest = raw.slice(6);
+    if (/name/.test(rest)) return "name";
+    if (/phone|mobile|tel|cell/.test(rest)) return "phone";
+    if (/email/.test(rest)) return "email";
+    if (/address|location|reside/.test(rest)) return "address";
+    if (/dob|birth/.test(rest)) return "dob";
+    return "label";
+  }
+  if (raw === "profile-url") return "profile";
+  return raw.split("-")[0] || raw;
+}
+
+function uniqueKinds(hits: Hit[]): string[] {
+  const kinds: string[] = [];
+  const seen: Record<string, 1> = Object.create(null);
+  for (let i = 0; i < hits.length; i++) {
+    const kind = normalizeKind(hits[i].kind);
+    if (!kind || seen[kind]) continue;
+    seen[kind] = 1;
+    kinds.push(kind);
+  }
+  return kinds;
 }
 
 /**
@@ -304,46 +384,55 @@ export async function autoRedactPiiLocal(
       const page = await src.getPage(n);
       const viewport = page.getViewport({ scale: 1 });
       const pageHeight = viewport.height;
-      const content = await page.getTextContent();
+      let content: { items?: unknown[] } = { items: [] };
+      try {
+        content = await page.getTextContent();
+      } catch (error) {
+        console.warn(`auto-redact: text layer unavailable on page ${n}`, error);
+      }
       const items = collectPageItems(content);
-      const lines = groupIntoLines(items).map((group) => {
-        const mapped = buildMappedLine(group);
+      const lineGroups = groupIntoLines(items);
+      const lines: MappedLine[] = [];
+      for (let g = 0; g < lineGroups.length; g++) {
+        const mapped = buildMappedLine(lineGroups[g]);
         mapped.pageTop = pageHeight;
-        return mapped;
-      });
+        lines.push(mapped);
+      }
 
       const sizes = items.map((it) => it.height).sort((a, b) => a - b);
       const medianSize = sizes.length ? sizes[Math.floor(sizes.length / 2)] : 12;
 
       for (let li = 0; li < lines.length; li++) {
         const line = lines[li];
-        hits.push(...addRegexHits(line, n, EMAIL_RE, "email"));
-        hits.push(...addRegexHits(line, n, PHONE_RE, "phone", isLikelyPhone));
-        hits.push(...addRegexHits(line, n, SSN_RE, "ssn"));
-        hits.push(...addRegexHits(line, n, CARD_RE, "card", isLikelyCard));
-        hits.push(...addRegexHits(line, n, URL_PII_RE, "profile-url"));
-        hits.push(...addRegexHits(line, n, DOB_RE, "dob"));
+        const pushHits = (more: Hit[]) => {
+          for (let i = 0; i < more.length; i++) hits.push(more[i]);
+        };
+        pushHits(addRegexHits(line, n, pageHeight, EMAIL_RE, "email"));
+        pushHits(addRegexHits(line, n, pageHeight, PHONE_RE, "phone", isLikelyPhone));
+        pushHits(addRegexHits(line, n, pageHeight, SSN_RE, "ssn"));
+        pushHits(addRegexHits(line, n, pageHeight, CARD_RE, "card", isLikelyCard));
+        pushHits(addRegexHits(line, n, pageHeight, URL_PII_RE, "profile-url"));
+        pushHits(addRegexHits(line, n, pageHeight, DOB_RE, "dob"));
 
         // Labeled fields: "Phone: 98765..." / "Name: Ada Lovelace" / "Address: ..."
         LABEL_VALUE_RE.lastIndex = 0;
         let labelMatch: RegExpExecArray | null;
         let redactedAddressLabel = false;
-        while ((labelMatch = LABEL_VALUE_RE.exec(line.text))) {
+        while ((labelMatch = LABEL_VALUE_RE.exec(line.text || ""))) {
           const label = labelMatch[1].toLowerCase();
           const value = labelMatch[2].trim();
           if (!value) continue;
           const valueStart = labelMatch.index + labelMatch[0].length - labelMatch[2].length;
           if (/name|phone|mobile|tel|cell|email|address|location|reside|dob|birth/.test(label)) {
-            const end = valueStart + value.length;
-            hits.push(...boxesForRange(line, valueStart, end, n, `label-${label}`));
+            pushHits(boxesForRange(line, valueStart, valueStart + value.length, n, `label-${label}`, pageHeight));
             if (/address|location|reside/.test(label)) redactedAddressLabel = true;
           }
         }
 
         // Standalone address lines (common on CVs without "Address:").
-        const trimmed = line.text.trim();
+        const trimmed = (line.text || "").trim();
         if (isLikelyAddress(trimmed)) {
-          hits.push(...boxesForRange(line, 0, line.text.length, n, "address"));
+          pushHits(boxesForRange(line, 0, line.text.length, n, "address", pageHeight));
           redactedAddressLabel = true;
         }
 
@@ -356,13 +445,13 @@ export async function autoRedactPiiLocal(
             // so "below" means smaller y.
             const gap = line.y - next.y;
             if (gap < 0 || gap > Math.max(36, line.height * 2.8)) break;
-            const nextText = next.text.trim();
+            const nextText = (next.text || "").trim();
             if (!nextText || NOT_A_NAME.has(nextText.toLowerCase())) break;
             if (/^(experience|education|skills|summary|projects|objective|work)\b/i.test(nextText)) {
               break;
             }
             if (isAddressContinuation(nextText) || isLikelyAddress(nextText)) {
-              hits.push(...boxesForRange(next, 0, next.text.length, n, "address"));
+              pushHits(boxesForRange(next, 0, next.text.length, n, "address", pageHeight));
             } else {
               break;
             }
@@ -372,12 +461,12 @@ export async function autoRedactPiiLocal(
         // CV name heuristic: large title-like text in the top band of page 1.
         if (n === 1) {
           const fromTop = pageHeight - line.y;
-          const nearTop = fromTop < pageHeight * 0.28;
-          const large = line.height >= medianSize * 1.25 || line.height >= 14;
+          const nearTop = fromTop < pageHeight * 0.35;
+          const large = line.height >= medianSize * 1.2 || line.height >= 13;
           if (nearTop && large && isPersonName(trimmed)) {
-            hits.push(...boxesForRange(line, 0, line.text.length, n, "name"));
-          } else if (nearTop && isPersonName(trimmed) && line.height >= medianSize) {
-            hits.push(...boxesForRange(line, 0, line.text.length, n, "name"));
+            pushHits(boxesForRange(line, 0, line.text.length, n, "name", pageHeight));
+          } else if (nearTop && isPersonName(trimmed) && line.height >= medianSize * 0.95) {
+            pushHits(boxesForRange(line, 0, line.text.length, n, "name", pageHeight));
           }
         }
       }
@@ -396,58 +485,53 @@ export async function autoRedactPiiLocal(
 
   // Deduplicate nearly-identical boxes.
   const unique: Hit[] = [];
-  for (const hit of hits) {
-    const dup = unique.some(
-      (u) =>
+  for (let hi = 0; hi < hits.length; hi++) {
+    const hit = hits[hi];
+    let dup = false;
+    for (let ui = 0; ui < unique.length; ui++) {
+      const u = unique[ui];
+      if (
         u.page === hit.page &&
         Math.abs(u.x - hit.x) < 1.5 &&
         Math.abs(u.y - hit.y) < 1.5 &&
         Math.abs(u.w - hit.w) < 2
-    );
+      ) {
+        dup = true;
+        break;
+      }
+    }
     if (!dup) unique.push(hit);
   }
 
   if (unique.length === 0) {
     throw new Error(
-      "No personal data patterns were found (name, email, phone, address labels, LinkedIn/GitHub, DOB, SSN, or card)."
+      "No personal data patterns were found (name, email, phone, address, LinkedIn/GitHub, DOB, SSN, or card)."
     );
   }
 
   onProgress?.(55, "Applying redactions…");
-  let pdf: PDFDocument;
+  const boxes = hitsToRedactionBoxes(unique);
+  // Rebuild affected pages as pictures with black bars — same engine as Redact PDF,
+  // so text is actually removed (not just covered) and we avoid the flatten crash path.
+  let saved: Uint8Array;
   try {
-    pdf = await PDFDocument.load(data);
-  } catch {
-    throw new Error("This file could not be read as a PDF.");
+    saved = await applyRedactions(
+      data,
+      boxes,
+      [],
+      { mode: "color", color: "#000000" },
+      (p, message) => onProgress?.(55 + Math.round(p * 0.4), message)
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    throw new Error(message || "Could not apply redactions to this PDF.");
   }
-
-  const pages = pdf.getPages();
-  for (const hit of unique) {
-    const page = pages[hit.page - 1];
-    if (!page) continue;
-    page.drawRectangle({
-      x: hit.x,
-      y: hit.y,
-      width: Math.max(hit.w, 4),
-      height: Math.max(hit.h, 4),
-      color: rgb(0, 0, 0),
-      borderWidth: 0,
-    });
-  }
-
-  onProgress?.(70, "Locking redacted pages…");
-  const intermediate = await pdf.save();
-  const { flattenPdfLocal } = await import("./flatten-pdf");
-  const flattened = await flattenPdfLocal(
-    new File([new Uint8Array(intermediate)], file.name, { type: "application/pdf" }),
-    (p, message) => onProgress?.(70 + Math.round(p * 0.28), message)
-  );
 
   onProgress?.(100, "Done");
   const base = file.name.replace(/\.pdf$/i, "") || "document";
-  const kinds = [...new Set(unique.map((h) => h.kind.split("-")[0]))];
+  const kinds = uniqueKinds(unique);
   return {
-    blob: flattened.blob,
+    blob: new Blob([new Uint8Array(saved)], { type: "application/pdf" }),
     filename: `${base}-redacted.pdf`,
     redactionCount: unique.length,
     kinds,

@@ -322,7 +322,7 @@ async function renderRedactedPage(
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     await page.render({ canvas, canvasContext: ctx, viewport }).promise;
 
-    for (const box of boxes) {
+    for (const box of boxes ?? []) {
       const x = box.x * SCALE;
       const y = box.y * SCALE;
       const w = box.width * SCALE;
@@ -469,7 +469,7 @@ export async function applyRedactions(
     });
 
     const words = pages.find((entry) => entry.page === number)?.words ?? [];
-    for (const word of words) {
+    for (const word of words ?? []) {
       if (pageBoxes.some((box) => overlaps(word, box))) continue;
       drawInvisibleWord(page, set, word, picture.height);
     }
