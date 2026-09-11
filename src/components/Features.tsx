@@ -7,28 +7,36 @@ const features = [
     title: "Private by design",
     description:
       "All tools use browser-based processing. Your files are handled in your tab — see our Privacy Policy.",
-    color: "text-emerald-500 bg-emerald-500/15",
+    // Vivid emerald
+    iconColor: "#00C853",
+    iconBg: "rgba(0, 200, 83, 0.18)",
   },
   {
     icon: Zap,
     title: "Lightning fast",
     description:
       "No waiting in queues. Results are ready the moment processing finishes.",
-    color: "text-amber-400 bg-amber-400/15",
+    // Bright amber / gold
+    iconColor: "#FFB300",
+    iconBg: "rgba(255, 179, 0, 0.2)",
   },
   {
     icon: Gift,
     title: "Free forever",
     description:
       "Every tool is free to use with no sign-up and no watermark on your files.",
-    color: "text-rose-500 bg-rose-500/15",
+    // Hot rose / pink
+    iconColor: "#FF2D55",
+    iconBg: "rgba(255, 45, 85, 0.16)",
   },
   {
     icon: Cpu,
     title: "Nothing to install",
     description:
       "There's no app to download and no account to create — open a tool in a tab and it's ready to use.",
-    color: "text-sky-500 bg-sky-500/15",
+    // Bright sky blue
+    iconColor: "#0091FF",
+    iconBg: "rgba(0, 145, 255, 0.16)",
   },
 ];
 
@@ -61,9 +69,10 @@ const Features = () => {
               className="rounded-2xl border border-border/50 bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
             >
               <div
-                className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl ${feature.color}`}
+                className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl"
+                style={{ backgroundColor: feature.iconBg, color: feature.iconColor }}
               >
-                <feature.icon className="h-6 w-6" />
+                <feature.icon className="h-6 w-6" strokeWidth={2.25} />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-foreground">
                 {feature.title}
