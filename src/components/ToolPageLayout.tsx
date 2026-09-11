@@ -61,9 +61,8 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
                 <Icon className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-muted-foreground">{tool.name}</p>
-                <h1 className="mt-1 text-2xl font-bold leading-snug text-foreground">
-                  {content?.h1 ?? tool.name}
+                <h1 className="text-2xl font-bold leading-snug text-foreground">
+                  {tool.name}
                 </h1>
                 <p className="mt-1.5 text-lg text-muted-foreground">
                   {tool.description}
