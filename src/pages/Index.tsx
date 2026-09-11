@@ -3,10 +3,10 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsGrid from "@/components/ToolsGrid";
 import Footer from "@/components/Footer";
+import Features from "@/components/Features";
 import MonetizationBlock from "@/components/MonetizationBlock";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, useSeo } from "@/lib/seo";
 
-const Features = lazy(() => import("@/components/Features"));
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
 
 const BelowFoldFallback = () => (
@@ -25,9 +25,7 @@ const Index = () => {
         <section className="container mx-auto px-4 py-8">
           <MonetizationBlock placement="home-below-tools" />
         </section>
-        <Suspense fallback={<BelowFoldFallback />}>
-          <Features />
-        </Suspense>
+        <Features />
         <Suspense fallback={<BelowFoldFallback />}>
           <HowItWorks />
         </Suspense>
