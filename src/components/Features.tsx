@@ -6,7 +6,7 @@ const features = [
     icon: ShieldCheck,
     title: "Private by design",
     description:
-      "Most tools process files in your browser. PDF to Word, Word to PDF, and converting a web page from a URL are the exceptions — see our Privacy Policy.",
+      "Most tools run entirely in your browser. The exceptions that use a conversion service are PDF to Word, Word to PDF, PDF to PowerPoint, PDF to Excel, OCR PDF, and HTML to PDF from a URL — see our Privacy Policy.",
     color: "text-tool-green bg-tool-green/10",
   },
   {
