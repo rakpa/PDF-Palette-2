@@ -6,14 +6,37 @@ export interface ToolFaq {
   a: string;
 }
 
-/** Landing-page copy for one tool route. Also consumed by scripts/prerender.mjs. */
+export interface ToolSection {
+  heading: string;
+  body?: string;
+  steps?: string[];
+  subsections?: { heading: string; body: string }[];
+}
+
+export interface ToolInternalLink {
+  route: string;
+  anchor: string;
+}
+
+/** Landing-page guide + SEO fields for one tool route (also used by prerender). */
 export interface ToolContent {
   name: string;
+  /** Document / Open Graph title */
   title: string;
+  /** Meta description */
   description: string;
+  primaryKeyword: string;
+  secondaryKeywords: string[];
+  h1: string;
+  slug: string;
+  /** Lead paragraphs (also HowTo description in JSON-LD) */
   intro: string;
+  /** HowTo steps for JSON-LD */
   steps: string[];
+  sections: ToolSection[];
   faqs: ToolFaq[];
+  conclusion: string;
+  internalLinks: ToolInternalLink[];
 }
 
 export const SITE_NAME = "PDF Palette";

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { pdfTools, PDFTool } from "@/lib/tools";
+import { pdfTools, type PDFTool } from "@/lib/tools";
 import type { ToolContent } from "@/lib/seo";
 
 /** Sibling tools that share a category, most-popular first. */
@@ -19,60 +19,109 @@ interface ToolSeoContentProps {
   content: ToolContent;
 }
 
+function Paragraphs({ text }: { text: string }) {
+  return (
+    <>
+      {text
+        .split(/\n\n+/)
+        .map((block) => block.trim())
+        .filter(Boolean)
+        .map((block) => (
+          <p key={block.slice(0, 48)} className="mt-3 leading-relaxed text-muted-foreground">
+            {block}
+          </p>
+        ))}
+    </>
+  );
+}
+
 /**
- * The readable half of a tool landing page: what the tool does, how to use it,
- * the questions people actually ask, and a way onwards. Rendered under every
- * tool so each route is a real page rather than an uploader with a heading.
+ * Long-form how-to guide under each tool converter: H1 article,
+ * structured sections, FAQs, internal links, and related tools.
  */
 const ToolSeoContent = ({ tool, content }: ToolSeoContentProps) => {
   const related = relatedTools(tool);
+  const linkedRoutes = new Set(content.internalLinks.map((l) => l.route));
+  const relatedFiltered = related.filter((item) => !linkedRoutes.has(item.route));
 
   return (
-    <section className="mx-auto mt-12 max-w-3xl border-t border-border pt-10">
-      <h2 className="text-2xl font-bold text-foreground">
-        About the {tool.name} tool
-      </h2>
-      <p className="mt-3 leading-relaxed text-muted-foreground">{content.intro}</p>
+    <article className="mx-auto mt-12 max-w-3xl border-t border-border pt-10">
+      <header className="sr-only">
+        <h2>{content.h1}</h2>
+      </header>
+      <div>
+        <Paragraphs text={content.intro} />
+      </div>
 
-      <h2 className="mt-10 text-2xl font-bold text-foreground">
-        Free online {tool.name.toLowerCase()}
-      </h2>
-      <p className="mt-3 leading-relaxed text-muted-foreground">
-        PDF Palette’s {tool.name} tool is free to use in your browser with no account and no watermark
-        on your download. Upload your file on this page, run the tool, and save the result when it is ready.
-      </p>
+      {content.sections.map((section) => (
+        <section key={section.heading} className="mt-10">
+          <h3 className="text-2xl font-bold text-foreground">{section.heading}</h3>
+          {section.body ? <Paragraphs text={section.body} /> : null}
+          {section.steps && section.steps.length > 0 ? (
+            <ol className="mt-4 space-y-3">
+              {section.steps.map((step, index) => (
+                <li key={step} className="flex gap-3">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                    {index + 1}
+                  </span>
+                  <span className="leading-relaxed text-muted-foreground">{step}</span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          {section.subsections?.map((sub) => (
+            <div key={sub.heading} className="mt-6">
+              <h4 className="text-lg font-semibold text-foreground">{sub.heading}</h4>
+              <Paragraphs text={sub.body} />
+            </div>
+          ))}
+        </section>
+      ))}
 
-      <h2 className="mt-10 text-2xl font-bold text-foreground">
-        How to {tool.name.toLowerCase()}
-      </h2>
-      <ol className="mt-4 space-y-3">
-        {content.steps.map((step, index) => (
-          <li key={step} className="flex gap-3">
-            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-              {index + 1}
-            </span>
-            <span className="leading-relaxed text-muted-foreground">{step}</span>
-          </li>
-        ))}
-      </ol>
+      <section className="mt-10">
+        <h3 className="text-2xl font-bold text-foreground">
+          Frequently asked questions
+        </h3>
+        <dl className="mt-4 divide-y divide-border border-y border-border">
+          {content.faqs.map((faq) => (
+            <div key={faq.q} className="py-4">
+              <dt className="font-semibold text-foreground">{faq.q}</dt>
+              <dd className="mt-1.5 leading-relaxed text-muted-foreground">{faq.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
-      <h2 className="mt-10 text-2xl font-bold text-foreground">
-        Frequently asked questions
-      </h2>
-      <dl className="mt-4 divide-y divide-border border-y border-border">
-        {content.faqs.map((faq) => (
-          <div key={faq.q} className="py-4">
-            <dt className="font-semibold text-foreground">{faq.q}</dt>
-            <dd className="mt-1.5 leading-relaxed text-muted-foreground">{faq.a}</dd>
-          </div>
-        ))}
-      </dl>
+      <section className="mt-10">
+        <h3 className="text-2xl font-bold text-foreground">Wrap-up</h3>
+        <Paragraphs text={content.conclusion} />
+      </section>
 
-      {related.length > 0 && (
-        <>
-          <h2 className="mt-10 text-2xl font-bold text-foreground">Related tools</h2>
+      {content.internalLinks.length > 0 && (
+        <section className="mt-10">
+          <h3 className="text-2xl font-bold text-foreground">
+            Related guides on PDF Palette
+          </h3>
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-muted-foreground">
+            {content.internalLinks.map((link) => (
+              <li key={link.route}>
+                <Link
+                  to={link.route}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  {link.anchor}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {relatedFiltered.length > 0 && (
+        <section className="mt-10">
+          <h3 className="text-2xl font-bold text-foreground">Related tools</h3>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {related.map((item) => (
+            {relatedFiltered.map((item) => (
               <li key={item.id}>
                 <Link
                   to={item.route}
@@ -89,9 +138,9 @@ const ToolSeoContent = ({ tool, content }: ToolSeoContentProps) => {
               </li>
             ))}
           </ul>
-        </>
+        </section>
       )}
-    </section>
+    </article>
   );
 };
 

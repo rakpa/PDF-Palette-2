@@ -1,0 +1,1598 @@
+{
+  "/pdf-to-word": {
+    "primaryKeyword": "PDF to Word",
+    "secondaryKeywords": [
+      "convert PDF to Word",
+      "PDF to DOCX",
+      "PDF to Word online free",
+      "editable Word from PDF",
+      "PDF to Word converter",
+      "DOCX converter",
+      "free PDF to Word"
+    ],
+    "seoTitle": "Convert PDF to Editable Word Docs Free Online | PDF Palette",
+    "metaDescription": "Convert PDF to editable Word (.docx) free online. Keep text, tables, and layout ready to edit—no sign-up, no watermark. Fast PDF to DOCX with PDF Palette.",
+    "slug": "pdf-to-word",
+    "h1": "How to Use PDF to Word – Complete Guide",
+    "h2": [
+      "What Is PDF to Word?",
+      "How to Use PDF to Word",
+      "Why Use PDF to Word?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/word-to-pdf",
+        "anchor": "Word to PDF"
+      },
+      {
+        "route": "/pdf-to-excel",
+        "anchor": "PDF to Excel"
+      },
+      {
+        "route": "/pdf-to-powerpoint",
+        "anchor": "PDF to PowerPoint"
+      }
+    ],
+    "faqTopics": [
+      "Does PDF to Word keep my formatting?",
+      "Does conversion stay in my browser?",
+      "Can I convert a scanned PDF?",
+      "Is PDF to Word free on PDF Palette?"
+    ]
+  },
+  "/word-to-pdf": {
+    "primaryKeyword": "Word to PDF",
+    "secondaryKeywords": [
+      "convert Word to PDF",
+      "DOCX to PDF",
+      "Word to PDF online free",
+      "DOC to PDF converter",
+      "export Word as PDF",
+      "free Word to PDF",
+      "Word document to PDF"
+    ],
+    "seoTitle": "Convert Word DOCX Files to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert Word (.docx) to PDF free online. Share a fixed layout anyone can open—no sign-up, no watermark added. Fast DOCX to PDF conversion with PDF Palette.",
+    "slug": "word-to-pdf",
+    "h1": "How to Use Word to PDF – Complete Guide",
+    "h2": [
+      "What Is Word to PDF?",
+      "How to Use Word to PDF",
+      "Why Use Word to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      },
+      {
+        "route": "/excel-to-pdf",
+        "anchor": "Excel to PDF"
+      },
+      {
+        "route": "/powerpoint-to-pdf",
+        "anchor": "PowerPoint to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Do I need Microsoft Word installed?",
+      "Are .doc and .docx both supported?",
+      "Does my Word file leave the browser?",
+      "Is Word to PDF free?"
+    ]
+  },
+  "/pdf-to-excel": {
+    "primaryKeyword": "PDF to Excel",
+    "secondaryKeywords": [
+      "convert PDF to Excel",
+      "PDF to XLSX",
+      "extract PDF tables",
+      "PDF spreadsheet converter",
+      "PDF to Excel online free",
+      "table to Excel",
+      "free PDF to Excel"
+    ],
+    "seoTitle": "Convert PDF Tables into Excel Free Online | PDF Palette",
+    "metaDescription": "Convert PDF tables to Excel (.xlsx) free online. Extract rows and columns you can sort and filter—no sign-up required. Fast PDF to XLSX with PDF Palette.",
+    "slug": "pdf-to-excel",
+    "h1": "How to Use PDF to Excel – Complete Guide",
+    "h2": [
+      "What Is PDF to Excel?",
+      "How to Use PDF to Excel",
+      "Why Use PDF to Excel?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/excel-to-pdf",
+        "anchor": "Excel to PDF"
+      },
+      {
+        "route": "/csv-to-pdf",
+        "anchor": "CSV to PDF"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      }
+    ],
+    "faqTopics": [
+      "Will Excel formulas be recreated?",
+      "Does PDF to Excel leave my browser?",
+      "What about scanned PDFs?",
+      "Is PDF to Excel free?"
+    ]
+  },
+  "/excel-to-pdf": {
+    "primaryKeyword": "Excel to PDF",
+    "secondaryKeywords": [
+      "convert Excel to PDF",
+      "XLSX to PDF",
+      "spreadsheet to PDF",
+      "Excel to PDF online free",
+      "export Excel as PDF",
+      "XLS to PDF",
+      "free Excel to PDF"
+    ],
+    "seoTitle": "Convert Excel Spreadsheets to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert Excel (.xlsx) to PDF free online. Share sheets as a printable, fixed layout—no sign-up, no watermark. Fast spreadsheet to PDF with PDF Palette.",
+    "slug": "excel-to-pdf",
+    "h1": "How to Use Excel to PDF – Complete Guide",
+    "h2": [
+      "What Is Excel to PDF?",
+      "How to Use Excel to PDF",
+      "Why Use Excel to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-excel",
+        "anchor": "PDF to Excel"
+      },
+      {
+        "route": "/csv-to-pdf",
+        "anchor": "CSV to PDF"
+      },
+      {
+        "route": "/word-to-pdf",
+        "anchor": "Word to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Are all worksheets included?",
+      "Does Excel to PDF run in my browser?",
+      "Do number formats carry over?",
+      "Is Excel to PDF free?"
+    ]
+  },
+  "/pdf-to-powerpoint": {
+    "primaryKeyword": "PDF to PowerPoint",
+    "secondaryKeywords": [
+      "convert PDF to PowerPoint",
+      "PDF to PPTX",
+      "PDF to PPT",
+      "PDF to slides",
+      "PDF to PowerPoint online free",
+      "editable slides from PDF",
+      "free PDF to PowerPoint"
+    ],
+    "seoTitle": "Convert PDF Pages to PowerPoint Free Online | PDF Palette",
+    "metaDescription": "Convert PDF to PowerPoint (.pptx) free online. Turn pages into editable slides you can restyle—no sign-up required. Fast PDF to PPTX with PDF Palette.",
+    "slug": "pdf-to-powerpoint",
+    "h1": "How to Use PDF to PowerPoint – Complete Guide",
+    "h2": [
+      "What Is PDF to PowerPoint?",
+      "How to Use PDF to PowerPoint",
+      "Why Use PDF to PowerPoint?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/powerpoint-to-pdf",
+        "anchor": "PowerPoint to PDF"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      },
+      {
+        "route": "/pdf-to-jpg",
+        "anchor": "PDF to JPG/PNG"
+      }
+    ],
+    "faqTopics": [
+      "Is the text editable in PowerPoint?",
+      "Does conversion leave the browser?",
+      "Are animations preserved?",
+      "Is PDF to PowerPoint free?"
+    ]
+  },
+  "/powerpoint-to-pdf": {
+    "primaryKeyword": "PowerPoint to PDF",
+    "secondaryKeywords": [
+      "convert PowerPoint to PDF",
+      "PPTX to PDF",
+      "PPT to PDF",
+      "slides to PDF",
+      "PowerPoint to PDF online free",
+      "export presentation as PDF",
+      "free PowerPoint to PDF"
+    ],
+    "seoTitle": "Convert PowerPoint Decks to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert PowerPoint (.pptx) to PDF free online. Share slides as a fixed, printable file—no sign-up, no watermark. Fast PPTX to PDF conversion with PDF Palette.",
+    "slug": "powerpoint-to-pdf",
+    "h1": "How to Use PowerPoint to PDF – Complete Guide",
+    "h2": [
+      "What Is PowerPoint to PDF?",
+      "How to Use PowerPoint to PDF",
+      "Why Use PowerPoint to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-powerpoint",
+        "anchor": "PDF to PowerPoint"
+      },
+      {
+        "route": "/pdf-to-jpg",
+        "anchor": "PDF to JPG/PNG"
+      },
+      {
+        "route": "/word-to-pdf",
+        "anchor": "Word to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Are speaker notes included?",
+      "Does this run in my browser?",
+      "Will page size match my slides?",
+      "Is PowerPoint to PDF free?"
+    ]
+  },
+  "/pdf-to-jpg": {
+    "primaryKeyword": "PDF to JPG",
+    "secondaryKeywords": [
+      "PDF to PNG",
+      "convert PDF to image",
+      "PDF page to JPG",
+      "PDF to JPG online free",
+      "export PDF as PNG",
+      "PDF screenshot alternative",
+      "free PDF to JPG"
+    ],
+    "seoTitle": "Convert PDF Pages to JPG or PNG Free Online | PDF Palette",
+    "metaDescription": "Convert PDF pages to JPG or PNG free online. Export high-quality images for slides, posts, or print—no sign-up required. Fast PDF to image with PDF Palette.",
+    "slug": "pdf-to-jpg",
+    "h1": "How to Use PDF to JPG/PNG – Complete Guide",
+    "h2": [
+      "What Is PDF to JPG/PNG?",
+      "How to Use PDF to JPG/PNG",
+      "Why Use PDF to JPG/PNG?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/jpg-to-pdf",
+        "anchor": "JPG/PNG to PDF"
+      },
+      {
+        "route": "/pdf-to-powerpoint",
+        "anchor": "PDF to PowerPoint"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      }
+    ],
+    "faqTopics": [
+      "Should I choose JPG or PNG?",
+      "Does PDF to JPG run in my browser?",
+      "Can I convert only one page?",
+      "Are the images watermarked?"
+    ]
+  },
+  "/jpg-to-pdf": {
+    "primaryKeyword": "JPG to PDF",
+    "secondaryKeywords": [
+      "PNG to PDF",
+      "images to PDF",
+      "convert photo to PDF",
+      "JPG to PDF online free",
+      "combine images into PDF",
+      "scan to PDF",
+      "free image to PDF"
+    ],
+    "seoTitle": "Convert JPG PNG Images to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert JPG or PNG images to PDF free online. Combine photos into one shareable file—no sign-up, no watermark. Fast image to PDF conversion with PDF Palette.",
+    "slug": "jpg-to-pdf",
+    "h1": "How to Use JPG/PNG to PDF – Complete Guide",
+    "h2": [
+      "What Is JPG/PNG to PDF?",
+      "How to Use JPG/PNG to PDF",
+      "Why Use JPG/PNG to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-jpg",
+        "anchor": "PDF to JPG/PNG"
+      },
+      {
+        "route": "/html-to-pdf",
+        "anchor": "HTML to PDF"
+      },
+      {
+        "route": "/word-to-pdf",
+        "anchor": "Word to PDF"
+      }
+    ],
+    "faqTopics": [
+      "How many images can I add?",
+      "Can I mix JPG and PNG?",
+      "Does conversion stay in my browser?",
+      "Is JPG/PNG to PDF free?"
+    ]
+  },
+  "/html-to-pdf": {
+    "primaryKeyword": "HTML to PDF",
+    "secondaryKeywords": [
+      "convert HTML to PDF",
+      "webpage to PDF",
+      "URL to PDF",
+      "HTML to PDF online free",
+      "save page as PDF",
+      "web page PDF converter",
+      "free HTML to PDF"
+    ],
+    "seoTitle": "Convert HTML or Web Pages to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert HTML or a web page URL to PDF free online. Save printable pages with selectable text—no sign-up, no watermark. Fast HTML to PDF with PDF Palette.",
+    "slug": "html-to-pdf",
+    "h1": "How to Use HTML to PDF – Complete Guide",
+    "h2": [
+      "What Is HTML to PDF?",
+      "How to Use HTML to PDF",
+      "Why Use HTML to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/markdown-to-pdf",
+        "anchor": "Markdown to PDF"
+      },
+      {
+        "route": "/txt-to-pdf",
+        "anchor": "TXT to PDF"
+      },
+      {
+        "route": "/jpg-to-pdf",
+        "anchor": "JPG/PNG to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Is text in the PDF searchable?",
+      "Does uploading HTML leave my browser?",
+      "Can it capture pages behind a login?",
+      "Is HTML to PDF free?"
+    ]
+  },
+  "/txt-to-pdf": {
+    "primaryKeyword": "TXT to PDF",
+    "secondaryKeywords": [
+      "convert text to PDF",
+      "text file to PDF",
+      "TXT to PDF online free",
+      "plain text PDF",
+      "notes to PDF",
+      "log file to PDF",
+      "free TXT to PDF"
+    ],
+    "seoTitle": "Convert Plain TXT Files to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert TXT to PDF free online. Turn plain text notes into a clean, shareable document—no sign-up, no watermark. Fast text to PDF conversion with PDF Palette.",
+    "slug": "txt-to-pdf",
+    "h1": "How to Use TXT to PDF – Complete Guide",
+    "h2": [
+      "What Is TXT to PDF?",
+      "How to Use TXT to PDF",
+      "Why Use TXT to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/markdown-to-pdf",
+        "anchor": "Markdown to PDF"
+      },
+      {
+        "route": "/html-to-pdf",
+        "anchor": "HTML to PDF"
+      },
+      {
+        "route": "/csv-to-pdf",
+        "anchor": "CSV to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Does it keep my line breaks?",
+      "Is my TXT file uploaded to a server?",
+      "Can I convert Markdown with this tool?",
+      "Is TXT to PDF free?"
+    ]
+  },
+  "/markdown-to-pdf": {
+    "primaryKeyword": "Markdown to PDF",
+    "secondaryKeywords": [
+      "convert Markdown to PDF",
+      "MD to PDF",
+      "Markdown PDF converter",
+      "Markdown to PDF online free",
+      "README to PDF",
+      ".md to PDF",
+      "free Markdown to PDF"
+    ],
+    "seoTitle": "Convert Markdown MD Files to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert Markdown (.md) to PDF free online. Headings, lists, and code become a clean document—no sign-up, no watermark. Fast MD to PDF with PDF Palette.",
+    "slug": "markdown-to-pdf",
+    "h1": "How to Use Markdown to PDF – Complete Guide",
+    "h2": [
+      "What Is Markdown to PDF?",
+      "How to Use Markdown to PDF",
+      "Why Use Markdown to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/txt-to-pdf",
+        "anchor": "TXT to PDF"
+      },
+      {
+        "route": "/html-to-pdf",
+        "anchor": "HTML to PDF"
+      },
+      {
+        "route": "/csv-to-pdf",
+        "anchor": "CSV to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Which Markdown features are supported?",
+      "Are images in Markdown supported?",
+      "Does Markdown to PDF stay in my browser?",
+      "Is Markdown to PDF free?"
+    ]
+  },
+  "/csv-to-pdf": {
+    "primaryKeyword": "CSV to PDF",
+    "secondaryKeywords": [
+      "convert CSV to PDF",
+      "CSV table to PDF",
+      "spreadsheet CSV PDF",
+      "CSV to PDF online free",
+      "export CSV as PDF",
+      "printable CSV",
+      "free CSV to PDF"
+    ],
+    "seoTitle": "Convert CSV Data Tables to PDF Free Online | PDF Palette",
+    "metaDescription": "Convert CSV to PDF free online. Turn spreadsheet rows into a printable table you can share—no sign-up, no watermark. Fast CSV to PDF with PDF Palette.",
+    "slug": "csv-to-pdf",
+    "h1": "How to Use CSV to PDF – Complete Guide",
+    "h2": [
+      "What Is CSV to PDF?",
+      "How to Use CSV to PDF",
+      "Why Use CSV to PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-excel",
+        "anchor": "PDF to Excel"
+      },
+      {
+        "route": "/excel-to-pdf",
+        "anchor": "Excel to PDF"
+      },
+      {
+        "route": "/txt-to-pdf",
+        "anchor": "TXT to PDF"
+      }
+    ],
+    "faqTopics": [
+      "Does the header row repeat?",
+      "How wide can the table be?",
+      "Does CSV to PDF run in my browser?",
+      "Is CSV to PDF free?"
+    ]
+  },
+  "/merge-pdf": {
+    "primaryKeyword": "merge PDF",
+    "secondaryKeywords": [
+      "combine PDF files",
+      "merge PDF online free",
+      "join PDF documents",
+      "merge multiple PDFs",
+      "PDF merger",
+      "combine PDFs into one",
+      "merge PDF no sign up"
+    ],
+    "seoTitle": "Merge Multiple PDFs Into One File Free Online | PDF Palette",
+    "metaDescription": "Learn how to merge PDF files free online with PDF Palette. Combine multiple PDFs in any order in your browser—no account, no watermark, download instantly.",
+    "slug": "merge-pdf",
+    "h1": "How to Use Merge PDF – Complete Guide",
+    "h2": [
+      "What Is Merge PDF?",
+      "How to Use Merge PDF",
+      "Why Use Merge PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/split-pdf",
+        "anchor": "Split PDF"
+      },
+      {
+        "route": "/organize-pdf",
+        "anchor": "Organize PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      }
+    ],
+    "faqTopics": [
+      "How many PDFs can I merge at once?",
+      "Will merging change the content of each page?",
+      "Do I need an account to merge PDFs on PDF Palette?",
+      "Can I choose the order of files before merging?"
+    ]
+  },
+  "/split-pdf": {
+    "primaryKeyword": "split PDF",
+    "secondaryKeywords": [
+      "split PDF online free",
+      "divide PDF pages",
+      "extract PDF by range",
+      "PDF splitter",
+      "split PDF into multiple files",
+      "separate PDF pages",
+      "split large PDF"
+    ],
+    "seoTitle": "Split a PDF by Pages or Ranges Free Online | PDF Palette",
+    "metaDescription": "Learn how to split a PDF free online with PDF Palette. Divide by ranges or one file per page in your browser—no account required, download in seconds.",
+    "slug": "split-pdf",
+    "h1": "How to Use Split PDF – Complete Guide",
+    "h2": [
+      "What Is Split PDF?",
+      "How to Use Split PDF",
+      "Why Use Split PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/extract-pages",
+        "anchor": "Extract Pages"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      },
+      {
+        "route": "/remove-pages",
+        "anchor": "Remove Pages"
+      }
+    ],
+    "faqTopics": [
+      "Can I split a PDF into individual pages?",
+      "Can I split by custom page ranges?",
+      "Does splitting reduce file quality?",
+      "Is Split PDF free on PDF Palette?"
+    ]
+  },
+  "/compress-pdf": {
+    "primaryKeyword": "compress PDF",
+    "secondaryKeywords": [
+      "reduce PDF file size",
+      "compress PDF online free",
+      "PDF compressor",
+      "shrink PDF",
+      "make PDF smaller",
+      "compress PDF for email",
+      "optimize PDF size"
+    ],
+    "seoTitle": "Compress a PDF to Smaller Size Free Online | PDF Palette",
+    "metaDescription": "Learn how to compress a PDF free online with PDF Palette. Shrink large files for email or uploads in your browser—no account needed, keep sharing simple.",
+    "slug": "compress-pdf",
+    "h1": "How to Use Compress PDF – Complete Guide",
+    "h2": [
+      "What Is Compress PDF?",
+      "How to Use Compress PDF",
+      "Why Use Compress PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      },
+      {
+        "route": "/repair-pdf",
+        "anchor": "Repair PDF"
+      },
+      {
+        "route": "/pdf-to-jpg",
+        "anchor": "PDF to JPG"
+      }
+    ],
+    "faqTopics": [
+      "Will compress PDF make my document unreadable?",
+      "Is PDF compression free on PDF Palette?",
+      "Does compression work on scanned PDFs?",
+      "Can I compress a PDF before emailing it?"
+    ]
+  },
+  "/rotate-pdf": {
+    "primaryKeyword": "rotate PDF",
+    "secondaryKeywords": [
+      "rotate PDF pages",
+      "rotate PDF online free",
+      "fix sideways PDF",
+      "turn PDF pages",
+      "rotate scanned PDF",
+      "PDF page orientation",
+      "rotate PDF 90 degrees"
+    ],
+    "seoTitle": "Rotate PDF Pages the Right Way Free Online | PDF Palette",
+    "metaDescription": "Learn how to rotate PDF pages free online with PDF Palette. Fix sideways or upside-down scans in your browser—no account, download a corrected file fast.",
+    "slug": "rotate-pdf",
+    "h1": "How to Use Rotate PDF – Complete Guide",
+    "h2": [
+      "What Is Rotate PDF?",
+      "How to Use Rotate PDF",
+      "Why Use Rotate PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/organize-pdf",
+        "anchor": "Organize PDF"
+      },
+      {
+        "route": "/crop-pdf",
+        "anchor": "Crop PDF"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      }
+    ],
+    "faqTopics": [
+      "Is the rotation permanent?",
+      "Can I rotate a PDF 180 degrees?",
+      "Do I need software to rotate a PDF?",
+      "Will rotating change the text on the page?"
+    ]
+  },
+  "/organize-pdf": {
+    "primaryKeyword": "organize PDF",
+    "secondaryKeywords": [
+      "reorder PDF pages",
+      "rearrange PDF",
+      "organize PDF online free",
+      "move PDF pages",
+      "delete and reorder PDF",
+      "PDF page manager",
+      "duplicate PDF pages"
+    ],
+    "seoTitle": "Organize and Reorder PDF Pages Free Online | PDF Palette",
+    "metaDescription": "Learn how to organize PDF pages free online with PDF Palette. Reorder, rotate, duplicate, or delete pages in your browser—no account needed to download.",
+    "slug": "organize-pdf",
+    "h1": "How to Use Organize PDF – Complete Guide",
+    "h2": [
+      "What Is Organize PDF?",
+      "How to Use Organize PDF",
+      "Why Use Organize PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      },
+      {
+        "route": "/remove-pages",
+        "anchor": "Remove Pages"
+      },
+      {
+        "route": "/rotate-pdf",
+        "anchor": "Rotate PDF"
+      }
+    ],
+    "faqTopics": [
+      "Can I reorder PDF pages by dragging?",
+      "Can I rotate and delete pages in the same session?",
+      "Is Organize PDF free to use?",
+      "Does organizing create a new PDF?"
+    ]
+  },
+  "/extract-pages": {
+    "primaryKeyword": "extract pages from PDF",
+    "secondaryKeywords": [
+      "extract PDF pages",
+      "save PDF pages as new file",
+      "pull pages from PDF",
+      "extract pages online free",
+      "PDF page extractor",
+      "copy pages to new PDF",
+      "select pages from PDF"
+    ],
+    "seoTitle": "Extract Selected Pages From a PDF Free Online | PDF Palette",
+    "metaDescription": "Learn how to extract pages from a PDF free online with PDF Palette. Save selected pages as a new file in your browser—no account and no watermark added.",
+    "slug": "extract-pages",
+    "h1": "How to Use Extract Pages – Complete Guide",
+    "h2": [
+      "What Is Extract Pages?",
+      "How to Use Extract Pages",
+      "Why Use Extract Pages?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/split-pdf",
+        "anchor": "Split PDF"
+      },
+      {
+        "route": "/remove-pages",
+        "anchor": "Remove Pages"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      }
+    ],
+    "faqTopics": [
+      "Does extracting pages change my original PDF?",
+      "Can I extract non-consecutive pages?",
+      "Is Extract Pages free on PDF Palette?",
+      "How is extract different from split?"
+    ]
+  },
+  "/remove-pages": {
+    "primaryKeyword": "remove pages from PDF",
+    "secondaryKeywords": [
+      "delete PDF pages",
+      "remove PDF pages online",
+      "drop pages from PDF",
+      "delete pages free",
+      "PDF page remover",
+      "remove blank PDF pages",
+      "edit PDF page list"
+    ],
+    "seoTitle": "Remove Unwanted Pages From a PDF Free Online | PDF Palette",
+    "metaDescription": "Learn how to remove pages from a PDF free online with PDF Palette. Delete unwanted pages in your browser and download a cleaner file—no account needed.",
+    "slug": "remove-pages",
+    "h1": "How to Use Remove Pages – Complete Guide",
+    "h2": [
+      "What Is Remove Pages?",
+      "How to Use Remove Pages",
+      "Why Use Remove Pages?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/extract-pages",
+        "anchor": "Extract Pages"
+      },
+      {
+        "route": "/organize-pdf",
+        "anchor": "Organize PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      }
+    ],
+    "faqTopics": [
+      "Can I remove multiple pages at once?",
+      "Will removing pages permanently delete them from the original file on disk?",
+      "Is Remove Pages free?",
+      "Should I remove pages or extract pages?"
+    ]
+  },
+  "/page-numbers": {
+    "primaryKeyword": "add page numbers to PDF",
+    "secondaryKeywords": [
+      "number PDF pages",
+      "PDF page numbers online",
+      "insert page numbers PDF",
+      "add page numbering free",
+      "PDF pagination",
+      "page number PDF tool",
+      "stamp page numbers"
+    ],
+    "seoTitle": "Add Clear Page Numbers to a PDF Free Online | PDF Palette",
+    "metaDescription": "Learn how to add page numbers to a PDF free online with PDF Palette. Choose position and format in your browser—no account, then download a numbered file.",
+    "slug": "page-numbers",
+    "h1": "How to Use Add Page Numbers – Complete Guide",
+    "h2": [
+      "What Is Add Page Numbers?",
+      "How to Use Add Page Numbers",
+      "Why Use Add Page Numbers?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/headers-footers",
+        "anchor": "Headers & Footers"
+      },
+      {
+        "route": "/edit-pdf",
+        "anchor": "Edit PDF"
+      },
+      {
+        "route": "/organize-pdf",
+        "anchor": "Organize PDF"
+      }
+    ],
+    "faqTopics": [
+      "Can I choose where page numbers appear?",
+      "Can I start numbering from a number other than 1?",
+      "Is Add Page Numbers free on PDF Palette?",
+      "Will page numbers become part of the PDF?"
+    ]
+  },
+  "/crop-pdf": {
+    "primaryKeyword": "crop PDF",
+    "secondaryKeywords": [
+      "trim PDF margins",
+      "crop PDF online free",
+      "cut PDF page area",
+      "remove PDF borders",
+      "PDF crop tool",
+      "crop scanned PDF",
+      "resize visible PDF area"
+    ],
+    "seoTitle": "Crop PDF Pages and Trim Margins Free Online | PDF Palette",
+    "metaDescription": "Learn how to crop a PDF free online with PDF Palette. Trim margins or set a new visible area in your browser—no account required, download a tighter page.",
+    "slug": "crop-pdf",
+    "h1": "How to Use Crop PDF – Complete Guide",
+    "h2": [
+      "What Is Crop PDF?",
+      "How to Use Crop PDF",
+      "Why Use Crop PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/rotate-pdf",
+        "anchor": "Rotate PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      },
+      {
+        "route": "/edit-pdf",
+        "anchor": "Edit PDF"
+      }
+    ],
+    "faqTopics": [
+      "Does cropping delete content outside the box?",
+      "Can I crop scanned PDFs?",
+      "Is Crop PDF free on PDF Palette?",
+      "Should I crop before or after compressing?"
+    ]
+  },
+  "/watermark-pdf": {
+    "primaryKeyword": "watermark PDF",
+    "secondaryKeywords": [
+      "add watermark to PDF",
+      "PDF watermark online free",
+      "stamp PDF draft",
+      "confidential PDF watermark",
+      "image watermark PDF",
+      "text watermark PDF",
+      "brand PDF pages"
+    ],
+    "seoTitle": "Watermark a PDF With Text or Image Free Online | PDF Palette",
+    "metaDescription": "Learn how to watermark a PDF free online with PDF Palette. Add text or an image across pages in your browser—no account, mark drafts before you share them.",
+    "slug": "watermark-pdf",
+    "h1": "How to Use Watermark PDF – Complete Guide",
+    "h2": [
+      "What Is Watermark PDF?",
+      "How to Use Watermark PDF",
+      "Why Use Watermark PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/edit-pdf",
+        "anchor": "Edit PDF"
+      },
+      {
+        "route": "/headers-footers",
+        "anchor": "Headers & Footers"
+      }
+    ],
+    "faqTopics": [
+      "Can I add a text watermark like CONFIDENTIAL?",
+      "Can I use an image or logo as a watermark?",
+      "Is Watermark PDF free on PDF Palette?",
+      "Does PDF Palette add its own watermark?"
+    ]
+  },
+  "/edit-pdf": {
+    "primaryKeyword": "edit PDF",
+    "secondaryKeywords": [
+      "PDF editor online free",
+      "annotate PDF",
+      "add text to PDF",
+      "markup PDF online",
+      "edit PDF in browser",
+      "PDF annotation tool",
+      "add images to PDF"
+    ],
+    "seoTitle": "Edit a PDF With Text and Markup Free Online | PDF Palette",
+    "metaDescription": "Learn how to edit a PDF free online with PDF Palette. Add text, images, shapes, and notes in your browser—no account required, save a marked-up download fast.",
+    "slug": "edit-pdf",
+    "h1": "How to Use Edit PDF – Complete Guide",
+    "h2": [
+      "What Is Edit PDF?",
+      "How to Use Edit PDF",
+      "Why Use Edit PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/watermark-pdf",
+        "anchor": "Watermark PDF"
+      },
+      {
+        "route": "/page-numbers",
+        "anchor": "Add Page Numbers"
+      }
+    ],
+    "faqTopics": [
+      "What kinds of edits can I make?",
+      "Do I need an account to edit PDFs on PDF Palette?",
+      "Is this a full desktop-style PDF designer?",
+      "Will my edits show for other people?"
+    ]
+  },
+  "/headers-footers": {
+    "primaryKeyword": "PDF headers and footers",
+    "secondaryKeywords": [
+      "add header to PDF",
+      "add footer to PDF",
+      "PDF header footer online",
+      "stamp PDF header text",
+      "document footer PDF",
+      "page header PDF free",
+      "headers footers tool"
+    ],
+    "seoTitle": "Add Headers and Footers to a PDF Free Online | PDF Palette",
+    "metaDescription": "Learn how to add headers and footers to a PDF free online with PDF Palette. Place custom text on every page in your browser—no account, download when ready.",
+    "slug": "headers-footers",
+    "h1": "How to Use Headers & Footers – Complete Guide",
+    "h2": [
+      "What Is Headers & Footers?",
+      "How to Use Headers & Footers",
+      "Why Use Headers & Footers?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/page-numbers",
+        "anchor": "Add Page Numbers"
+      },
+      {
+        "route": "/watermark-pdf",
+        "anchor": "Watermark PDF"
+      },
+      {
+        "route": "/edit-metadata",
+        "anchor": "Edit Metadata"
+      }
+    ],
+    "faqTopics": [
+      "Can I put different text in the header and the footer?",
+      "Can headers and footers include page numbers?",
+      "Is Headers & Footers free on PDF Palette?",
+      "Will headers cover my existing content?"
+    ]
+  },
+  "/edit-metadata": {
+    "primaryKeyword": "edit PDF metadata",
+    "secondaryKeywords": [
+      "change PDF title",
+      "edit PDF properties",
+      "PDF author metadata",
+      "update PDF keywords",
+      "PDF metadata editor online",
+      "change PDF subject",
+      "edit document properties PDF"
+    ],
+    "seoTitle": "Edit PDF Title Author and Metadata Free Online | PDF Palette",
+    "metaDescription": "Learn how to edit PDF metadata free online with PDF Palette. Update title, author, subject, and keywords in your browser—no account, then download quickly.",
+    "slug": "edit-metadata",
+    "h1": "How to Use Edit Metadata – Complete Guide",
+    "h2": [
+      "What Is Edit Metadata?",
+      "How to Use Edit Metadata",
+      "Why Use Edit Metadata?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/headers-footers",
+        "anchor": "Headers & Footers"
+      },
+      {
+        "route": "/edit-pdf",
+        "anchor": "Edit PDF"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      }
+    ],
+    "faqTopics": [
+      "Which metadata fields can I edit?",
+      "Does editing metadata change the text on the pages?",
+      "Is Edit Metadata free on PDF Palette?",
+      "Why should I fix PDF metadata before sharing?"
+    ]
+  },
+  "/sign-pdf": {
+    "primaryKeyword": "sign PDF online",
+    "secondaryKeywords": [
+      "electronic signature PDF",
+      "e-sign PDF free",
+      "add signature to PDF",
+      "sign PDF without printing",
+      "draw signature on PDF",
+      "type signature PDF",
+      "sign PDF in browser"
+    ],
+    "seoTitle": "Sign PDF Files Without Printing Free Online | PDF Palette",
+    "metaDescription": "Sign a PDF free online in your browser. Draw, type, or upload a signature, place it on any page, and download—no account required with PDF Palette today.",
+    "slug": "sign-pdf",
+    "h1": "How to Use Sign PDF – Complete Guide",
+    "h2": [
+      "What Is Sign PDF?",
+      "How to Use Sign PDF",
+      "Why Use Sign PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/fill-forms",
+        "anchor": "Fill PDF Forms"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      }
+    ],
+    "faqTopics": [
+      "Is an electronic signature on PDF Palette legally binding?",
+      "Does Sign PDF email a request to another person?",
+      "Is my signature stored on PDF Palette servers?",
+      "Can I sign more than one page?"
+    ]
+  },
+  "/ocr-pdf": {
+    "primaryKeyword": "OCR PDF online",
+    "secondaryKeywords": [
+      "make PDF searchable",
+      "scanned PDF to text",
+      "optical character recognition PDF",
+      "searchable PDF free",
+      "OCR scanned document",
+      "convert scan to searchable PDF",
+      "copy text from scanned PDF"
+    ],
+    "seoTitle": "OCR Scanned PDFs to Searchable Free Online | PDF Palette",
+    "metaDescription": "OCR a PDF free online to make scans searchable and selectable. Run optical character recognition with PDF Palette; no account required to get started.",
+    "slug": "ocr-pdf",
+    "h1": "How to Use OCR PDF – Complete Guide",
+    "h2": [
+      "What Is OCR PDF?",
+      "How to Use OCR PDF",
+      "Why Use OCR PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      },
+      {
+        "route": "/extract-text",
+        "anchor": "Extract Text"
+      },
+      {
+        "route": "/chat-with-pdf",
+        "anchor": "Summarize & Ask PDF"
+      }
+    ],
+    "faqTopics": [
+      "Will OCR change how the page looks?",
+      "How accurate is OCR on PDF Palette?",
+      "Is my PDF kept after OCR?",
+      "Can I convert the OCR’d PDF to Word next?"
+    ]
+  },
+  "/unlock-pdf": {
+    "primaryKeyword": "unlock PDF online",
+    "secondaryKeywords": [
+      "remove PDF password",
+      "open password protected PDF",
+      "decrypt PDF free",
+      "PDF password remover",
+      "unlock PDF with password",
+      "remove PDF encryption",
+      "unprotect PDF online"
+    ],
+    "seoTitle": "Unlock Password-Protected PDF Free Online | PDF Palette",
+    "metaDescription": "Unlock a PDF free online when you know the password. Remove open restrictions in your browser with PDF Palette—no account required and no guessing at all.",
+    "slug": "unlock-pdf",
+    "h1": "How to Use Unlock PDF – Complete Guide",
+    "h2": [
+      "What Is Unlock PDF?",
+      "How to Use Unlock PDF",
+      "Why Use Unlock PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      }
+    ],
+    "faqTopics": [
+      "Can Unlock PDF crack a password I do not know?",
+      "Does unlocking happen in my browser?",
+      "Will the original encrypted file be changed?",
+      "Should I password-protect the file again afterward?"
+    ]
+  },
+  "/protect-pdf": {
+    "primaryKeyword": "protect PDF with password",
+    "secondaryKeywords": [
+      "password protect PDF online",
+      "encrypt PDF free",
+      "secure PDF password",
+      "lock PDF file",
+      "add password to PDF",
+      "PDF encryption online",
+      "protect PDF in browser"
+    ],
+    "seoTitle": "Password-Protect PDF Documents Free Online | PDF Palette",
+    "metaDescription": "Protect a PDF with a password free online. Encrypt the file in your browser with PDF Palette so recipients need your passphrase before they can open it.",
+    "slug": "protect-pdf",
+    "h1": "How to Use Protect PDF – Complete Guide",
+    "h2": [
+      "What Is Protect PDF?",
+      "How to Use Protect PDF",
+      "Why Use Protect PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/unlock-pdf",
+        "anchor": "Unlock PDF"
+      },
+      {
+        "route": "/redact-pdf",
+        "anchor": "Redact PDF"
+      },
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      }
+    ],
+    "faqTopics": [
+      "Where should I send the PDF password?",
+      "Does Protect PDF run in my browser?",
+      "Can someone remove the password without knowing it?",
+      "Will protection change the page layout?"
+    ]
+  },
+  "/fill-forms": {
+    "primaryKeyword": "fill PDF forms online",
+    "secondaryKeywords": [
+      "complete PDF form free",
+      "fillable PDF online",
+      "type into PDF form",
+      "PDF form filler",
+      "fill AcroForm PDF",
+      "save filled PDF form",
+      "flatten PDF form fields"
+    ],
+    "seoTitle": "Fill Interactive PDF Form Fields Free Online | PDF Palette",
+    "metaDescription": "Fill PDF forms free online in your browser. Complete text fields, checkboxes, and dropdowns with PDF Palette, then download—no account required at all.",
+    "slug": "fill-forms",
+    "h1": "How to Use Fill PDF Forms – Complete Guide",
+    "h2": [
+      "What Is Fill PDF Forms?",
+      "How to Use Fill PDF Forms",
+      "Why Use Fill PDF Forms?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      },
+      {
+        "route": "/edit-pdf",
+        "anchor": "Edit PDF"
+      }
+    ],
+    "faqTopics": [
+      "What if my PDF has no interactive fields?",
+      "Does flattening lock my answers?",
+      "Is the data I type uploaded?",
+      "Can I sign the form after filling it?"
+    ]
+  },
+  "/redact-pdf": {
+    "primaryKeyword": "redact PDF online",
+    "secondaryKeywords": [
+      "black out text in PDF",
+      "permanent PDF redaction",
+      "remove sensitive data PDF",
+      "PDF redaction tool free",
+      "redact PDF in browser",
+      "sanitize PDF before sharing",
+      "true PDF redaction"
+    ],
+    "seoTitle": "Redact Sensitive Data in PDFs Free Online | PDF Palette",
+    "metaDescription": "Redact a PDF free online in your browser. Permanently remove sensitive text and images with PDF Palette—true redaction that removes content, not a cover.",
+    "slug": "redact-pdf",
+    "h1": "How to Use Redact PDF – Complete Guide",
+    "h2": [
+      "What Is Redact PDF?",
+      "How to Use Redact PDF",
+      "Why Use Redact PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/auto-redact-pii",
+        "anchor": "Auto-Redact PII"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      }
+    ],
+    "faqTopics": [
+      "Is this the same as drawing a black box?",
+      "Does redaction run in my browser?",
+      "Can redacted text be recovered later?",
+      "Should I use Auto-Redact PII instead?"
+    ]
+  },
+  "/compare-pdf": {
+    "primaryKeyword": "compare PDF online",
+    "secondaryKeywords": [
+      "PDF difference checker",
+      "compare two PDF files",
+      "PDF version comparison",
+      "find changes in PDF",
+      "diff PDF documents",
+      "review revised PDF",
+      "PDF compare tool free"
+    ],
+    "seoTitle": "Compare Two PDF File Versions Free Online | PDF Palette",
+    "metaDescription": "Compare two PDFs free online in your browser. Spot text and layout changes between versions with PDF Palette, and review diffs with no account required.",
+    "slug": "compare-pdf",
+    "h1": "How to Use Compare PDF – Complete Guide",
+    "h2": [
+      "What Is Compare PDF?",
+      "How to Use Compare PDF",
+      "Why Use Compare PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/redact-pdf",
+        "anchor": "Redact PDF"
+      },
+      {
+        "route": "/ocr-pdf",
+        "anchor": "OCR PDF"
+      }
+    ],
+    "faqTopics": [
+      "Do both PDFs need the same page count?",
+      "Does comparison upload my files?",
+      "Can it compare scanned image PDFs?",
+      "Is Compare PDF a substitute for legal review?"
+    ]
+  },
+  "/flatten-pdf": {
+    "primaryKeyword": "flatten PDF online",
+    "secondaryKeywords": [
+      "flatten PDF form fields",
+      "make PDF uneditable",
+      "lock filled PDF form",
+      "flatten annotations PDF",
+      "static PDF from form",
+      "bake form fields PDF",
+      "flatten PDF free"
+    ],
+    "seoTitle": "Flatten PDF Forms and Page Layers Free Online | PDF Palette",
+    "metaDescription": "Flatten a PDF free online in your browser. Lock form fields and make pages static with PDF Palette so recipients cannot casually edit finished content.",
+    "slug": "flatten-pdf",
+    "h1": "How to Use Flatten PDF – Complete Guide",
+    "h2": [
+      "What Is Flatten PDF?",
+      "How to Use Flatten PDF",
+      "Why Use Flatten PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/fill-forms",
+        "anchor": "Fill PDF Forms"
+      },
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      }
+    ],
+    "faqTopics": [
+      "Will flattening shrink my file?",
+      "Can recipients edit a flattened PDF?",
+      "Does Flatten PDF run in the browser?",
+      "Should I flatten before or after signing?"
+    ]
+  },
+  "/repair-pdf": {
+    "primaryKeyword": "repair PDF online",
+    "secondaryKeywords": [
+      "fix corrupt PDF",
+      "repair damaged PDF",
+      "PDF recovery online",
+      "rebuild PDF file",
+      "PDF will not open fix",
+      "repair PDF in browser",
+      "recover PDF pages"
+    ],
+    "seoTitle": "Repair Corrupt or Damaged PDFs Free Online | PDF Palette",
+    "metaDescription": "Repair a damaged PDF free online in your browser. Rebuild pages so viewers and printers can open the file again using PDF Palette—no account required.",
+    "slug": "repair-pdf",
+    "h1": "How to Use Repair PDF – Complete Guide",
+    "h2": [
+      "What Is Repair PDF?",
+      "How to Use Repair PDF",
+      "Why Use Repair PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      },
+      {
+        "route": "/unlock-pdf",
+        "anchor": "Unlock PDF"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      }
+    ],
+    "faqTopics": [
+      "Can Repair PDF recover a zero-byte or fully overwritten file?",
+      "Does repair run in my browser?",
+      "Will annotations and forms always survive?",
+      "The PDF asks for a password. Is that corruption?"
+    ]
+  },
+  "/extract-text": {
+    "primaryKeyword": "extract text from PDF",
+    "secondaryKeywords": [
+      "PDF to text online",
+      "copy all text from PDF",
+      "PDF text extractor free",
+      "save PDF as TXT",
+      "pull text from PDF",
+      "extract PDF text browser",
+      "PDF to plain text"
+    ],
+    "seoTitle": "Extract All Text from PDF Files Free Online | PDF Palette",
+    "metaDescription": "Extract text from a PDF free online in your browser. Download selectable content as a plain .txt file with PDF Palette; no account required for quotes.",
+    "slug": "extract-text",
+    "h1": "How to Use Extract Text – Complete Guide",
+    "h2": [
+      "What Is Extract Text?",
+      "How to Use Extract Text",
+      "Why Use Extract Text?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/ocr-pdf",
+        "anchor": "OCR PDF"
+      },
+      {
+        "route": "/chat-with-pdf",
+        "anchor": "Summarize & Ask PDF"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      }
+    ],
+    "faqTopics": [
+      "Why is my extracted text empty?",
+      "Does Extract Text keep my file private?",
+      "Will formatting and columns be perfect?",
+      "Can I ask questions about the text afterward?"
+    ]
+  },
+  "/extract-images": {
+    "primaryKeyword": "extract images from PDF",
+    "secondaryKeywords": [
+      "PDF image extractor",
+      "save images from PDF",
+      "pull pictures out of PDF",
+      "PDF to PNG images",
+      "extract PDF photos free",
+      "download images embedded in PDF",
+      "PDF image export online"
+    ],
+    "seoTitle": "Extract Embedded PDF Image Files Free Online | PDF Palette",
+    "metaDescription": "Extract images from a PDF free online in your browser. Download embedded pictures as PNG files with PDF Palette; no account required to export figures.",
+    "slug": "extract-images",
+    "h1": "How to Use Extract Images – Complete Guide",
+    "h2": [
+      "What Is Extract Images?",
+      "How to Use Extract Images",
+      "Why Use Extract Images?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/pdf-to-jpg",
+        "anchor": "PDF to JPG"
+      },
+      {
+        "route": "/jpg-to-pdf",
+        "anchor": "JPG to PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      }
+    ],
+    "faqTopics": [
+      "Why did I get fewer images than I see on the page?",
+      "What format are the downloads?",
+      "Does extraction upload my PDF?",
+      "Can I turn each page into an image instead?"
+    ]
+  },
+  "/auto-redact-pii": {
+    "primaryKeyword": "auto redact PII PDF",
+    "secondaryKeywords": [
+      "redact personal information PDF",
+      "black out email phone PDF",
+      "PII redaction tool",
+      "automatic PDF redaction",
+      "remove PII from PDF",
+      "redact names emails phones",
+      "sanitize PDF personal data"
+    ],
+    "seoTitle": "Auto-Redact PII in PDF Documents Free Online | PDF Palette",
+    "metaDescription": "Auto-redact PII in a PDF free online. Find names, emails, phones, and similar data, then black them out in your browser with PDF Palette—no account needed.",
+    "slug": "auto-redact-pii",
+    "h1": "How to Use Auto-Redact PII – Complete Guide",
+    "h2": [
+      "What Is Auto-Redact PII?",
+      "How to Use Auto-Redact PII",
+      "Why Use Auto-Redact PII?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/redact-pdf",
+        "anchor": "Redact PDF"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      }
+    ],
+    "faqTopics": [
+      "What kinds of PII does it look for?",
+      "Is automatic redaction perfect?",
+      "Does Auto-Redact PII run in my browser?",
+      "Why is the output flattened?"
+    ]
+  },
+  "/chat-with-pdf": {
+    "primaryKeyword": "summarize PDF online",
+    "secondaryKeywords": [
+      "ask questions about PDF",
+      "PDF summary free",
+      "extractive PDF Q&A",
+      "chat with PDF locally",
+      "PDF keyword search answers",
+      "summarize PDF in browser",
+      "local PDF question answering"
+    ],
+    "seoTitle": "Summarize and Ask PDF Locally Free Online | PDF Palette",
+    "metaDescription": "Summarize a PDF and ask questions free online with local extractive Q&A—not cloud AI chat. Private on-device help from PDF Palette, no account needed.",
+    "slug": "chat-with-pdf",
+    "h1": "How to Use Summarize & Ask PDF – Complete Guide",
+    "h2": [
+      "What Is Summarize & Ask PDF?",
+      "How to Use Summarize & Ask PDF",
+      "Why Use Summarize & Ask PDF?",
+      "Tips for Getting the Best Results"
+    ],
+    "internalLinks": [
+      {
+        "route": "/extract-text",
+        "anchor": "Extract Text"
+      },
+      {
+        "route": "/ocr-pdf",
+        "anchor": "OCR PDF"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      }
+    ],
+    "faqTopics": [
+      "Is this the same as ChatGPT for PDFs?",
+      "Does my PDF leave my device?",
+      "Why are answers limited or literal?",
+      "What if the summary is empty?"
+    ]
+  }
+}

@@ -149,7 +149,7 @@ function toolGraph(route, tool) {
       },
       {
         "@type": "HowTo",
-        name: `How to ${tool.name.toLowerCase()}`,
+        name: tool.h1 || `How to ${tool.name.toLowerCase()}`,
         description: tool.intro,
         step: tool.steps.map((text, index) => ({
           "@type": "HowToStep",

@@ -1,0 +1,1068 @@
+{
+  "/sign-pdf": {
+    "name": "Sign PDF",
+    "title": "Sign PDF Files Without Printing Free Online | PDF Palette",
+    "description": "Sign a PDF free online in your browser. Draw, type, or upload a signature, place it on any page, and download—no account required with PDF Palette today.",
+    "primaryKeyword": "sign PDF online",
+    "secondaryKeywords": [
+      "electronic signature PDF",
+      "e-sign PDF free",
+      "add signature to PDF",
+      "sign PDF without printing",
+      "draw signature on PDF",
+      "type signature PDF",
+      "sign PDF in browser"
+    ],
+    "h1": "How to Use Sign PDF – Complete Guide",
+    "slug": "sign-pdf",
+    "intro": "Need to sign a contract, form, or approval without a printer? PDF Palette’s Sign PDF tool lets you add a signature right in your browser—draw it, type it in a handwriting style, or upload an image of your wet-ink signature.\n\nPlace and resize the mark on any page, add a date or initials if you need them, then download the signed file. No account is required, and signing stays in your tab so the document is not uploaded for this tool.",
+    "steps": [
+      "Open Sign PDF and upload the PDF you need to sign.",
+      "Create a signature by drawing, typing, or uploading an image.",
+      "Drag the signature onto the page and resize it to fit.",
+      "Optionally add initials or a date on the same or other pages.",
+      "Download the signed PDF to your device."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Sign PDF?",
+        "body": "Sign PDF is a free online tool that places your electronic signature on a PDF page without printing. Instead of signing on paper and scanning, you create a drawn, typed, or image signature and position it where the form expects a mark. It is built for everyday agreements and approvals—not multi-party signing workflows with audit trails—so you finish in one browser session and keep a local signed copy on your device when you are done."
+      },
+      {
+        "heading": "How to Use Sign PDF",
+        "body": "Follow these steps in PDF Palette to finish a self-signature quickly. Everything runs in your browser, so you do not install software or create an account first.",
+        "steps": [
+          "Upload your PDF.",
+          "Create or reuse a signature (draw, type, or image).",
+          "Position it on the correct page and scale it.",
+          "Add extras like a date if needed, then download."
+        ]
+      },
+      {
+        "heading": "Why Use Sign PDF?",
+        "body": "It removes the print-scan loop for routine paperwork and approvals you handle yourself. You can sign on desktop or phone, keep multiple marks on different pages, and walk away without signing up for a vendor account. Because the work happens in your browser, you avoid sending the file to a signing service when all you need is your own signature on a finished PDF document."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Use a clean, high-contrast signature image if you upload one from a scan of paper. Zoom in when placing the mark so it sits cleanly on the signature line without covering nearby text. Check every page that needs initials or a date before downloading. If the PDF is password-locked, unlock it first so you can save the signed copy without errors."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Is an electronic signature on PDF Palette legally binding?",
+        "a": "Many everyday agreements accept a drawn or typed e-signature, but rules differ by country and document type. Confirm what your situation requires before relying on it for high-stakes filings."
+      },
+      {
+        "q": "Does Sign PDF email a request to another person?",
+        "a": "No. You sign the file yourself in the browser. It does not manage recipients, reminders, or certificate-based workflows."
+      },
+      {
+        "q": "Is my signature stored on PDF Palette servers?",
+        "a": "No. For this tool, the signature exists only in your browser session and is discarded when you close the tab."
+      },
+      {
+        "q": "Can I sign more than one page?",
+        "a": "Yes. Place signatures, initials, or dates on as many pages as you need before you download."
+      }
+    ],
+    "conclusion": "Sign PDF on PDF Palette is a fast, free way to finish paperwork without printing or scanning. Upload your file, place a drawn, typed, or image signature, add dates if needed, and download. No account is required, and signing stays in your browser for everyday documents.",
+    "internalLinks": [
+      {
+        "route": "/fill-forms",
+        "anchor": "Fill PDF Forms"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      }
+    ]
+  },
+  "/ocr-pdf": {
+    "name": "OCR PDF",
+    "title": "OCR Scanned PDFs to Searchable Free Online | PDF Palette",
+    "description": "OCR a PDF free online to make scans searchable and selectable. Run optical character recognition with PDF Palette; no account required to get started.",
+    "primaryKeyword": "OCR PDF online",
+    "secondaryKeywords": [
+      "make PDF searchable",
+      "scanned PDF to text",
+      "optical character recognition PDF",
+      "searchable PDF free",
+      "OCR scanned document",
+      "convert scan to searchable PDF",
+      "copy text from scanned PDF"
+    ],
+    "h1": "How to Use OCR PDF – Complete Guide",
+    "slug": "ocr-pdf",
+    "intro": "A scanned PDF is usually just pictures of pages. You cannot search it, select words, or paste quotes into another document until optical character recognition (OCR) adds a text layer behind the scan.\n\nPDF Palette’s OCR PDF tool recognizes the characters on each page and returns a searchable PDF that still looks like the original. Use it free online with no account—ideal before converting to Word or Excel, or when you need to find a phrase in a paper archive.",
+    "steps": [
+      "Open OCR PDF and upload your scanned PDF.",
+      "Start recognition and wait while each page is processed.",
+      "Review progress until the job completes.",
+      "Download the searchable PDF.",
+      "Optionally open PDF to Word or Extract Text next."
+    ],
+    "sections": [
+      {
+        "heading": "What Is OCR PDF?",
+        "body": "OCR PDF turns image-based pages into documents with selectable, searchable text you can reuse elsewhere. The visual scan stays in place while recognition writes an invisible text layer aligned with what you see on each page. That layer is what lets find-in-page work, enables copy-paste, and improves downstream conversion quality for tools that need real characters rather than pixels from a photograph of paper documents."
+      },
+      {
+        "heading": "How to Use OCR PDF",
+        "body": "Upload a scan, run recognition, and download the searchable PDF. No install is needed. OCR uses a conversion service for recognition; PDF Palette does not keep a copy.",
+        "steps": [
+          "Upload the scanned PDF.",
+          "Wait for OCR to finish on all pages.",
+          "Download the searchable output.",
+          "Search or convert the new file as needed."
+        ]
+      },
+      {
+        "heading": "Why Use OCR PDF?",
+        "body": "Paper archives, faxed forms, and phone photos of documents are hard to reuse until they become text. OCR unlocks search across large packets, speeds quoting for notes and tickets, and prepares files for Word or Excel conversion afterward. PDF Palette keeps the flow simple: one upload, one download, and no sign-up before you start the recognition job."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Use straight, high-resolution scans of printed text when you can for better accuracy. Skewed, blurry, or handwritten pages are much less reliable for recognition engines. Rotate sideways pages before you begin. After OCR, spot-check a few known keywords on different pages. For handwritten notes, expect limited accuracy and plan a short manual review of important lines."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Will OCR change how the page looks?",
+        "a": "Usually no. The original page image remains; recognized text is added as a searchable layer behind it."
+      },
+      {
+        "q": "How accurate is OCR on PDF Palette?",
+        "a": "Clean printed scans at good resolution work well. Low-resolution, skewed, noisy, or handwritten pages are less reliable."
+      },
+      {
+        "q": "Is my PDF kept after OCR?",
+        "a": "The file is sent for recognition only. PDF Palette does not keep a copy afterward. Prefer tools that stay fully in-browser if you cannot send a sensitive scan anywhere."
+      },
+      {
+        "q": "Can I convert the OCR’d PDF to Word next?",
+        "a": "Yes. Once a text layer exists, PDF to Word and similar converters have real characters to work with instead of a blank image page."
+      }
+    ],
+    "conclusion": "OCR PDF makes image-based scans searchable and copyable so paper archives become usable again. Run recognition free online on PDF Palette, download the searchable file, then find phrases or convert to Word or Excel with far better results than you get from a blank scan alone.",
+    "internalLinks": [
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      },
+      {
+        "route": "/extract-text",
+        "anchor": "Extract Text"
+      },
+      {
+        "route": "/chat-with-pdf",
+        "anchor": "Summarize & Ask PDF"
+      }
+    ]
+  },
+  "/unlock-pdf": {
+    "name": "Unlock PDF",
+    "title": "Unlock Password-Protected PDF Free Online | PDF Palette",
+    "description": "Unlock a PDF free online when you know the password. Remove open restrictions in your browser with PDF Palette—no account required and no guessing at all.",
+    "primaryKeyword": "unlock PDF online",
+    "secondaryKeywords": [
+      "remove PDF password",
+      "open password protected PDF",
+      "decrypt PDF free",
+      "PDF password remover",
+      "unlock PDF with password",
+      "remove PDF encryption",
+      "unprotect PDF online"
+    ],
+    "h1": "How to Use Unlock PDF – Complete Guide",
+    "slug": "unlock-pdf",
+    "intro": "Bank statements, payslips, and shared packs often arrive encrypted. If you already know the password, Unlock PDF removes that open restriction so you can archive, print, merge, or convert the file without typing it every time you open the document.\n\nPDF Palette runs this step in your browser: enter the password you are entitled to use, then download an unlocked copy. No account is required, and the tool does not guess or bypass passwords you do not already have.",
+    "steps": [
+      "Open Unlock PDF and upload the protected file.",
+      "Enter the password that currently opens the PDF.",
+      "Confirm and run unlock in your browser.",
+      "Download the unrestricted copy.",
+      "Store the new file securely if it still contains sensitive data."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Unlock PDF?",
+        "body": "Unlock PDF creates a copy of a password-protected document that opens without asking for that password again. It is for documents you can already open—not for cracking unknown credentials or breaking into files you should not access. Once unlocked, the file behaves like a normal PDF for viewing, printing, merging, and further editing with other PDF Palette tools on your device afterward."
+      },
+      {
+        "heading": "How to Use Unlock PDF",
+        "body": "Have the correct open password ready before you start. Processing stays local in the browser, so you are not shipping the file to a remote unlock service.",
+        "steps": [
+          "Upload the encrypted PDF.",
+          "Type the known open password.",
+          "Run unlock and wait for the new file.",
+          "Download and verify it opens freely."
+        ]
+      },
+      {
+        "heading": "Why Use Unlock PDF?",
+        "body": "Encrypted downloads are awkward when you need to merge chapters, OCR a statement, or keep a local archive for taxes. Unlocking once with permission saves repeated password prompts across tools you use next. Doing it in the browser keeps a sensitive statement on your device during the process instead of uploading it to an unknown unlock site."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Copy the password carefully—spaces and capitalization matter more than people expect. If unlock fails, confirm you have the open password rather than only an owner or permissions password. After unlocking, re-protect the file if you will email it again to someone else. Only unlock documents you are allowed to open and keep for your own records."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Can Unlock PDF crack a password I do not know?",
+        "a": "No. You must supply the password that already opens the file. The tool removes protection; it does not recover unknown passwords."
+      },
+      {
+        "q": "Does unlocking happen in my browser?",
+        "a": "Yes. Unlock PDF is designed to process the file locally in your tab rather than uploading it for decryption."
+      },
+      {
+        "q": "Will the original encrypted file be changed?",
+        "a": "No. You download a new unlocked copy. Your original upload remains as you left it on disk."
+      },
+      {
+        "q": "Should I password-protect the file again afterward?",
+        "a": "If you still need to share it securely, use Protect PDF and send the password through a separate channel."
+      }
+    ],
+    "conclusion": "Unlock PDF is a free, browser-local way to remove a password you already know and are allowed to use. Open PDF Palette, enter the passphrase once, download the unrestricted copy, then archive, print, merge, or convert without repeated prompts each time the file opens on your computer.",
+    "internalLinks": [
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      }
+    ]
+  },
+  "/protect-pdf": {
+    "name": "Protect PDF",
+    "title": "Password-Protect PDF Documents Free Online | PDF Palette",
+    "description": "Protect a PDF with a password free online. Encrypt the file in your browser with PDF Palette so recipients need your passphrase before they can open it.",
+    "primaryKeyword": "protect PDF with password",
+    "secondaryKeywords": [
+      "password protect PDF online",
+      "encrypt PDF free",
+      "secure PDF password",
+      "lock PDF file",
+      "add password to PDF",
+      "PDF encryption online",
+      "protect PDF in browser"
+    ],
+    "h1": "How to Use Protect PDF – Complete Guide",
+    "slug": "protect-pdf",
+    "intro": "Before you email a contract, tax form, or ID scan, put a password on the PDF. Protect PDF encrypts the file so recipients cannot open it without the passphrase you choose and communicate separately from the attachment.\n\nPDF Palette applies protection in your browser—no account required. Share the password through a different channel than the file itself, such as a call, text, or separate message, so one intercepted email is never enough on its own.",
+    "steps": [
+      "Open Protect PDF and upload the document.",
+      "Enter a strong password (and confirm it if prompted).",
+      "Run protection to encrypt the PDF in your browser.",
+      "Download the locked file.",
+      "Send the password to the recipient through a separate channel."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Protect PDF?",
+        "body": "Protect PDF adds open-password encryption to a PDF document before you share it. Anyone without the password sees a prompt instead of the pages and attachments inside the file. It is a practical layer for email and shared drives—not a full enterprise rights-management system—but it stops casual access if a file is forwarded by mistake to the wrong inbox or chat thread."
+      },
+      {
+        "heading": "How to Use Protect PDF",
+        "body": "Choose a password you can communicate safely, encrypt the file locally in your tab, then download. Keep the passphrase out of the same email as the attachment itself.",
+        "steps": [
+          "Upload the PDF to protect.",
+          "Set a password of sufficient length.",
+          "Apply encryption in the browser.",
+          "Download and verify the lock by reopening."
+        ]
+      },
+      {
+        "heading": "Why Use Protect PDF?",
+        "body": "Email is convenient and leaky at the same time for sensitive packets. A password forces an intentional step before someone can read payroll details, medical forms, or signed agreements. Browser-local protection means the plaintext file does not need to leave your device just to add encryption before you send the attachment out."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Use a unique password, not your email login or a short dictionary word anyone could guess. Prefer a longer passphrase you can say aloud to the recipient on a call. Test the download before sending the real message. Tell them which channel will carry the password. If you later need an open copy, use Unlock PDF with that same password."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Where should I send the PDF password?",
+        "a": "Use a different channel than the file—SMS, a phone call, or a separate messenger thread—so one intercepted email is not enough."
+      },
+      {
+        "q": "Does Protect PDF run in my browser?",
+        "a": "Yes. Encryption is applied locally in your tab; you are not asked to create an account."
+      },
+      {
+        "q": "Can someone remove the password without knowing it?",
+        "a": "Not with Unlock PDF on this site—that tool requires the known password. Strong unique passwords matter."
+      },
+      {
+        "q": "Will protection change the page layout?",
+        "a": "No. Encryption controls access; it does not rewrite how text and images appear on the page."
+      }
+    ],
+    "conclusion": "Protect PDF gives you a free, in-browser way to lock a file before sharing it by email or chat. Encrypt on PDF Palette, download the protected copy, deliver the password separately, and keep sensitive attachments from opening for anyone who should not see them at all.",
+    "internalLinks": [
+      {
+        "route": "/unlock-pdf",
+        "anchor": "Unlock PDF"
+      },
+      {
+        "route": "/redact-pdf",
+        "anchor": "Redact PDF"
+      },
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      }
+    ]
+  },
+  "/fill-forms": {
+    "name": "Fill PDF Forms",
+    "title": "Fill Interactive PDF Form Fields Free Online | PDF Palette",
+    "description": "Fill PDF forms free online in your browser. Complete text fields, checkboxes, and dropdowns with PDF Palette, then download—no account required at all.",
+    "primaryKeyword": "fill PDF forms online",
+    "secondaryKeywords": [
+      "complete PDF form free",
+      "fillable PDF online",
+      "type into PDF form",
+      "PDF form filler",
+      "fill AcroForm PDF",
+      "save filled PDF form",
+      "flatten PDF form fields"
+    ],
+    "h1": "How to Use Fill PDF Forms – Complete Guide",
+    "slug": "fill-forms",
+    "intro": "Skip the print-and-pen routine for applications and HR packs. Fill PDF Forms detects interactive fields—text boxes, checkboxes, and dropdowns—so you can complete worksheets on screen without scanning anything back in afterward.\n\nWork stays in your browser on PDF Palette: type your answers, optionally flatten so they cannot be edited later, and download the finished file. No account is required, and what you type does not need to leave your device for this tool.",
+    "steps": [
+      "Upload the fillable PDF form.",
+      "Click each field and enter text, checks, or dropdown choices.",
+      "Review every page for missed required fields.",
+      "Optionally flatten to lock answers into the page.",
+      "Download the completed PDF."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Fill PDF Forms?",
+        "body": "Fill PDF Forms is a free online filler for PDFs that already contain interactive form fields. It reads those fields in place so you type directly into the document instead of overlaying floating text boxes by hand. When you flatten, answers become static page content that recipients cannot casually clear, reset, or change in a normal reader after you send the file."
+      },
+      {
+        "heading": "How to Use Fill PDF Forms",
+        "body": "Upload a fillable form, complete the detected fields in your browser, then download. Flatten at the end if you need a locked final copy for portals or counterparties.",
+        "steps": [
+          "Upload the form PDF.",
+          "Fill detected fields page by page.",
+          "Choose flatten if you want answers locked.",
+          "Download the finished file."
+        ]
+      },
+      {
+        "heading": "Why Use Fill PDF Forms?",
+        "body": "Browser filling is faster than handwriting and cleaner than scanning ink on paper forms. Keeping the session local protects personal answers on applications and medical questionnaires. You can finish on a phone or laptop without installing Adobe Acrobat or creating an account just to type into the fields, save your answers, and submit the completed packet."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "If nothing is clickable, the PDF may be a flat scan—use Edit PDF to place text, or OCR first if you need search later. Tab through fields to avoid skips on long multi-page forms. Flatten before sending if the recipient should not edit answers. Add a signature afterward with Sign PDF when the form still requires one on the last page."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "What if my PDF has no interactive fields?",
+        "a": "It is probably a flat scan or print layout. Use Edit PDF to type anywhere on the page, or check whether the issuer offers a fillable version."
+      },
+      {
+        "q": "Does flattening lock my answers?",
+        "a": "Yes. Flattening bakes field values into the page so they are no longer editable form widgets."
+      },
+      {
+        "q": "Is the data I type uploaded?",
+        "a": "No. Filling runs in your browser, so answers stay on your device for this tool."
+      },
+      {
+        "q": "Can I sign the form after filling it?",
+        "a": "Yes. Complete the fields here, then open Sign PDF to place a signature or initials."
+      }
+    ],
+    "conclusion": "Fill PDF Forms makes interactive paperwork quick and private in your browser. Complete the fields free on PDF Palette, flatten if you need a locked snapshot for submission, and download without creating an account or installing desktop form-filling software on your computer at all.",
+    "internalLinks": [
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      },
+      {
+        "route": "/edit-pdf",
+        "anchor": "Edit PDF"
+      }
+    ]
+  },
+  "/redact-pdf": {
+    "name": "Redact PDF",
+    "title": "Redact Sensitive Data in PDFs Free Online | PDF Palette",
+    "description": "Redact a PDF free online in your browser. Permanently remove sensitive text and images with PDF Palette—true redaction that removes content, not a cover.",
+    "primaryKeyword": "redact PDF online",
+    "secondaryKeywords": [
+      "black out text in PDF",
+      "permanent PDF redaction",
+      "remove sensitive data PDF",
+      "PDF redaction tool free",
+      "redact PDF in browser",
+      "sanitize PDF before sharing",
+      "true PDF redaction"
+    ],
+    "h1": "How to Use Redact PDF – Complete Guide",
+    "slug": "redact-pdf",
+    "intro": "Drawing a black rectangle in a normal editor often only hides text—the words can still be selected or recovered from the file underneath. Redact PDF on PDF Palette rebuilds affected pages so the underlying content is actually gone from the document.\n\nMark the regions to remove in your browser, apply redaction, and download a sanitized copy. No account is required. Prefer this whenever you must share a file that still contains account numbers, addresses, or private notes.",
+    "steps": [
+      "Upload the PDF that contains sensitive content.",
+      "Draw redaction boxes over text or images to remove.",
+      "Review every page carefully for missed spots.",
+      "Apply redaction so content is permanently removed.",
+      "Download the redacted PDF and spot-check by searching."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Redact PDF?",
+        "body": "Redact PDF permanently removes selected content from a document before you circulate it outside your team. Unlike a highlight or opaque shape sitting on top of the page, true redaction deletes the underlying text or image data from the page structure itself. That is the difference between looking blacked out and actually being safer to share with clients, courts, or partners who should not see the original wording."
+      },
+      {
+        "heading": "How to Use Redact PDF",
+        "body": "Work carefully page by page in the browser. Mark everything that must disappear, apply redaction to rebuild those pages, then verify the download cannot reveal old text.",
+        "steps": [
+          "Upload the source PDF.",
+          "Box each sensitive region.",
+          "Apply redaction to rebuild those pages.",
+          "Download and confirm the content is gone."
+        ]
+      },
+      {
+        "heading": "Why Use Redact PDF?",
+        "body": "Legal, HR, and support teams share PDFs that still contain secrets in headers and footnotes. Overlay “redaction” fails under simple copy-paste from the file. Browser-local redaction keeps the document on your device while you sanitize it, and PDF Palette requires no account for a free pass on routine packets that need permanent removal."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Search the PDF for known names and IDs before and after you redact each batch. Cover headers, footers, and annotations too, not only body paragraphs in the middle. For bulk emails and phones, try Auto-Redact PII first, then finish edge cases here. Never reuse the unredacted original when you send the sanitized file out to anyone."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Is this the same as drawing a black box?",
+        "a": "No. Redact PDF removes the underlying content when pages are rebuilt, so the hidden text is not left selectable underneath."
+      },
+      {
+        "q": "Does redaction run in my browser?",
+        "a": "Yes. Marking and applying redaction are designed to stay local in your tab."
+      },
+      {
+        "q": "Can redacted text be recovered later?",
+        "a": "From the redacted download, the removed content should no longer be present. Always verify by searching and selecting on the output file."
+      },
+      {
+        "q": "Should I use Auto-Redact PII instead?",
+        "a": "Use Auto-Redact PII to find common personal-data patterns quickly, then use Redact PDF for anything the patterns miss."
+      }
+    ],
+    "conclusion": "Redact PDF is the free, browser-local way to remove sensitive content for real before you share. Mark every region carefully, apply redaction so underlying data is gone, download on PDF Palette, and keep the unredacted original offline where only you can reach it.",
+    "internalLinks": [
+      {
+        "route": "/auto-redact-pii",
+        "anchor": "Auto-Redact PII"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      }
+    ]
+  },
+  "/compare-pdf": {
+    "name": "Compare PDF",
+    "title": "Compare Two PDF File Versions Free Online | PDF Palette",
+    "description": "Compare two PDFs free online in your browser. Spot text and layout changes between versions with PDF Palette, and review diffs with no account required.",
+    "primaryKeyword": "compare PDF online",
+    "secondaryKeywords": [
+      "PDF difference checker",
+      "compare two PDF files",
+      "PDF version comparison",
+      "find changes in PDF",
+      "diff PDF documents",
+      "review revised PDF",
+      "PDF compare tool free"
+    ],
+    "h1": "How to Use Compare PDF – Complete Guide",
+    "slug": "compare-pdf",
+    "intro": "When a contract or report comes back marked as only lightly revised, the risky changes are easy to miss. Compare PDF loads two versions and highlights differences page by page so you can see what actually changed between exports.\n\nRun the comparison free online in your browser on PDF Palette—no account required. Use it before you sign, publish, or file a document that should only contain the edits you already agreed to accept in writing.",
+    "steps": [
+      "Open Compare PDF and upload the original version.",
+      "Upload the revised PDF as the second file.",
+      "Run the comparison and wait for highlights.",
+      "Review each page’s differences carefully.",
+      "Download or note changes before you approve the new file."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Compare PDF?",
+        "body": "Compare PDF is a free visual diff for two PDF files you already have on hand. It helps you see insertions, deletions, and layout shifts between an older copy and a newer one without reading every line cold from scratch. It is built for practical review of contracts, policies, and statements—not for claiming legal discovery completeness on its own without careful human judgment afterward."
+      },
+      {
+        "heading": "How to Use Compare PDF",
+        "body": "Provide both versions in a clear order, run the diff in your browser, then walk the highlighted pages slowly. Keep the approved file as your only source of truth afterward.",
+        "steps": [
+          "Upload PDF version A (baseline).",
+          "Upload PDF version B (revised).",
+          "Start comparison.",
+          "Inspect highlighted differences page by page."
+        ]
+      },
+      {
+        "heading": "Why Use Compare PDF?",
+        "body": "Manual side-by-side scrolling misses renumbered clauses and quiet deletions in long exhibits. A dedicated compare pass reduces that risk before you sign or publish. Doing it locally in the browser keeps draft agreements on your device while you review, and PDF Palette does not require a login to begin checking what changed."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Compare final PDF exports, not screenshot packs or printed scans of slides from a meeting. Ensure page sizes match when possible so highlights line up more clearly. After reviewing diffs, still read critical money and liability clauses in full. If text is only a scan, run OCR first so wording changes are easier to detect across versions."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Do both PDFs need the same page count?",
+        "a": "Not necessarily, but large structural reshuffles are harder to follow. Compare the closest pair of exports you can."
+      },
+      {
+        "q": "Does comparison upload my files?",
+        "a": "Compare PDF is intended to run in your browser so draft documents stay on your device during review."
+      },
+      {
+        "q": "Can it compare scanned image PDFs?",
+        "a": "Image-only scans limit text-level diffs. OCR the files first when you need wording changes called out clearly."
+      },
+      {
+        "q": "Is Compare PDF a substitute for legal review?",
+        "a": "No. It is a practical aid for spotting changes. Critical agreements still need human—and often legal—review."
+      }
+    ],
+    "conclusion": "Compare PDF helps you catch real edits between versions without endless side-by-side scrolling. Upload both files free on PDF Palette, review the highlights in your browser, then approve or send feedback with fewer surprises hiding in the fine print of a last-minute revision.",
+    "internalLinks": [
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/redact-pdf",
+        "anchor": "Redact PDF"
+      },
+      {
+        "route": "/ocr-pdf",
+        "anchor": "OCR PDF"
+      }
+    ]
+  },
+  "/flatten-pdf": {
+    "name": "Flatten PDF",
+    "title": "Flatten PDF Forms and Page Layers Free Online | PDF Palette",
+    "description": "Flatten a PDF free online in your browser. Lock form fields and make pages static with PDF Palette so recipients cannot casually edit finished content.",
+    "primaryKeyword": "flatten PDF online",
+    "secondaryKeywords": [
+      "flatten PDF form fields",
+      "make PDF uneditable",
+      "lock filled PDF form",
+      "flatten annotations PDF",
+      "static PDF from form",
+      "bake form fields PDF",
+      "flatten PDF free"
+    ],
+    "h1": "How to Use Flatten PDF – Complete Guide",
+    "slug": "flatten-pdf",
+    "intro": "A filled form that still has live fields can be cleared or altered after you send it. Flatten PDF bakes interactive content into static pages so the file reads as a finished document instead of an open worksheet someone can reset.\n\nUse PDF Palette free online in your browser: upload, flatten, and download. No account is required. It is the usual last step after Fill PDF Forms or before archiving a packet you do not want edited later by someone else.",
+    "steps": [
+      "Open Flatten PDF and upload your file.",
+      "Confirm you want fields and pages flattened.",
+      "Run flatten in your browser.",
+      "Download the static PDF.",
+      "Open the result to confirm fields are no longer editable."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Flatten PDF?",
+        "body": "Flattening converts interactive form fields and similar dynamic content into ordinary page appearance for sharing. Recipients can still view and often print the PDF, but they cannot treat it as a blank form to reset or clear. Depending on the document, pages may be rendered to a stable static representation so casual edits in a reader become impractical for most people who receive the file."
+      },
+      {
+        "heading": "How to Use Flatten PDF",
+        "body": "Upload the finished file, run flatten locally in your tab, and verify the download. Keep an unflattened master only if you still need to edit fields later yourself.",
+        "steps": [
+          "Upload the PDF to flatten.",
+          "Start the flatten process.",
+          "Download the static output.",
+          "Spot-check that fields no longer accept input."
+        ]
+      },
+      {
+        "heading": "Why Use Flatten PDF?",
+        "body": "Submission portals and counterparties often expect a locked snapshot of answers they can archive. Flattening reduces accidental edits and stops someone from emptying your responses after delivery. Browser-local processing keeps the completed form on your device while you finalize it without creating an account or installing extra desktop software just to lock the fields in place before you send."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Fill and review every field before flattening—undoing later usually means starting from the editable original again. If you still need a signature, sign first or immediately after while layout is correct on the page. Compress afterward if email size is tight. Protect with a password if the content remains sensitive while the file is in transit."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Will flattening shrink my file?",
+        "a": "Not necessarily. Flattening prioritizes making content static; use Compress PDF separately if you need a smaller attachment."
+      },
+      {
+        "q": "Can recipients edit a flattened PDF?",
+        "a": "Form widgets should no longer be interactive. Determined editing with specialized tools may still alter a PDF, so combine with Protect PDF when access control matters."
+      },
+      {
+        "q": "Does Flatten PDF run in the browser?",
+        "a": "Yes. The tool is built to process your file locally without an account."
+      },
+      {
+        "q": "Should I flatten before or after signing?",
+        "a": "Fill fields first, sign if required, then flatten when you want a final uneditable snapshot for submission."
+      }
+    ],
+    "conclusion": "Flatten PDF locks a finished document into a static copy you can share with fewer edit risks. Run it free in your browser on PDF Palette once the fields and signatures are final, then download and submit the snapshot with more confidence than a still-live form.",
+    "internalLinks": [
+      {
+        "route": "/fill-forms",
+        "anchor": "Fill PDF Forms"
+      },
+      {
+        "route": "/sign-pdf",
+        "anchor": "Sign PDF"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      }
+    ]
+  },
+  "/repair-pdf": {
+    "name": "Repair PDF",
+    "title": "Repair Corrupt or Damaged PDFs Free Online | PDF Palette",
+    "description": "Repair a damaged PDF free online in your browser. Rebuild pages so viewers and printers can open the file again using PDF Palette—no account required.",
+    "primaryKeyword": "repair PDF online",
+    "secondaryKeywords": [
+      "fix corrupt PDF",
+      "repair damaged PDF",
+      "PDF recovery online",
+      "rebuild PDF file",
+      "PDF will not open fix",
+      "repair PDF in browser",
+      "recover PDF pages"
+    ],
+    "h1": "How to Use Repair PDF – Complete Guide",
+    "slug": "repair-pdf",
+    "intro": "Some PDFs throw errors, refuse to save, or open with missing pages after a bad download or flaky export from another app. Repair PDF rebuilds the document page by page into a fresh file that ordinary viewers can open again more reliably.\n\nProcessing stays in your browser on PDF Palette—free, with no account. It cannot invent content that was never in the file, but it often restores a usable copy when the structure is only partly broken.",
+    "steps": [
+      "Open Repair PDF and upload the problematic file.",
+      "Start repair and wait while pages are rebuilt.",
+      "Download the repaired PDF.",
+      "Open it in your viewer to confirm pages load.",
+      "Re-run other tools (compress, OCR) on the fixed copy if needed."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Repair PDF?",
+        "body": "Repair PDF attempts to reconstruct a damaged PDF into a cleaner document structure you can open. Corrupted cross-references, truncated streams, or awkward exports can break readers even when many pages are still intact inside the file. Rebuilding writes a new structure around recoverable page content so software can open and print it more reliably for day-to-day viewing and sharing."
+      },
+      {
+        "heading": "How to Use Repair PDF",
+        "body": "Upload the broken file, let the browser rebuild what it can into a fresh structure, then verify the download thoroughly. Keep the original until you confirm the repair worked.",
+        "steps": [
+          "Upload the damaged PDF.",
+          "Run repair in your browser.",
+          "Download the rebuilt file.",
+          "Test opening and scrolling every page."
+        ]
+      },
+      {
+        "heading": "Why Use Repair PDF?",
+        "body": "A single bad attachment can block printing, merging, or conversion for an entire workflow on deadline. Repairing locally avoids uploading sensitive broken files to unknown recovery sites. PDF Palette keeps the flow simple and free when you just need the document to open again on ordinary viewers without installing recovery utilities."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Try the repaired file in more than one viewer if one application still fails to open it. If pages are blank, the source may lack recoverable content to rebuild from. After a successful repair, compress or OCR as a separate step on the new file. For password errors, use Unlock PDF instead of repair, because encryption is not the same as corruption."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Can Repair PDF recover a zero-byte or fully overwritten file?",
+        "a": "No. It rebuilds from what remains in the PDF. Completely missing data cannot be invented."
+      },
+      {
+        "q": "Does repair run in my browser?",
+        "a": "Yes. The rebuild is designed to happen locally in your tab."
+      },
+      {
+        "q": "Will annotations and forms always survive?",
+        "a": "Focus is on restoring openable pages. Complex interactive features may not transfer perfectly—verify after download."
+      },
+      {
+        "q": "The PDF asks for a password. Is that corruption?",
+        "a": "Usually not. Use Unlock PDF with the known password rather than repair."
+      }
+    ],
+    "conclusion": "Repair PDF is a free, browser-local reset for files that will not open cleanly after a bad download or export. Rebuild on PDF Palette, verify every page loads, keep the original until you are sure, then continue compressing, merging, or converting as usual with the fixed copy.",
+    "internalLinks": [
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      },
+      {
+        "route": "/unlock-pdf",
+        "anchor": "Unlock PDF"
+      },
+      {
+        "route": "/merge-pdf",
+        "anchor": "Merge PDF"
+      }
+    ]
+  },
+  "/extract-text": {
+    "name": "Extract Text",
+    "title": "Extract All Text from PDF Files Free Online | PDF Palette",
+    "description": "Extract text from a PDF free online in your browser. Download selectable content as a plain .txt file with PDF Palette; no account required for quotes.",
+    "primaryKeyword": "extract text from PDF",
+    "secondaryKeywords": [
+      "PDF to text online",
+      "copy all text from PDF",
+      "PDF text extractor free",
+      "save PDF as TXT",
+      "pull text from PDF",
+      "extract PDF text browser",
+      "PDF to plain text"
+    ],
+    "h1": "How to Use Extract Text – Complete Guide",
+    "slug": "extract-text",
+    "intro": "When you need quotes, notes, or a plain-text archive, Extract Text pulls selectable strings from a PDF into a downloadable .txt file. It is faster than copying page by page and handy when you want search outside the PDF viewer on your computer.\n\nRun it free online in your browser on PDF Palette with no account. Scanned pages without a text layer will come out empty or nearly empty until you run OCR PDF first.",
+    "steps": [
+      "Open Extract Text and upload your PDF.",
+      "Start extraction in your browser.",
+      "Wait while text is collected from the pages.",
+      "Download the .txt file.",
+      "If results are empty, run OCR PDF and try again."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Extract Text?",
+        "body": "Extract Text reads the text objects already present in a PDF and writes them to a plain text download for reuse. It does not redesign layout into Word; it prioritizes getting the words out for notes, indexing, or pasting elsewhere quickly. Image-only scans need OCR before meaningful text exists under the page image to extract at all into that downloadable file."
+      },
+      {
+        "heading": "How to Use Extract Text",
+        "body": "Upload a text-based PDF, extract locally in your browser, and download the .txt file. For scans, run OCR first so real characters exist under the page image.",
+        "steps": [
+          "Upload the PDF.",
+          "Run Extract Text.",
+          "Download the plain text file.",
+          "Clean spacing in your editor if needed."
+        ]
+      },
+      {
+        "heading": "Why Use Extract Text?",
+        "body": "Researchers, support teams, and students often need the words without the full layout chrome of the PDF. A one-click text dump beats manual copying across dozens of pages in a viewer. Keeping extraction in the browser avoids uploading confidential PDFs just to grab a few paragraphs for a ticket, outline, or email draft."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "If the output is blank or gibberish, the file may be a scan or use unusual encoding—try OCR next. Columns can appear out of reading order in plain text; expect light cleanup in your editor. For tables you plan to calculate on, PDF to Excel is usually a better next step than a raw text dump from Extract Text alone."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Why is my extracted text empty?",
+        "a": "The PDF is likely image-only. Run OCR PDF to add a text layer, then extract again."
+      },
+      {
+        "q": "Does Extract Text keep my file private?",
+        "a": "Extraction is designed to run in your browser, so the PDF stays on your device for this tool."
+      },
+      {
+        "q": "Will formatting and columns be perfect?",
+        "a": "Plain text will not preserve complex layout. You get the words; spacing and order may need cleanup."
+      },
+      {
+        "q": "Can I ask questions about the text afterward?",
+        "a": "Yes. Summarize & Ask PDF builds a local extractive summary and keyword answers from the document text."
+      }
+    ],
+    "conclusion": "Extract Text turns a PDF’s selectable content into a simple .txt download you can paste or index anywhere. Use it free in your browser on PDF Palette, and run OCR first whenever you are starting from a scan instead of a born-digital file with real text.",
+    "internalLinks": [
+      {
+        "route": "/ocr-pdf",
+        "anchor": "OCR PDF"
+      },
+      {
+        "route": "/chat-with-pdf",
+        "anchor": "Summarize & Ask PDF"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      }
+    ]
+  },
+  "/extract-images": {
+    "name": "Extract Images",
+    "title": "Extract Embedded PDF Image Files Free Online | PDF Palette",
+    "description": "Extract images from a PDF free online in your browser. Download embedded pictures as PNG files with PDF Palette; no account required to export figures.",
+    "primaryKeyword": "extract images from PDF",
+    "secondaryKeywords": [
+      "PDF image extractor",
+      "save images from PDF",
+      "pull pictures out of PDF",
+      "PDF to PNG images",
+      "extract PDF photos free",
+      "download images embedded in PDF",
+      "PDF image export online"
+    ],
+    "h1": "How to Use Extract Images – Complete Guide",
+    "slug": "extract-images",
+    "intro": "Diagrams, logos, and photos embedded in a PDF are awkward to reuse if you only have a low-quality screenshot. Extract Images pulls those pictures out so you can save them as PNG files for slides, tickets, or docs.\n\nWhen a page has no separate image objects, PDF Palette can render that page as a PNG instead so you still get a usable visual. The tool runs free online in your browser with no account required to begin.",
+    "steps": [
+      "Open Extract Images and upload your PDF.",
+      "Start extraction in your browser.",
+      "Wait while embedded images are collected.",
+      "Download the image files (PNG).",
+      "If a page had no embeds, use the rendered page image provided."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Extract Images?",
+        "body": "Extract Images finds image resources inside a PDF and exports them for reuse in other tools you already use. It is aimed at recovering figures and photos without re-exporting the whole document as page screenshots—though page renders fill the gap when content is drawn without standalone image objects you can peel out cleanly from the file structure."
+      },
+      {
+        "heading": "How to Use Extract Images",
+        "body": "Upload the PDF, let the browser collect embedded pictures, and download the PNGs. Check the results if you expected more embeds than the export contains.",
+        "steps": [
+          "Upload the source PDF.",
+          "Run Extract Images.",
+          "Download the exported PNGs.",
+          "Review page renders for vector-only pages."
+        ]
+      },
+      {
+        "heading": "Why Use Extract Images?",
+        "body": "Marketing and documentation teams often need a figure without rebuilding it from scratch in design software. Extracting beats cropping screenshots and preserves resolution better when the embed is high quality to begin with. Local browser processing keeps unpublished decks and reports on your device while you pull assets out for reuse in slides, tickets, or other documents you are preparing."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Vector artwork may not appear as a bitmap embed—expect a page render instead for those pages. For every page as an image regardless of embeds, use PDF to JPG. Compress the PDF first only if file size blocks loading in your browser, not because you expect sharper exported pictures afterward from a smaller source file."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Why did I get fewer images than I see on the page?",
+        "a": "Some visuals are vectors or part of a flattened page render, not separate image objects. Those pages may export as a full-page PNG instead."
+      },
+      {
+        "q": "What format are the downloads?",
+        "a": "Exports are provided as PNG files for broad compatibility and clean edges."
+      },
+      {
+        "q": "Does extraction upload my PDF?",
+        "a": "Extract Images is designed to run in your browser so the file stays on your device."
+      },
+      {
+        "q": "Can I turn each page into an image instead?",
+        "a": "Yes. Use PDF to JPG when you want one image per page rather than only embedded pictures."
+      }
+    ],
+    "conclusion": "Extract Images recovers usable PNG files from a PDF without relying on cropped screenshots. Run it free in your browser on PDF Palette, then drop figures into presentations, tickets, or design tools with better clarity than a phone photo of the printed page would give you.",
+    "internalLinks": [
+      {
+        "route": "/pdf-to-jpg",
+        "anchor": "PDF to JPG"
+      },
+      {
+        "route": "/jpg-to-pdf",
+        "anchor": "JPG to PDF"
+      },
+      {
+        "route": "/compress-pdf",
+        "anchor": "Compress PDF"
+      }
+    ]
+  },
+  "/auto-redact-pii": {
+    "name": "Auto-Redact PII",
+    "title": "Auto-Redact PII in PDF Documents Free Online | PDF Palette",
+    "description": "Auto-redact PII in a PDF free online. Find names, emails, phones, and similar data, then black them out in your browser with PDF Palette—no account needed.",
+    "primaryKeyword": "auto redact PII PDF",
+    "secondaryKeywords": [
+      "redact personal information PDF",
+      "black out email phone PDF",
+      "PII redaction tool",
+      "automatic PDF redaction",
+      "remove PII from PDF",
+      "redact names emails phones",
+      "sanitize PDF personal data"
+    ],
+    "h1": "How to Use Auto-Redact PII – Complete Guide",
+    "slug": "auto-redact-pii",
+    "intro": "Sharing logs, tickets, or customer PDFs often means stripping personal data first. Auto-Redact PII scans for common patterns—such as names, emails, and phone numbers—paints black boxes over matches, and flattens so the text cannot be copied straight back out of the file.\n\nEverything runs in your browser on PDF Palette, free and without an account. Always review the output carefully; automation speeds the pass but does not replace a human check before you release the file.",
+    "steps": [
+      "Upload the PDF that may contain personal data.",
+      "Start Auto-Redact PII and wait while patterns are found.",
+      "Review the blacked-out regions on each page.",
+      "Download the redacted, flattened PDF.",
+      "Manually redact anything missed using Redact PDF."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Auto-Redact PII?",
+        "body": "Auto-Redact PII is a pattern-driven redaction helper for everyday PDFs you need to share. It looks for personal data such as names, email addresses, phone numbers, and similar identifiers, covers matches, and flattens the result so hidden strings are not trivially recoverable by selection. It is a first pass for bulk cleanup, not a guarantee that every secret in the file is gone without review."
+      },
+      {
+        "heading": "How to Use Auto-Redact PII",
+        "body": "Upload the file, let the scanner mark likely PII automatically, review the black boxes, then download. Finish stubborn spots afterward with manual Redact PDF when patterns miss.",
+        "steps": [
+          "Upload the PDF.",
+          "Run automatic PII detection and redaction.",
+          "Inspect pages for misses or over-redaction.",
+          "Download the flattened result."
+        ]
+      },
+      {
+        "heading": "Why Use Auto-Redact PII?",
+        "body": "Manual boxing across long packets is slow and easy to skim past under deadline pressure. Pattern matching catches many emails and phones in one sweep before you review. Keeping the pass in your browser reduces the need to upload customer PDFs to a third-party redaction cloud for a routine sanitize of common personal data fields."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "OCR scans before auto-redacting if text is only an image on the page. Search the output for known sample values from the source document. Watch for partial addresses, employee IDs, or uncommon formats the patterns skip. When in doubt, widen manual redaction boxes rather than shipping a near-miss to a client or partner."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "What kinds of PII does it look for?",
+        "a": "Common personal-data patterns such as names, emails, phone numbers, and similar identifiers. Exact coverage can vary—always review the file."
+      },
+      {
+        "q": "Is automatic redaction perfect?",
+        "a": "No. Treat it as a fast first pass. Use Redact PDF to cover anything the scanner misses."
+      },
+      {
+        "q": "Does Auto-Redact PII run in my browser?",
+        "a": "Yes. Scanning and redaction are designed to stay local on your device."
+      },
+      {
+        "q": "Why is the output flattened?",
+        "a": "Flattening helps ensure blacked-out text cannot simply be selected or copied from live text underneath."
+      }
+    ],
+    "conclusion": "Auto-Redact PII speeds removal of common personal data before you share a PDF outside your team. Run it free in your browser on PDF Palette, review every page carefully, and finish stubborn edge cases with manual Redact PDF so fewer identifiers slip through unnoticed.",
+    "internalLinks": [
+      {
+        "route": "/redact-pdf",
+        "anchor": "Redact PDF"
+      },
+      {
+        "route": "/protect-pdf",
+        "anchor": "Protect PDF"
+      },
+      {
+        "route": "/flatten-pdf",
+        "anchor": "Flatten PDF"
+      }
+    ]
+  },
+  "/chat-with-pdf": {
+    "name": "Summarize & Ask PDF",
+    "title": "Summarize and Ask PDF Locally Free Online | PDF Palette",
+    "description": "Summarize a PDF and ask questions free online with local extractive Q&A—not cloud AI chat. Private on-device help from PDF Palette, no account needed.",
+    "primaryKeyword": "summarize PDF online",
+    "secondaryKeywords": [
+      "ask questions about PDF",
+      "PDF summary free",
+      "extractive PDF Q&A",
+      "chat with PDF locally",
+      "PDF keyword search answers",
+      "summarize PDF in browser",
+      "local PDF question answering"
+    ],
+    "h1": "How to Use Summarize & Ask PDF – Complete Guide",
+    "slug": "chat-with-pdf",
+    "intro": "Summarize & Ask PDF helps you skim a long document without sending it to a cloud AI chatbot. PDF Palette builds an extractive summary from the file’s own sentences and answers questions by matching keywords to passages that already appear in the text.\n\nLoad the PDF in your browser, read the summary, then ask follow-ups. Nothing is sent to a cloud model for this tool—the text stays on your device. Free to use with no account.",
+    "steps": [
+      "Open Summarize & Ask PDF and upload your document.",
+      "Click Load & summarize to build the local summary.",
+      "Read the summary or download it as text if offered.",
+      "Type a question to find matching passages in the PDF.",
+      "Refine keywords if the first match list is too broad."
+    ],
+    "sections": [
+      {
+        "heading": "What Is Summarize & Ask PDF?",
+        "body": "Despite the chat-with-pdf route name, this tool is local extractive Q&A—not a generative cloud assistant that invents wording. It ranks and returns content from your PDF: a summary composed from existing sentences, plus passage hits for the words you ask about in the file. That keeps privacy high and expectations grounded: it finds and organizes what the document already says on the page."
+      },
+      {
+        "heading": "How to Use Summarize & Ask PDF",
+        "body": "Upload a text-based PDF, generate the on-device summary, then ask keyword-style questions. Run OCR on scans first if the pages are only images without a text layer.",
+        "steps": [
+          "Upload the PDF.",
+          "Run Load & summarize.",
+          "Review the extractive summary.",
+          "Ask questions to surface matching passages."
+        ]
+      },
+      {
+        "heading": "Why Use Summarize & Ask PDF?",
+        "body": "Long manuals and reports are slow to skim when you only need a few facts. An extractive summary gets you oriented quickly, and keyword passage search beats endless Ctrl+F guessing across chapters. Because processing stays on your device, you can use it on drafts you would not paste into a public AI chat window or third-party cloud assistant."
+      },
+      {
+        "heading": "Tips for Getting the Best Results",
+        "body": "Use clear keywords that actually appear in the document text for better passage hits. For scans, run OCR PDF first so there is text to summarize at all. Do not expect invented analysis or citations beyond the file’s own wording. For a full plain-text dump, use Extract Text; for editable layout, try PDF to Word after OCR completes."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Is this the same as ChatGPT for PDFs?",
+        "a": "No. It uses local extractive summarization and keyword matching. It does not call a cloud AI model to generate new answers."
+      },
+      {
+        "q": "Does my PDF leave my device?",
+        "a": "For this tool, text stays on your device. That is the privacy advantage over cloud “chat with PDF” products."
+      },
+      {
+        "q": "Why are answers limited or literal?",
+        "a": "Because the tool returns passages from your file rather than writing new explanations. Rephrase with words that appear in the document."
+      },
+      {
+        "q": "What if the summary is empty?",
+        "a": "The PDF may lack a text layer. Run OCR PDF, then load and summarize again."
+      }
+    ],
+    "conclusion": "Summarize & Ask PDF gives you a private, on-device way to skim and query a long document. Use it free on PDF Palette for extractive summaries and keyword passage answers—faithful to what the file already says, without sending any of that text to cloud AI chat services.",
+    "internalLinks": [
+      {
+        "route": "/extract-text",
+        "anchor": "Extract Text"
+      },
+      {
+        "route": "/ocr-pdf",
+        "anchor": "OCR PDF"
+      },
+      {
+        "route": "/pdf-to-word",
+        "anchor": "PDF to Word"
+      }
+    ]
+  }
+}
