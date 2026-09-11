@@ -1,5 +1,4 @@
 import LegalPage from "@/components/LegalPage";
-import { Link } from "react-router-dom";
 
 const About = () => (
   <LegalPage
@@ -20,36 +19,11 @@ const About = () => (
       </p>
     </section>
     <section>
-      <h2>How the tools work</h2>
-      <p>
-        The site is a web application. After it loads, most PDF, Office, and image tools run locally in your
-        tab using JavaScript libraries. That design is intentional: your files do not need to sit on our
-        servers for those tools to function.
-      </p>
-      <p>
-        A few tools send a file (or a page URL) to a conversion service so the work can finish, then return
-        the result for download. PDF Palette does not keep the upload or the result. Those exceptions —
-        PDF to Word, Word to PDF, PDF to PowerPoint, PDF to Excel, OCR PDF, and HTML to PDF from a URL — are described in our{" "}
-        <Link to="/privacy">Privacy Policy</Link>.
-      </p>
-    </section>
-    <section>
       <h2>What we are not</h2>
       <p>
         We are not a document management platform. We do not offer shared workspaces, billed storage, or
         “save to your PDF Palette account.” If you need a copy of a result, download it. Closing the tab
         discards in-memory work.
-      </p>
-    </section>
-    <section>
-      <h2>Open development</h2>
-      <p>
-        The project is developed in public on{" "}
-        <a href="https://github.com/rakpa/PDF-Palette-2" rel="noopener noreferrer" target="_blank">
-          GitHub
-        </a>
-        . Feature requests and bug reports belong in{" "}
-        <Link to="/contact">Contact</Link>.
       </p>
     </section>
   </LegalPage>
