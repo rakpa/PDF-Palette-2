@@ -6,7 +6,7 @@ const features = [
     icon: ShieldCheck,
     title: "Private by design",
     description:
-      "Most tools run entirely in your browser. The exceptions that use a conversion service are PDF to Word, Word to PDF, PDF to PowerPoint, PDF to Excel, OCR PDF, and HTML to PDF from a URL — see our Privacy Policy.",
+      "All tools use browser-based processing. Your files are handled in your tab — see our Privacy Policy.",
     color: "text-tool-green bg-tool-green/10",
   },
   {
@@ -20,7 +20,7 @@ const features = [
     icon: Gift,
     title: "Free forever",
     description:
-      "Every tool is free to use with no sign-up and no watermark on your files. Ads may appear to keep the site free.",
+      "Every tool is free to use with no sign-up and no watermark on your files.",
     color: "text-tool-coral bg-tool-coral/10",
   },
   {
