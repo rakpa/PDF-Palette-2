@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, Github } from "lucide-react";
+import { FileText } from "lucide-react";
 import AdSenseUnit from "./AdSenseUnit";
 
 const Footer = () => {
@@ -110,21 +110,10 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-12 border-t border-border pt-8 text-center">
+          <p className="text-sm text-black dark:text-foreground">
             © {new Date().getFullYear()} PDF Palette. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <a
-              href="https://github.com/rakpa/PDF-Palette-2"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              rel="noopener noreferrer"
-              target="_blank"
-              aria-label="PDF Palette on GitHub"
-            >
-              <Github className="h-5 w-5" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
