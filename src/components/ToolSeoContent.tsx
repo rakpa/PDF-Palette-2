@@ -46,9 +46,6 @@ const ToolSeoContent = ({ tool, content }: ToolSeoContentProps) => {
 
   return (
     <article className="mx-auto mt-12 max-w-3xl border-t border-border pt-10">
-      <header className="sr-only">
-        <h2>{content.h1}</h2>
-      </header>
       <div>
         <Paragraphs text={content.intro} />
       </div>
