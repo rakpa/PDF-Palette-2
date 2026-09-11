@@ -47,44 +47,6 @@ const Privacy = () => (
       </p>
     </section>
     <section>
-      <h2>Remote exceptions</h2>
-      <p>
-        <strong>PDF to Word</strong> uploads the selected file to a conversion service so it can
-        be turned into Word. PDF Palette does not keep the upload or the result after the
-        download is ready. The conversion service processes the file under its own terms.
-      </p>
-      <p>
-        <strong>Word to PDF</strong> uploads the selected Word file to a conversion service
-        so it can be turned into a PDF. PDF Palette does not keep the upload or the result
-        after the download is ready. The conversion service processes the file under its own terms.
-      </p>
-      <p>
-        <strong>PDF to PowerPoint</strong> uploads the selected PDF to a conversion service so it can
-        be turned into PowerPoint. PDF Palette does not keep the upload or the result after the
-        download is ready. The conversion service processes the file under its own terms.
-      </p>
-      <p>
-        <strong>PDF to Excel</strong> uploads the selected PDF to a conversion service so it can
-        be turned into Excel. PDF Palette does not keep the upload or the result after the
-        download is ready. The conversion service processes the file under its own terms.
-      </p>
-      <p>
-        <strong>OCR PDF</strong> uploads the selected PDF to a conversion service so scanned pages can
-        be made searchable. PDF Palette does not keep the upload or the result after the download is
-        ready. The conversion service processes the file under its own terms.
-      </p>
-      <p>
-        If you use HTML to PDF and paste a <strong>web page URL</strong>, that URL is sent to a conversion
-        service so the page can be fetched and rendered. A browser tab cannot load someone else’s website the
-        way a server can. We do not use that path to build a customer list. Prefer uploading an HTML file if
-        you want the conversion to stay entirely in the browser.
-      </p>
-      <p>
-        Other tools, including merge, split, and compress, are designed to run in the browser without
-        uploading your document to PDF Palette.
-      </p>
-    </section>
-    <section>
       <h2>What your browser may store on your device</h2>
       <p>
         The site may remember your theme preference (light or dark) in your browser’s local storage. That
