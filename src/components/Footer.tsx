@@ -17,13 +17,7 @@ const Footer = () => {
               <span className="text-xl font-bold text-foreground">PDF Palette</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Free PDF tools that mostly run in your browser. A few conversions (PDF to Word,
-              Word to PDF, PDF to PowerPoint, PDF to Excel, OCR, and HTML from a URL) use a
-              conversion service — see our{" "}
-              <Link to="/privacy" className="underline hover:text-foreground transition-colors">
-                Privacy Policy
-              </Link>
-              .
+              Free tools for your better productivity.
             </p>
           </div>
 

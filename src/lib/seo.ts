@@ -22,7 +22,7 @@ export const DEFAULT_TITLE =
   "PDF Palette — 38 Free PDF Tools That Don’t Keep Your Files";
 
 export const DEFAULT_DESCRIPTION =
-  "Merge, split, compress, convert, sign, OCR and edit PDFs free. Most tools run in your browser. A few send a file for conversion only — PDF Palette does not store it.";
+  "Free tools for your better productivity. Merge, split, compress, convert, sign, OCR and edit PDFs — free and fast.";
 
 export const OG_IMAGE_PATH = "/og-image.png";
 
