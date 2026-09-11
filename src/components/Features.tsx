@@ -7,28 +7,28 @@ const features = [
     title: "Private by design",
     description:
       "All tools use browser-based processing. Your files are handled in your tab — see our Privacy Policy.",
-    color: "text-tool-green bg-tool-green/10",
+    color: "text-emerald-500 bg-emerald-500/15",
   },
   {
     icon: Zap,
     title: "Lightning fast",
     description:
       "No waiting in queues. Results are ready the moment processing finishes.",
-    color: "text-tool-yellow bg-tool-yellow/10",
+    color: "text-amber-400 bg-amber-400/15",
   },
   {
     icon: Gift,
     title: "Free forever",
     description:
       "Every tool is free to use with no sign-up and no watermark on your files.",
-    color: "text-tool-coral bg-tool-coral/10",
+    color: "text-rose-500 bg-rose-500/15",
   },
   {
     icon: Cpu,
     title: "Nothing to install",
     description:
       "There's no app to download and no account to create — open a tool in a tab and it's ready to use.",
-    color: "text-tool-blue bg-tool-blue/10",
+    color: "text-sky-500 bg-sky-500/15",
   },
 ];
 
