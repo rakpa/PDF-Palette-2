@@ -30,15 +30,15 @@ const LegalPage = ({ title, description, updated, children }: LegalPageProps) =>
           <span className="text-foreground">{title}</span>
         </nav>
         <header className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">{title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-black dark:text-foreground tracking-tight">{title}</h1>
           {description && (
-            <p className="mt-3 text-lg text-muted-foreground leading-relaxed">{description}</p>
+            <p className="mt-3 text-lg text-black dark:text-foreground leading-relaxed">{description}</p>
           )}
           {updated && (
-            <p className="mt-2 text-sm text-muted-foreground">Last updated: {updated}</p>
+            <p className="mt-2 text-sm text-black dark:text-foreground">Last updated: {updated}</p>
           )}
         </header>
-        <article className="space-y-8 text-muted-foreground leading-relaxed [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h2]:mt-2 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-2 [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline">
+        <article className="space-y-8 text-black dark:text-foreground leading-relaxed [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-black dark:[&_h2]:text-foreground [&_h2]:mt-2 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-2 [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline">
           {children}
         </article>
       </main>
