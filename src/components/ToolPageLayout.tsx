@@ -6,7 +6,6 @@ import { getToolContent, useSeo } from "@/lib/seo";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ToolSeoContent from "./ToolSeoContent";
-import MonetizationBlock from "./MonetizationBlock";
 import { cn } from "@/lib/utils";
 
 interface ToolPageLayoutProps {
@@ -64,7 +63,7 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
                 <h1 className="text-2xl font-bold leading-snug text-foreground">
                   {tool.name}
                 </h1>
-                <p className="mt-1.5 text-lg text-muted-foreground">
+                <p className="mt-1.5 text-lg text-black dark:text-foreground">
                   {tool.description}
                 </p>
               </div>
@@ -75,16 +74,7 @@ const ToolPageLayout = ({ tool, children }: ToolPageLayoutProps) => {
         <section className="py-5 md:py-6">
           <div className="container mx-auto px-4">
             {children}
-            <MonetizationBlock
-              placement="tool-after-upload"
-              className="mx-auto mt-8 max-w-3xl"
-            />
             {content && <ToolSeoContent tool={tool} content={content} />}
-            <MonetizationBlock
-              placement="tool-after-seo"
-              className="mx-auto mt-10 max-w-3xl"
-              showAffiliate={false}
-            />
           </div>
         </section>
       </main>

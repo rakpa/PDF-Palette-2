@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { pdfTools, type PDFTool } from "@/lib/tools";
 import type { ToolContent } from "@/lib/seo";
+import ToolCard from "@/components/ToolCard";
 
 /** Sibling tools that share a category, most-popular first. */
 function relatedTools(tool: PDFTool, limit = 4): PDFTool[] {
@@ -124,21 +125,10 @@ const ToolSeoContent = ({ tool, content }: ToolSeoContentProps) => {
       {relatedFiltered.length > 0 && (
         <section className="mt-10">
           <h2 className="text-2xl font-bold text-black dark:text-foreground">Related tools</h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-4 grid list-none gap-4 p-0 sm:grid-cols-2">
             {relatedFiltered.map((item) => (
               <li key={item.id}>
-                <Link
-                  to={item.route}
-                  className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40"
-                >
-                  <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
-                  <span>
-                    <span className="block font-medium text-black dark:text-foreground">
-                      {item.name}
-                    </span>
-                    <span className={`block text-sm ${bodyText}`}>{item.description}</span>
-                  </span>
-                </Link>
+                <ToolCard tool={item} />
               </li>
             ))}
           </ul>

@@ -56,7 +56,7 @@ const ToolCard = ({ tool }: ToolCardProps) => {
           <h3 className="mb-0.5 pr-12 text-base font-bold leading-snug text-black dark:text-white sm:mb-1.5 sm:pr-16 sm:text-lg">
             {tool.name}
           </h3>
-          <p className="line-clamp-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-[0.9375rem]">
+          <p className="line-clamp-2 text-sm leading-relaxed text-black dark:text-zinc-300 sm:text-[0.9375rem]">
             {tool.description}
           </p>
         </div>
