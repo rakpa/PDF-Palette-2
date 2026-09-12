@@ -34,9 +34,6 @@ const LegalPage = ({ title, description, updated, children }: LegalPageProps) =>
           {updated && (
             <p className="mt-2 text-sm text-zinc-800 dark:text-foreground">Last updated: {updated}</p>
           )}
-          {description && (
-            <p className="mt-3 text-base font-normal text-zinc-800 dark:text-foreground leading-relaxed">{description}</p>
-          )}
         </header>
         <article className="space-y-8 text-zinc-800 dark:text-foreground leading-relaxed [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-zinc-800 dark:[&_h2]:text-foreground [&_h2]:mt-2 [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-2 [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline">
           {children}
